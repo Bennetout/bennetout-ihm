@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fleche="http://schemas.android.com/apk/res-auto"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/layoutTop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:id="@+id/btnRefresh"
+                android:layout_width="@dimen/_36sdp"
+                android:layout_height="@dimen/_36sdp"
+                android:layout_marginBottom="@dimen/_2sdp"
+                android:layout_marginLeft="@dimen/_2sdp"
+                android:layout_marginRight="@dimen/_2sdp"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:text=""
+                fancy:fb_borderColor="@color/myRed"
+                fancy:fb_borderWidth="@dimen/_1sdp"
+                fancy:fb_defaultColor="@color/myRed"
+                fancy:fb_focusColor="#FFFFFF"
+                fancy:fb_fontIconResource="\uf0e2"
+                fancy:fb_fontIconSize="@dimen/_20sdp"
+                fancy:fb_radius="@dimen/_60sdp" />
+
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:id="@+id/btnReglage"
+                android:layout_width="@dimen/_36sdp"
+                android:layout_height="@dimen/_36sdp"
+                android:layout_marginBottom="@dimen/_2sdp"
+                android:layout_marginLeft="@dimen/_2sdp"
+                android:layout_marginRight="@dimen/_2sdp"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:text=""
+                fancy:fb_borderColor="@color/myRed"
+                fancy:fb_borderWidth="@dimen/_1sdp"
+                fancy:fb_defaultColor="@color/myRed"
+                fancy:fb_focusColor="#FFFFFF"
+                fancy:fb_fontIconResource="\uf013"
+                fancy:fb_fontIconSize="@dimen/_20sdp"
+                fancy:fb_radius="@dimen/_60sdp" />
+        </LinearLayout>
+
+        <com.monier.bennetout.ihmclient.FlecheDesigner
+            android:id="@+id/flecheView"
+            android:layout_width="@dimen/_150sdp"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutBottom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:orientation="vertical">
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_10sdp" />
+
+        <LinearLayout
+            android:id="@+id/porteLayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textViewPorte"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="match_parent"
+                android:gravity="end|center_vertical"
+                android:text="@string/textviewporte"
+                android:textSize="@dimen/_20sdp" />
+
+            <Button
+                android:id="@+id/buttonPorteMarche"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:text="@string/m"
+                android:textColor="@color/myGreen"
+                android:textSize="@dimen/_20sdp" />
+
+            <Button
+                android:id="@+id/buttonPorteArret"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="match_parent"
+                android:text="@string/a"
+                android:textColor="@color/myRed"
+                android:textSize="@dimen/_20sdp" />
+
+            <TextView
+                android:id="@+id/textViewPorteValue"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="110,0°"
+                android:textSize="@dimen/_20sdp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/listViewPorte"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/layout_border"
+                android:orientation="horizontal"
+                android:scrollbars="horizontal" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_2sdp" />
+
+        <LinearLayout
+            android:id="@+id/flecheLayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textViewFleche"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="match_parent"
+                android:gravity="end|center_vertical"
+                android:text="@string/textviewfleche"
+                android:textSize="@dimen/_20sdp" />
+
+            <Button
+                android:id="@+id/buttonFlecheMarche"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:text="@string/m"
+                android:textColor="@color/myGreen"
+                android:textSize="@dimen/_20sdp" />
+
+            <Button
+                android:id="@+id/buttonFlecheArret"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="match_parent"
+                android:text="@string/a"
+                android:textColor="@color/myRed"
+                android:textSize="@dimen/_20sdp" />
+
+            <TextView
+                android:id="@+id/textViewFlecheValue"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="10°"
+                android:textSize="@dimen/_20sdp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/listViewFleche"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/layout_border"
+                android:orientation="horizontal"
+                android:scrollbars="horizontal" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_2sdp" />
+
+        <LinearLayout
+            android:id="@+id/levageLayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textViewLevage"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="match_parent"
+                android:gravity="end|center_vertical"
+                android:text="@string/textviewlevage"
+                android:textSize="@dimen/_20sdp" />
+
+            <Button
+                android:id="@+id/buttonLevageMarche"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:text="@string/m"
+                android:textColor="@color/myGreen"
+                android:textSize="@dimen/_20sdp" />
+
+            <Button
+                android:id="@+id/buttonLevageArret"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="match_parent"
+                android:text="@string/a"
+                android:textColor="@color/myRed"
+                android:textSize="@dimen/_20sdp" />
+
+            <TextView
+                android:id="@+id/textViewLevageValue"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="64°"
+                android:textSize="@dimen/_20sdp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/listViewLevage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/layout_border"
+                android:orientation="horizontal"
+                android:scrollbars="horizontal" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

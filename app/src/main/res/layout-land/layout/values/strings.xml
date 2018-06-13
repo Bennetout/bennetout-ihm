@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="textviewporte">Porte : </string>
+    <string name="textviewfleche">Fleche : </string>
+    <string name="textviewlevage">Levage : </string>
+    <string name="m">M</string>
+    <string name="a">A</string>
+</resources>
