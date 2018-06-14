@@ -34,7 +34,7 @@ public class FlecheDesigner extends View {
 
         myBlackStroke.setStyle(Paint.Style.STROKE);
         myBlackStroke.setColor(MY_BLACK);
-        myBlackStroke.setStrokeWidth(5);
+        myBlackStroke.setStrokeWidth(4);
 
         myBlackPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         myBlackPaint.setColor(MY_BLACK);

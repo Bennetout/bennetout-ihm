@@ -56,8 +56,19 @@
 
         <com.monier.bennetout.ihmclient.FlecheDesigner
             android:id="@+id/flecheView"
-            android:layout_width="@dimen/_150sdp"
+            android:layout_width="@dimen/_130sdp"
+            android:layout_height="@dimen/_130sdp"
+            android:layout_gravity="center_vertical|center_horizontal" />
+
+        <Space
+            android:layout_width="@dimen/_10sdp"
             android:layout_height="match_parent" />
+
+        <com.monier.bennetout.ihmclient.NiveauDesigner
+            android:id="@+id/niveauView"
+            android:layout_width="@dimen/_70sdp"
+            android:layout_height="@dimen/_70sdp"
+            android:layout_gravity="center_vertical|center_horizontal" />
 
     </LinearLayout>
 
