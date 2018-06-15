@@ -21,6 +21,8 @@ import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 public class MainActivity extends Activity {
 
     private double angleFleche = 0;
+    private double niveau = 0;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +54,11 @@ public class MainActivity extends Activity {
                 textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(angleFleche)));
                 FlecheDesigner flecheDesigner = findViewById(R.id.flecheView);
                 flecheDesigner.setAngle(angleFleche);
+
+                niveau -= 1;
+                NiveauDesigner niveauDesigner = findViewById(R.id.niveauView);
+                niveauDesigner.setNiveau(niveau);
+
             }
         });
 
@@ -69,8 +76,12 @@ public class MainActivity extends Activity {
                         FlecheDesigner flecheDesigner = findViewById(R.id.flecheView);
                         flecheDesigner.setAngle(angleFleche);
 
+                        niveau -= 1;
+                        NiveauDesigner niveauDesigner = findViewById(R.id.niveauView);
+                        niveauDesigner.setNiveau(niveau);
+
                         if (isBtnFlecheArretPressed)
-                            handler.postDelayed(this, 100);
+                            handler.postDelayed(this, 20);
                         else
                             handler.removeCallbacksAndMessages(null);
                     }
@@ -92,6 +103,10 @@ public class MainActivity extends Activity {
                 flecheDesigner.setAngle(angleFleche);
                 TextView textView = findViewById(R.id.textViewFlecheValue);
                 textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(angleFleche)));
+
+                niveau += 1;
+                NiveauDesigner niveauDesigner = findViewById(R.id.niveauView);
+                niveauDesigner.setNiveau(niveau);
             }
         });
 
@@ -109,8 +124,11 @@ public class MainActivity extends Activity {
                         FlecheDesigner flecheDesigner = findViewById(R.id.flecheView);
                         flecheDesigner.setAngle(angleFleche);
 
+                        niveau += 1;
+                        NiveauDesigner niveauDesigner = findViewById(R.id.niveauView);
+                        niveauDesigner.setNiveau(niveau);
                         if (isBtnFlecheMarchePressed)
-                            handler.postDelayed(this, 100);
+                            handler.postDelayed(this, 20);
                         else
                             handler.removeCallbacksAndMessages(null);
                     }

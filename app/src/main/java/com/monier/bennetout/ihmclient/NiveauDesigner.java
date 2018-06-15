@@ -9,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
+
 public class NiveauDesigner extends View {
 
     private int MY_RED    = Color.parseColor("#800000");
@@ -27,7 +29,7 @@ public class NiveauDesigner extends View {
             myRedStroke = new Paint(),
             myBrownStroke = new Paint();
 
-    private double niveau = -10;
+    private double niveau = 0;
     RectF canvasBorder = new RectF();
 
     public NiveauDesigner(Context context) {
@@ -67,7 +69,7 @@ public class NiveauDesigner extends View {
         myWhitePaint.setStyle(Paint.Style.FILL_AND_STROKE);
         myWhitePaint.setColor(MY_WHITE);
 
-        myWhitePaint.setTextSize(getResources().getDimension(R.dimen._15sdp));
+        myWhitePaint.setTextSize(getResources().getDimension(R.dimen._10sdp));
         myWhitePaint.setTextAlign(Paint.Align.CENTER);
 
         myGrayPaint.setStyle(Paint.Style.FILL);
@@ -106,6 +108,7 @@ public class NiveauDesigner extends View {
         canvas.drawRect(canvasSize*70/100, canvasSize*65/100, canvasSize*80/100, canvasSize*80/100, myBlackPaint);
         canvas.drawRect(canvasSize*70/100, canvasSize*65/100, canvasSize*80/100, canvasSize*80/100, myBrownStroke);
 
+        canvas.drawText(" " + formatDouble(niveau) + "°", canvasSize*50/100, canvasSize*60/100, myWhitePaint);
     }
 
     private double degree2radian(double degree) {

@@ -6,7 +6,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.DragEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 
 public class FlecheDesigner extends View {
 
@@ -72,7 +78,7 @@ public class FlecheDesigner extends View {
         canvas.drawRect(remorqueXCointHautGauche, remorqueYCointHautGauche, remorqueXCointBasDroite, remorqueYCointBasDroite, myRedPaint);
         canvas.drawRect(remorqueXCointHautGauche, remorqueYCointHautGauche, remorqueXCointBasDroite, remorqueYCointBasDroite, myBlackStroke);
 
-        canvas.drawText(" " + angle + "°", remorqueXCointBasDroite - largeurRemorque/2, remorqueYCointBasDroite - getResources().getDimension(R.dimen._5sdp), myWhitePaint);
+        canvas.drawText(" " + formatDouble(angle) + "°", remorqueXCointBasDroite - largeurRemorque/2, remorqueYCointBasDroite - getResources().getDimension(R.dimen._5sdp), myWhitePaint);
     }
 
     private double degree2radian(double degree) {
