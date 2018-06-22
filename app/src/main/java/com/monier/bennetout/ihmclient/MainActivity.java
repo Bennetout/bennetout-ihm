@@ -20,7 +20,7 @@ import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 
 public class MainActivity extends Activity {
 
-    private double angleFleche = 0, angleLevage = 0;
+    private double angleFleche = 0, angleLevage = 0, anglePorte = 0;
     private double niveau = 0;
 
     @Override
@@ -40,9 +40,105 @@ public class MainActivity extends Activity {
         btnLevageMarcheInit();
         btnLevageArretInit();
 
+        btnPorteMarcheInit();
+        btnPorteArretInit();
+
         listViewPorteInit();
         listViewFlecheInit();
         listViewLevageInit();
+    }
+
+    private boolean isBtnPorteArretPressed = false;
+    private void btnPorteArretInit() {
+
+        Button button = findViewById(R.id.buttonPorteArret);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isBtnPorteArretPressed = false;
+                anglePorte -= 1;
+                if (anglePorte < RemorqueDesigner.BORNE_MIN_BENNE)
+                    anglePorte = RemorqueDesigner.BORNE_MIN_BENNE;
+
+                TextView textView = findViewById(R.id.textViewPorteValue);
+                textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(anglePorte)));
+                RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
+                remorqueDesigner.setAngleBenne(anglePorte);
+            }
+        });
+
+        button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                isBtnPorteArretPressed = true;
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        anglePorte -= 1;
+                        if (anglePorte < RemorqueDesigner.BORNE_MIN_BENNE)
+                            anglePorte = RemorqueDesigner.BORNE_MIN_BENNE;
+
+                        TextView textView = findViewById(R.id.textViewPorteValue);
+                        textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(anglePorte)));
+                        RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
+                        remorqueDesigner.setAngleBenne(anglePorte);
+
+                        if (isBtnPorteArretPressed)
+                            handler.postDelayed(this, 20);
+                        else
+                            handler.removeCallbacksAndMessages(null);
+                    }
+                }, 100);
+                return false;
+            }
+        });
+    }
+    private boolean isBtnPorteMarchePressed = false;
+    private void btnPorteMarcheInit() {
+
+        Button button = findViewById(R.id.buttonPorteMarche);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isBtnPorteMarchePressed = false;
+                anglePorte += 1;
+                if (anglePorte > RemorqueDesigner.BORNE_MAX_BENNE)
+                    anglePorte = RemorqueDesigner.BORNE_MAX_BENNE;
+
+                RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
+                remorqueDesigner.setAngleBenne(anglePorte);
+                TextView textView = findViewById(R.id.textViewPorteValue);
+                textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(anglePorte)));
+            }
+        });
+
+        button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                isBtnPorteMarchePressed = true;
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        anglePorte += 1;
+                        if (anglePorte > RemorqueDesigner.BORNE_MAX_BENNE)
+                            anglePorte = RemorqueDesigner.BORNE_MAX_BENNE;
+
+                        TextView textView = findViewById(R.id.textViewPorteValue);
+                        textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(anglePorte)));
+                        RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
+                        remorqueDesigner.setAngleBenne(anglePorte);
+
+                        if (isBtnPorteMarchePressed)
+                            handler.postDelayed(this, 20);
+                        else
+                            handler.removeCallbacksAndMessages(null);
+                    }
+                }, 100);
+                return false;
+            }
+        });
     }
 
     private boolean isBtnLevageArretPressed = false;
@@ -54,6 +150,9 @@ public class MainActivity extends Activity {
             public void onClick(View view) {
                 isBtnLevageArretPressed = false;
                 angleLevage -= 1;
+                if (angleLevage < RemorqueDesigner.BORNE_MIN)
+                    angleLevage = RemorqueDesigner.BORNE_MIN;
+
                 TextView textView = findViewById(R.id.textViewLevageValue);
                 textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(angleLevage)));
                 RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
@@ -70,6 +169,9 @@ public class MainActivity extends Activity {
                     @Override
                     public void run() {
                         angleLevage -= 1;
+                        if (angleLevage < RemorqueDesigner.BORNE_MIN)
+                            angleLevage = RemorqueDesigner.BORNE_MIN;
+
                         TextView textView = findViewById(R.id.textViewLevageValue);
                         textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(angleLevage)));
                         RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
@@ -94,6 +196,9 @@ public class MainActivity extends Activity {
             public void onClick(View view) {
                 isBtnLevageMarchePressed = false;
                 angleLevage += 1;
+                if (angleLevage > RemorqueDesigner.BORNE_MAX)
+                    angleLevage = RemorqueDesigner.BORNE_MAX;
+
                 RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
                 remorqueDesigner.setAngle(angleLevage);
                 TextView textView = findViewById(R.id.textViewLevageValue);
@@ -110,6 +215,9 @@ public class MainActivity extends Activity {
                     @Override
                     public void run() {
                         angleLevage += 1;
+                        if (angleLevage > RemorqueDesigner.BORNE_MAX)
+                            angleLevage = RemorqueDesigner.BORNE_MAX;
+
                         TextView textView = findViewById(R.id.textViewLevageValue);
                         textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(angleLevage)));
                         RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
