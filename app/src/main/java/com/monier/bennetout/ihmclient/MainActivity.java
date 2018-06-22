@@ -20,7 +20,7 @@ import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 
 public class MainActivity extends Activity {
 
-    private double angleFleche = 0;
+    private double angleFleche = 0, angleLevage = 0;
     private double niveau = 0;
 
     @Override
@@ -36,9 +36,94 @@ public class MainActivity extends Activity {
 
         btnFlecheMarcheInit();
         btnFlecheArretInit();
+
+        btnLevageMarcheInit();
+        btnLevageArretInit();
+
         listViewPorteInit();
         listViewFlecheInit();
         listViewLevageInit();
+    }
+
+    private boolean isBtnLevageArretPressed = false;
+    private void btnLevageArretInit() {
+
+        Button button = findViewById(R.id.buttonLevageArret);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isBtnLevageArretPressed = false;
+                angleLevage -= 1;
+                TextView textView = findViewById(R.id.textViewLevageValue);
+                textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(angleLevage)));
+                RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
+                remorqueDesigner.setAngle(angleLevage);
+            }
+        });
+
+        button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                isBtnLevageArretPressed = true;
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        angleLevage -= 1;
+                        TextView textView = findViewById(R.id.textViewLevageValue);
+                        textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(angleLevage)));
+                        RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
+                        remorqueDesigner.setAngle(angleLevage);
+
+                        if (isBtnLevageArretPressed)
+                            handler.postDelayed(this, 20);
+                        else
+                            handler.removeCallbacksAndMessages(null);
+                    }
+                }, 100);
+                return false;
+            }
+        });
+    }
+    private boolean isBtnLevageMarchePressed = false;
+    private void btnLevageMarcheInit() {
+
+        Button button = findViewById(R.id.buttonLevageMarche);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isBtnLevageMarchePressed = false;
+                angleLevage += 1;
+                RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
+                remorqueDesigner.setAngle(angleLevage);
+                TextView textView = findViewById(R.id.textViewLevageValue);
+                textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(angleLevage)));
+            }
+        });
+
+        button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                isBtnLevageMarchePressed = true;
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        angleLevage += 1;
+                        TextView textView = findViewById(R.id.textViewLevageValue);
+                        textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(angleLevage)));
+                        RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
+                        remorqueDesigner.setAngle(angleLevage);
+
+                        if (isBtnLevageMarchePressed)
+                            handler.postDelayed(this, 20);
+                        else
+                            handler.removeCallbacksAndMessages(null);
+                    }
+                }, 100);
+                return false;
+            }
+        });
     }
 
     private boolean isBtnFlecheArretPressed = false;
