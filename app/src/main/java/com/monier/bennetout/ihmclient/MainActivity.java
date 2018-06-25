@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.monier.bennetout.ihmclient.configuration.ConfigManager;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -22,10 +24,15 @@ public class MainActivity extends Activity {
 
     private double angleFleche = 0, angleLevage = 0, anglePorte = 0;
     private double niveau = 0;
+    private final Handler handler = new Handler();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // On charge la configuration sur chaque changement d'activité pour appliquer
+        // les modifications utilisateurs si besoin
+        ConfigManager.initConfig(this);
 
         setContentView(R.layout.main);
         btnReglageInit();
@@ -56,6 +63,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 isBtnPorteArretPressed = false;
+                handler.removeCallbacksAndMessages(null);
                 anglePorte -= 1;
                 if (anglePorte < RemorqueDesigner.BORNE_MIN_BENNE)
                     anglePorte = RemorqueDesigner.BORNE_MIN_BENNE;
@@ -71,7 +79,6 @@ public class MainActivity extends Activity {
             @Override
             public boolean onLongClick(View view) {
                 isBtnPorteArretPressed = true;
-                final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -102,6 +109,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 isBtnPorteMarchePressed = false;
+                handler.removeCallbacksAndMessages(null);
                 anglePorte += 1;
                 if (anglePorte > RemorqueDesigner.BORNE_MAX_BENNE)
                     anglePorte = RemorqueDesigner.BORNE_MAX_BENNE;
@@ -117,7 +125,6 @@ public class MainActivity extends Activity {
             @Override
             public boolean onLongClick(View view) {
                 isBtnPorteMarchePressed = true;
-                final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -149,6 +156,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 isBtnLevageArretPressed = false;
+                handler.removeCallbacksAndMessages(null);
                 angleLevage -= 1;
                 if (angleLevage < RemorqueDesigner.BORNE_MIN)
                     angleLevage = RemorqueDesigner.BORNE_MIN;
@@ -164,7 +172,6 @@ public class MainActivity extends Activity {
             @Override
             public boolean onLongClick(View view) {
                 isBtnLevageArretPressed = true;
-                final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -195,6 +202,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 isBtnLevageMarchePressed = false;
+                handler.removeCallbacksAndMessages(null);
                 angleLevage += 1;
                 if (angleLevage > RemorqueDesigner.BORNE_MAX)
                     angleLevage = RemorqueDesigner.BORNE_MAX;
@@ -210,7 +218,6 @@ public class MainActivity extends Activity {
             @Override
             public boolean onLongClick(View view) {
                 isBtnLevageMarchePressed = true;
-                final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -242,6 +249,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 isBtnFlecheArretPressed = false;
+                handler.removeCallbacksAndMessages(null);
                 angleFleche -= 1;
                 TextView textView = findViewById(R.id.textViewFlecheValue);
                 textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(angleFleche)));
@@ -259,7 +267,6 @@ public class MainActivity extends Activity {
             @Override
             public boolean onLongClick(View view) {
                 isBtnFlecheArretPressed = true;
-                final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -291,6 +298,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 isBtnFlecheMarchePressed = false;
+                handler.removeCallbacksAndMessages(null);
                 angleFleche += 1;
                 FlecheDesigner flecheDesigner = findViewById(R.id.flecheView);
                 flecheDesigner.setAngle(angleFleche);
@@ -307,7 +315,6 @@ public class MainActivity extends Activity {
             @Override
             public boolean onLongClick(View view) {
                 isBtnFlecheMarchePressed = true;
-                final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {

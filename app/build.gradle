@@ -37,6 +37,11 @@ dependencies {
     implementation project(':app:libs:sdp:sdp-android')
     implementation 'com.github.medyo:fancybuttons:1.8.4'
 
+    implementation files('libs/jackson/jackson-annotations-2.5.0.jar')
+    implementation files('libs/jackson/jackson-core-2.5.0.jar')
+    implementation files('libs/jackson/jackson-dataformat-xml-2.5.0.jar')
+    implementation files('libs/jackson/jackson-databind-2.5.0.jar')
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

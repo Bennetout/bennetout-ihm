@@ -19,9 +19,10 @@ public class FlecheDesigner extends View {
     private int MY_RED    = Color.parseColor("#800000");
     private int MY_BLACK    = Color.parseColor("#000000");
     private int MY_WHITE    = Color.parseColor("#ffffff");
+    private int MY_BROWN    = Color.parseColor("#663300");
 
     private Paint myRedPaint = new Paint(), myBlackPaint = new Paint(), myWhitePaint = new Paint();
-    private Paint myBlackStroke = new Paint();
+    private Paint myBlackStroke = new Paint(), myBrownStroke = new Paint();
     private double angle = 0;
 
     public FlecheDesigner(Context context) {
@@ -51,6 +52,10 @@ public class FlecheDesigner extends View {
 
         myWhitePaint.setTextSize(getResources().getDimension(R.dimen._15sdp));
         myWhitePaint.setTextAlign(Paint.Align.CENTER);
+
+        myBrownStroke.setStyle(Paint.Style.STROKE);
+        myBrownStroke.setColor(MY_BROWN);
+        myBrownStroke.setStrokeWidth(4);
     }
 
     @Override
@@ -74,7 +79,20 @@ public class FlecheDesigner extends View {
         float remorqueXCointBasDroite = flecheXMobile + largeurRemorque / (float)2;
         float remorqueYCointBasDroite = flecheYMobile;
 
+        // Fleche
+        myBlackPaint.setStrokeWidth(10);
         canvas.drawLine(flecheXFixe, flecheYFixe, flecheXMobile, flecheYMobile, myBlackPaint);
+
+        // Roue gauche
+        myBlackPaint.setStrokeWidth(4);
+        canvas.drawRect(remorqueXCointHautGauche - canvasSize*5/100, remorqueYCointHautGauche + longueurRemorque*0.4f - canvasSize*10/100, remorqueXCointHautGauche,  remorqueYCointBasDroite- longueurRemorque*0.7f + canvasSize*10/100, myBlackPaint);
+        canvas.drawRect(remorqueXCointHautGauche - canvasSize*5/100, remorqueYCointHautGauche + longueurRemorque*0.4f - canvasSize*10/100, remorqueXCointHautGauche,  remorqueYCointBasDroite- longueurRemorque*0.7f + canvasSize*10/100, myBrownStroke);
+
+        // Roue droite
+        canvas.drawRect(remorqueXCointBasDroite, remorqueYCointBasDroite - longueurRemorque*0.7f + canvasSize*10/100, remorqueXCointBasDroite + canvasSize*5/100, remorqueYCointHautGauche + longueurRemorque*0.4f - canvasSize*10/100, myBlackPaint);
+        canvas.drawRect(remorqueXCointBasDroite, remorqueYCointBasDroite - longueurRemorque*0.7f + canvasSize*10/100, remorqueXCointBasDroite + canvasSize*5/100, remorqueYCointHautGauche + longueurRemorque*0.4f - canvasSize*10/100, myBrownStroke);
+
+        // Remorque
         canvas.drawRect(remorqueXCointHautGauche, remorqueYCointHautGauche, remorqueXCointBasDroite, remorqueYCointBasDroite, myRedPaint);
         canvas.drawRect(remorqueXCointHautGauche, remorqueYCointHautGauche, remorqueXCointBasDroite, remorqueYCointBasDroite, myBlackStroke);
 

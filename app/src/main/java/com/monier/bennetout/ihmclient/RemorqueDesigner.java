@@ -18,6 +18,8 @@ public class RemorqueDesigner extends View {
     public static final int BORNE_MAX_BENNE   = 90;
     public static final int BORNE_MIN_BENNE   = 0;
 
+    public static final int CANVAS_SIZE_REF   = 160;
+
     private int MY_RED    = Color.parseColor("#800000");
     private int MY_BLACK    = Color.parseColor("#000000");
     private int MY_WHITE    = Color.parseColor("#ffffff");
@@ -35,7 +37,7 @@ public class RemorqueDesigner extends View {
     private Paint myBlackStroke = new Paint(),
             myRedStroke = new Paint(),
             myBrownStroke = new Paint();
-    private RectF canvasBorder = new RectF();
+//    private RectF canvasBorder = new RectF();
 
     public RemorqueDesigner(Context context) {
         super(context);
@@ -89,44 +91,44 @@ public class RemorqueDesigner extends View {
 
         float canvasSize = canvas.getWidth();
 
-        canvasBorder.set(1,1,canvasSize -1,canvasSize -1);
-        canvas.drawRect(canvasBorder, myBorderPaint);
+//        canvasBorder.set(1,1,canvasSize -1,canvasSize -1);
+//        canvas.drawRect(canvasBorder, myBorderPaint);
 
-        canvas.rotate((float) -this.angle, canvasSize*22.5f/150, canvasSize*127.5f/150);
+        canvas.rotate((float) -this.angle, canvasSize*7.5f/CANVAS_SIZE_REF, canvasSize*147.5f/CANVAS_SIZE_REF);
 
         // Remorque
-//        canvas.drawRect(canvasSize*55/150, canvasSize*85/150, canvasSize*135/150, canvasSize*125/150, myRedPaint);
-//        canvas.drawRect(canvasSize*55/150, canvasSize*85/150, canvasSize*135/150, canvasSize*125/150, myBlackStroke);
-        remorqueDraw.moveTo(canvasSize*55/150, canvasSize*85/150);
-        remorqueDraw.lineTo(canvasSize*135/150, canvasSize*85/150);
-        remorqueDraw.lineTo(canvasSize*115/150, canvasSize*125/150);
-        remorqueDraw.lineTo(canvasSize*55/150, canvasSize*125/150);
-        remorqueDraw.lineTo(canvasSize*55/150, canvasSize*85/150);
+//        canvas.drawRect(canvasSize*55/CANVAS_SIZE_REF, canvasSize*85/CANVAS_SIZE_REF, canvasSize*135/CANVAS_SIZE_REF, canvasSize*125/CANVAS_SIZE_REF, myRedPaint);
+//        canvas.drawRect(canvasSize*55/CANVAS_SIZE_REF, canvasSize*85/CANVAS_SIZE_REF, canvasSize*135/CANVAS_SIZE_REF, canvasSize*125/CANVAS_SIZE_REF, myBlackStroke);
+        remorqueDraw.moveTo(canvasSize*40/CANVAS_SIZE_REF, canvasSize*110/CANVAS_SIZE_REF);
+        remorqueDraw.lineTo(canvasSize*120/CANVAS_SIZE_REF, canvasSize*110/CANVAS_SIZE_REF);
+        remorqueDraw.lineTo(canvasSize*100/CANVAS_SIZE_REF, canvasSize*145/CANVAS_SIZE_REF);
+        remorqueDraw.lineTo(canvasSize*40/CANVAS_SIZE_REF, canvasSize*145/CANVAS_SIZE_REF);
+        remorqueDraw.lineTo(canvasSize*40/CANVAS_SIZE_REF, canvasSize*110/CANVAS_SIZE_REF);
         canvas.drawPath(remorqueDraw, myRedPaint);
         canvas.drawPath(remorqueDraw, myBlackStroke);
 
         // Fleche
-        canvas.drawRect(canvasSize*20/150, canvasSize*125/150, canvasSize*67.5f/150, canvasSize*130/150, myBlackPaint);
+        canvas.drawRect(canvasSize*5/CANVAS_SIZE_REF, canvasSize*145/CANVAS_SIZE_REF, canvasSize*52.5f/CANVAS_SIZE_REF, canvasSize*150/CANVAS_SIZE_REF, myBlackPaint);
 
-        canvas.rotate((float) -angleBenne, canvasSize*135/150, canvasSize*85/150);
+        canvas.rotate((float) -angleBenne, canvasSize*120/CANVAS_SIZE_REF, canvasSize*110/CANVAS_SIZE_REF);
         // Benne
-        benneDraw.moveTo(canvasSize*135/150, canvasSize*85/150);
-        benneDraw.lineTo(canvasSize*135/150, canvasSize*125/150);
-        benneDraw.lineTo(canvasSize*115/150, canvasSize*125/150);
-        benneDraw.lineTo(canvasSize*135/150, canvasSize*85/150);
+        benneDraw.moveTo(canvasSize*120/CANVAS_SIZE_REF, canvasSize*110/CANVAS_SIZE_REF);
+        benneDraw.lineTo(canvasSize*120/CANVAS_SIZE_REF, canvasSize*145/CANVAS_SIZE_REF);
+        benneDraw.lineTo(canvasSize*100/CANVAS_SIZE_REF, canvasSize*145/CANVAS_SIZE_REF);
+        benneDraw.lineTo(canvasSize*120/CANVAS_SIZE_REF, canvasSize*110/CANVAS_SIZE_REF);
         canvas.drawPath(benneDraw, myBlackPaint);
         canvas.drawPath(benneDraw, myBlackStroke);
-        canvas.rotate((float) angleBenne, canvasSize*135/150, canvasSize*85/150);
+        canvas.rotate((float) angleBenne, canvasSize*120/CANVAS_SIZE_REF, canvasSize*110/CANVAS_SIZE_REF);
 
-        canvas.rotate((float) (this.angle*2), canvasSize*67.5f/150, canvasSize*127.5f/150);
+        canvas.rotate((float) (this.angle*2), canvasSize*52.5f/CANVAS_SIZE_REF, canvasSize*147.5f/CANVAS_SIZE_REF);
 
         // Fleche côté roue
-        canvas.drawRect(canvasSize*65/150, canvasSize*125/150, canvasSize*110/150, canvasSize*130/150, myBlackPaint);
+        canvas.drawRect(canvasSize*50/CANVAS_SIZE_REF, canvasSize*145/CANVAS_SIZE_REF, canvasSize*95/CANVAS_SIZE_REF, canvasSize*150/CANVAS_SIZE_REF, myBlackPaint);
 
         // Roue
-        canvas.drawCircle(canvasSize*105/150, canvasSize*127.5f/150, canvasSize*10/150, myBlackPaint);
-        canvas.drawCircle(canvasSize*105/150, canvasSize*127.5f/150, canvasSize*2.5f/150, myWhitePaint);
-        canvas.drawCircle(canvasSize*105/150, canvasSize*127.5f/150, canvasSize*10/150, myBrownStroke);
+        canvas.drawCircle(canvasSize*90/CANVAS_SIZE_REF, canvasSize*147.5f/CANVAS_SIZE_REF, canvasSize*10/CANVAS_SIZE_REF, myBlackPaint);
+        canvas.drawCircle(canvasSize*90/CANVAS_SIZE_REF, canvasSize*147.5f/CANVAS_SIZE_REF, canvasSize*2.5f/CANVAS_SIZE_REF, myWhitePaint);
+        canvas.drawCircle(canvasSize*90/CANVAS_SIZE_REF, canvasSize*147.5f/CANVAS_SIZE_REF, canvasSize*10/CANVAS_SIZE_REF, myBrownStroke);
     }
 
     public void setAngle(double angle) {
