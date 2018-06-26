@@ -69,7 +69,7 @@ public class NiveauDesigner extends View {
         myWhitePaint.setStyle(Paint.Style.FILL_AND_STROKE);
         myWhitePaint.setColor(MY_WHITE);
 
-        myWhitePaint.setTextSize(getResources().getDimension(R.dimen._10sdp));
+        myWhitePaint.setTextSize(getResources().getDimension(R.dimen._15sdp));
         myWhitePaint.setTextAlign(Paint.Align.CENTER);
 
         myGrayPaint.setStyle(Paint.Style.FILL);

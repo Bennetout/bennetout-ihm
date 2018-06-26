@@ -1,7 +1,7 @@
 package com.monier.bennetout.ihmclient;
 
 import android.app.Activity;
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.monier.bennetout.ihmclient.configuration.ConfigManager;
+import com.monier.bennetout.ihmclient.configuration.activities.ConfigActivity;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -427,6 +428,8 @@ public class MainActivity extends Activity {
         fancyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), ConfigActivity.class);
+                startActivity(intent);
             }
         });
     }

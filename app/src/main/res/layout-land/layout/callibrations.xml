@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <mehdi.sakout.fancybuttons.FancyButton
+        android:id="@+id/btnCallibrationsView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_36sdp"
+        android:layout_marginBottom="@dimen/_2sdp"
+        android:layout_marginLeft="@dimen/_2sdp"
+        android:layout_marginRight="@dimen/_2sdp"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:text="@string/callibrations_maj"
+        android:textSize="@dimen/_17sdp"
+        android:clickable="false"
+        android:focusable="false"
+        fancy:fb_borderColor="@color/myRed"
+        fancy:fb_borderWidth="@dimen/_1sdp"
+        fancy:fb_defaultColor="@color/myRed"
+        fancy:fb_focusColor="#FFFFFF"
+        fancy:fb_radius="@dimen/_60sdp" >
+
+    </mehdi.sakout.fancybuttons.FancyButton>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/btnCallibFleche"
+            android:layout_width="@dimen/_300sdp"
+            android:layout_height="@dimen/_36sdp"
+            android:layout_marginBottom="@dimen/_2sdp"
+            android:layout_marginLeft="@dimen/_2sdp"
+            android:layout_marginRight="@dimen/_2sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_centerHorizontal="true"
+            android:text="@string/callibration_fl_che"
+            android:textSize="@dimen/_12sdp"
+            android:clickable="true"
+            android:focusable="true"
+            fancy:fb_borderColor="@color/myBlack"
+            fancy:fb_borderWidth="@dimen/_2sdp"
+            fancy:fb_defaultColor="@color/myRed"
+            fancy:fb_focusColor="#FFFFFF"
+            fancy:fb_radius="@dimen/_60sdp" />
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/btnCallibLevage"
+            android:layout_width="@dimen/_300sdp"
+            android:layout_height="@dimen/_36sdp"
+            android:layout_marginBottom="@dimen/_2sdp"
+            android:layout_marginLeft="@dimen/_2sdp"
+            android:layout_marginRight="@dimen/_2sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_below="@id/btnCallibFleche"
+            android:layout_centerHorizontal="true"
+            android:text="@string/callibration_levage"
+            android:textSize="@dimen/_12sdp"
+            android:clickable="true"
+            android:focusable="true"
+            fancy:fb_borderColor="@color/myBlack"
+            fancy:fb_borderWidth="@dimen/_2sdp"
+            fancy:fb_defaultColor="@color/myRed"
+            fancy:fb_focusColor="#FFFFFF"
+            fancy:fb_radius="@dimen/_60sdp" />
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/btnCallibPorte"
+            android:layout_width="@dimen/_300sdp"
+            android:layout_height="@dimen/_36sdp"
+            android:layout_marginBottom="@dimen/_2sdp"
+            android:layout_marginLeft="@dimen/_2sdp"
+            android:layout_marginRight="@dimen/_2sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_below="@id/btnCallibLevage"
+            android:layout_centerHorizontal="true"
+            android:text="@string/callibration_porte"
+            android:textSize="@dimen/_12sdp"
+            android:clickable="true"
+            android:focusable="true"
+            fancy:fb_borderColor="@color/myBlack"
+            fancy:fb_borderWidth="@dimen/_2sdp"
+            fancy:fb_defaultColor="@color/myRed"
+            fancy:fb_focusColor="#FFFFFF"
+            fancy:fb_radius="@dimen/_60sdp" />
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/btnCallibNiveau"
+            android:layout_width="@dimen/_300sdp"
+            android:layout_height="@dimen/_36sdp"
+            android:layout_marginBottom="@dimen/_2sdp"
+            android:layout_marginLeft="@dimen/_2sdp"
+            android:layout_marginRight="@dimen/_2sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_below="@id/btnCallibPorte"
+            android:layout_centerHorizontal="true"
+            android:text="@string/callibration_niveau"
+            android:textSize="@dimen/_12sdp"
+            android:clickable="true"
+            android:focusable="true"
+            fancy:fb_borderColor="@color/myBlack"
+            fancy:fb_borderWidth="@dimen/_2sdp"
+            fancy:fb_defaultColor="@color/myRed"
+            fancy:fb_focusColor="#FFFFFF"
+            fancy:fb_radius="@dimen/_60sdp" />
+    </RelativeLayout>
+
+</LinearLayout>

@@ -10,6 +10,8 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
+
 public class RemorqueDesigner extends View {
 
     public static final int BORNE_MAX   = 45;
@@ -73,10 +75,13 @@ public class RemorqueDesigner extends View {
         myBlackPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         myBlackPaint.setColor(MY_BLACK);
 
+        myBlackPaint.setTextSize(getResources().getDimension(R.dimen._15sdp));
+        myBlackPaint.setTextAlign(Paint.Align.CENTER);
+
         myWhitePaint.setStyle(Paint.Style.FILL_AND_STROKE);
         myWhitePaint.setColor(MY_WHITE);
 
-        myWhitePaint.setTextSize(getResources().getDimension(R.dimen._10sdp));
+        myWhitePaint.setTextSize(getResources().getDimension(R.dimen._15sdp));
         myWhitePaint.setTextAlign(Paint.Align.CENTER);
 
         myGrayPaint.setStyle(Paint.Style.FILL);
@@ -107,6 +112,12 @@ public class RemorqueDesigner extends View {
         canvas.drawPath(remorqueDraw, myRedPaint);
         canvas.drawPath(remorqueDraw, myBlackStroke);
 
+        // Text remorque
+        canvas.drawText(" " + formatDouble(angle) + "°",canvasSize*65/CANVAS_SIZE_REF, canvasSize*135/CANVAS_SIZE_REF, myWhitePaint);
+
+        // Text benne
+        canvas.drawText(" " + formatDouble(angleBenne) + "°",canvasSize*122/CANVAS_SIZE_REF, canvasSize*105/CANVAS_SIZE_REF, myBlackPaint);
+
         // Fleche
         canvas.drawRect(canvasSize*5/CANVAS_SIZE_REF, canvasSize*145/CANVAS_SIZE_REF, canvasSize*52.5f/CANVAS_SIZE_REF, canvasSize*150/CANVAS_SIZE_REF, myBlackPaint);
 
@@ -118,6 +129,7 @@ public class RemorqueDesigner extends View {
         benneDraw.lineTo(canvasSize*120/CANVAS_SIZE_REF, canvasSize*110/CANVAS_SIZE_REF);
         canvas.drawPath(benneDraw, myBlackPaint);
         canvas.drawPath(benneDraw, myBlackStroke);
+
         canvas.rotate((float) angleBenne, canvasSize*120/CANVAS_SIZE_REF, canvasSize*110/CANVAS_SIZE_REF);
 
         canvas.rotate((float) (this.angle*2), canvasSize*52.5f/CANVAS_SIZE_REF, canvasSize*147.5f/CANVAS_SIZE_REF);
