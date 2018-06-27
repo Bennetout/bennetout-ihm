@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.monier.bennetout.ihmclient">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -26,7 +29,17 @@
         <activity android:name=".configuration.activities.CallibrationsActivity"
             android:screenOrientation="landscape">
         </activity>
-        <activity android:name=".configuration.activities.CallibFlecheActivity" />
 
+        <activity android:name=".configuration.activities.CallibFlecheActivity"
+            android:screenOrientation="landscape">
+        </activity>
+
+        <activity android:name=".configuration.activities.CallibLevageActivity"
+            android:screenOrientation="landscape">
+        </activity>
+
+        <activity android:name=".configuration.activities.CallibPorteActivity"
+            android:screenOrientation="landscape">
+        </activity>
     </application>
 </manifest>

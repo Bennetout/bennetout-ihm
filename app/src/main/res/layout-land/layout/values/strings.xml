@@ -10,11 +10,16 @@
     <string name="affichages">Affichages</string>
     <string name="actionneurs">Actionneurs</string>
     <string name="callibrations_maj">CALLIBRATIONS</string>
+
     <string name="callibration_fl_che">Callibration flèche</string>
     <string name="callibration_levage">Callibration levage</string>
     <string name="callibration_porte">Callibration porte</string>
     <string name="callibration_niveau">Callibration niveau</string>
+
     <string name="callibration_fleche_maj">CALLIBRATION FLECHE</string>
+    <string name="callibration_levage_maj">CALLIBRATION LEVAGE</string>
+    <string name="callibration_porte_maj">CALLIBRATION PORTE</string>
+
     <string name="figer_le_0">Figer le 0</string>
     <string name="figer_le_100">Figer le 100</string>
     <string name="save">Sauvegarder</string>

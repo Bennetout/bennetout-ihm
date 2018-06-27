@@ -4,9 +4,12 @@ import android.content.Context;
 import android.util.Log;
 
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.monier.bennetout.ihmclient.utils.StorageManager;
 
 import java.io.File;
 import java.io.FileReader;
@@ -76,6 +79,45 @@ public class ConfigManager {
                 break;
         }
         initDone = true;
+    }
+
+    public static boolean configFile2Model(Context context) {
+        File configFile = StorageManager.getConfigFileFromDocExtStorage(context);
+        if (configFile == null)
+            return false;
+
+        try {
+            return loadConfig(configFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean model2ConfigFile(Context context) {
+        File configFile = StorageManager.getConfigFileFromDocExtStorage(context);
+        if (configFile == null)
+            return false;
+
+        JsonFactory jsonFactory = new JsonFactory();
+        ObjectMapper objectMapper = new ObjectMapper();
+        StringWriter stringWriter = new StringWriter();
+        try {
+            JsonGenerator jsonGenerator = jsonFactory.createGenerator(stringWriter);
+            jsonGenerator.enable(JsonGenerator.Feature.WRITE_NUMBERS_AS_STRINGS);
+
+            ConfigModel configModel = model;
+            objectMapper.writeValue(jsonGenerator, configModel);
+
+            FileWriter fileWriter = new FileWriter(configFile);
+            fileWriter.write(stringWriter.toString());
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
     }
 
     private static boolean loadConfig(File configFile) throws IOException {

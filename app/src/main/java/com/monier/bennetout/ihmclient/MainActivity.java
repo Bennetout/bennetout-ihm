@@ -10,10 +10,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.monier.bennetout.ihmclient.configuration.ConfigManager;
 import com.monier.bennetout.ihmclient.configuration.activities.ConfigActivity;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -21,11 +23,12 @@ import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements ClientSocket.ClientSocketListener {
 
     private double angleFleche = 0, angleLevage = 0, anglePorte = 0;
     private double niveau = 0;
     private final Handler handler = new Handler();
+    private ClientSocket clientSocket = new ClientSocket();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,12 +38,12 @@ public class MainActivity extends Activity {
         // les modifications utilisateurs si besoin
         ConfigManager.initConfig(this);
 
+        ClientSocket.addListener(this);
+
+
         setContentView(R.layout.main);
         btnReglageInit();
         btnRefreshInit();
-
-        FlecheDesigner flecheDesigner = findViewById(R.id.flecheView);
-        flecheDesigner.setAngle(angleFleche);
 
         btnFlecheMarcheInit();
         btnFlecheArretInit();
@@ -55,6 +58,7 @@ public class MainActivity extends Activity {
         listViewFlecheInit();
         listViewLevageInit();
     }
+
 
     private boolean isBtnPorteArretPressed = false;
     private void btnPorteArretInit() {
@@ -383,7 +387,6 @@ public class MainActivity extends Activity {
         arrayList.add("175°");
         MyListViewAdapter myListViewAdapter = new MyListViewAdapter(arrayList);
         mRecyclerView.setAdapter(myListViewAdapter);
-
     }
 
     private void listViewPorteInit() {
@@ -410,21 +413,25 @@ public class MainActivity extends Activity {
 
     private void btnRefreshInit() {
         final FancyButton fancyButton = findViewById(R.id.btnRefresh);
-        fancyButton.setBorderColor(R.color.myRed);
-        fancyButton.setBackgroundColor(getResources().getColor(R.color.myRed));
         fancyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fancyButton.setBorderColor(R.color.myGreen);
-                fancyButton.setBackgroundColor(getResources().getColor(R.color.myGreen));
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            clientSocket.connect("192.168.42.1");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }.start();
             }
         });
     }
 
     private void btnReglageInit() {
         final FancyButton fancyButton = findViewById(R.id.btnReglage);
-        fancyButton.setBorderColor(R.color.myRed);
-        fancyButton.setBackgroundColor(getResources().getColor(R.color.myRed));
         fancyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -442,5 +449,10 @@ public class MainActivity extends Activity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    @Override
+    public void onPositionsReceivedFromServer(double flechePos, double levagePos, double portePos, double niveauX, double niveauY) {
+
     }
 }

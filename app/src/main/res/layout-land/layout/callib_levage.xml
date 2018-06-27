@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <mehdi.sakout.fancybuttons.FancyButton
+        android:id="@+id/btnCallibLevageView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_36sdp"
+        android:layout_marginBottom="@dimen/_2sdp"
+        android:layout_marginLeft="@dimen/_2sdp"
+        android:layout_marginRight="@dimen/_2sdp"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:text="@string/callibration_levage_maj"
+        android:textSize="@dimen/_17sdp"
+        android:clickable="false"
+        android:focusable="false"
+        fancy:fb_borderColor="@color/myRed"
+        fancy:fb_borderWidth="@dimen/_1sdp"
+        fancy:fb_defaultColor="@color/myRed"
+        fancy:fb_focusColor="#FFFFFF"
+        fancy:fb_radius="@dimen/_60sdp" >
+    </mehdi.sakout.fancybuttons.FancyButton>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+
+        <LinearLayout
+            android:id="@+id/layoutTop"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_36sdp"
+            android:orientation="horizontal"></LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutDeux"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_36sdp"
+            android:layout_below="@+id/layoutTop"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:id="@+id/btnCallibLevageZero"
+                    android:layout_width="@dimen/_150sdp"
+                    android:layout_height="@dimen/_36sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginRight="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/figer_le_0"
+                    android:textSize="@dimen/_12sdp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    fancy:fb_borderColor="@color/myBlack"
+                    fancy:fb_borderWidth="@dimen/_2sdp"
+                    fancy:fb_defaultColor="@color/myRed"
+                    fancy:fb_focusColor="#FFFFFF"
+                    fancy:fb_radius="@dimen/_60sdp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/textViewCallibLevageZero"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="@dimen/_40sdp"
+                    android:gravity="center_vertical"
+                    android:text="0"
+                    android:textSize="@dimen/_20sdp"/>
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutTrois"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_36sdp"
+            android:layout_below="@+id/layoutDeux"
+            android:orientation="horizontal"></LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutQuatre"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_36sdp"
+            android:layout_below="@+id/layoutTrois"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:id="@+id/btnCallibLevageCent"
+                    android:layout_width="@dimen/_150sdp"
+                    android:layout_height="@dimen/_36sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginRight="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/figer_le_100"
+                    android:textSize="@dimen/_12sdp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    fancy:fb_borderColor="@color/myBlack"
+                    fancy:fb_borderWidth="@dimen/_2sdp"
+                    fancy:fb_defaultColor="@color/myRed"
+                    fancy:fb_focusColor="#FFFFFF"
+                    fancy:fb_radius="@dimen/_60sdp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/textViewCallibLevageCent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="@dimen/_40sdp"
+                    android:gravity="center_vertical"
+                    android:text="100"
+                    android:textSize="@dimen/_20sdp"/>
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutCinq"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_36sdp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:id="@+id/btnCallibLevageSave"
+                    android:layout_width="@dimen/_150sdp"
+                    android:layout_height="@dimen/_36sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginRight="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:text="@string/save"
+                    android:textSize="@dimen/_12sdp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    fancy:fb_borderColor="@color/myBlack"
+                    fancy:fb_borderWidth="@dimen/_2sdp"
+                    fancy:fb_defaultColor="@color/myGreen"
+                    fancy:fb_focusColor="#FFFFFF"
+                    fancy:fb_radius="@dimen/_60sdp" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

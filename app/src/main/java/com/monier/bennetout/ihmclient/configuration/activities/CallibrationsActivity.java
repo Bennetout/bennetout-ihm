@@ -18,10 +18,34 @@ public class CallibrationsActivity extends Activity {
         setContentView(R.layout.callibrations);
 
         btnCallibFlecheInit();
+        btnCallibLevageInit();
+        btnCallibPorteInit();
+    }
+
+    private void btnCallibPorteInit() {
+        FancyButton fancyButton = findViewById(R.id.btnCallibPorte);
+        fancyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), CallibPorteActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void btnCallibLevageInit() {
+        FancyButton fancyButton = findViewById(R.id.btnCallibLevage);
+        fancyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), CallibLevageActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void btnCallibFlecheInit() {
-        final FancyButton fancyButton = findViewById(R.id.btnCallibFleche);
+        FancyButton fancyButton = findViewById(R.id.btnCallibFleche);
         fancyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
