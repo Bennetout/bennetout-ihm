@@ -72,4 +72,9 @@ public class CallibFlecheActivity extends Activity implements ClientSocket.Clien
             }
         });
     }
+
+    @Override
+    public void onSocketStatusUpdate(int status) {
+
+    }
 }

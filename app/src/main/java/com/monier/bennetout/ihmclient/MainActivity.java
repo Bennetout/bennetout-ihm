@@ -28,7 +28,6 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
     private double angleFleche = 0, angleLevage = 0, anglePorte = 0;
     private double niveau = 0;
     private final Handler handler = new Handler();
-    private ClientSocket clientSocket = new ClientSocket();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,7 +57,6 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
         listViewFlecheInit();
         listViewLevageInit();
     }
-
 
     private boolean isBtnPorteArretPressed = false;
     private void btnPorteArretInit() {
@@ -261,9 +259,9 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                 FlecheDesigner flecheDesigner = findViewById(R.id.flecheView);
                 flecheDesigner.setAngle(angleFleche);
 
-                niveau -= 1;
-                NiveauDesigner niveauDesigner = findViewById(R.id.niveauView);
-                niveauDesigner.setNiveau(niveau);
+//                niveau -= 1;
+//                NiveauDesigner niveauDesigner = findViewById(R.id.niveauView);
+//                niveauDesigner.setNiveau(niveau);
 
             }
         });
@@ -281,9 +279,9 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                         FlecheDesigner flecheDesigner = findViewById(R.id.flecheView);
                         flecheDesigner.setAngle(angleFleche);
 
-                        niveau -= 1;
-                        NiveauDesigner niveauDesigner = findViewById(R.id.niveauView);
-                        niveauDesigner.setNiveau(niveau);
+//                        niveau -= 1;
+//                        NiveauDesigner niveauDesigner = findViewById(R.id.niveauView);
+//                        niveauDesigner.setNiveau(niveau);
 
                         if (isBtnFlecheArretPressed)
                             handler.postDelayed(this, 20);
@@ -310,9 +308,9 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                 TextView textView = findViewById(R.id.textViewFlecheValue);
                 textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(angleFleche)));
 
-                niveau += 1;
-                NiveauDesigner niveauDesigner = findViewById(R.id.niveauView);
-                niveauDesigner.setNiveau(niveau);
+//                niveau += 1;
+//                NiveauDesigner niveauDesigner = findViewById(R.id.niveauView);
+//                niveauDesigner.setNiveau(niveau);
             }
         });
 
@@ -329,9 +327,9 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                         FlecheDesigner flecheDesigner = findViewById(R.id.flecheView);
                         flecheDesigner.setAngle(angleFleche);
 
-                        niveau += 1;
-                        NiveauDesigner niveauDesigner = findViewById(R.id.niveauView);
-                        niveauDesigner.setNiveau(niveau);
+//                        niveau += 1;
+//                        NiveauDesigner niveauDesigner = findViewById(R.id.niveauView);
+//                        niveauDesigner.setNiveau(niveau);
                         if (isBtnFlecheMarchePressed)
                             handler.postDelayed(this, 20);
                         else
@@ -411,6 +409,7 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
         mRecyclerView.setAdapter(myListViewAdapter);
     }
 
+    private ClientSocket clientSocket = new ClientSocket();
     private void btnRefreshInit() {
         final FancyButton fancyButton = findViewById(R.id.btnRefresh);
         fancyButton.setOnClickListener(new View.OnClickListener() {
@@ -420,7 +419,9 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                     @Override
                     public void run() {
                         try {
-                            clientSocket.connect("192.168.42.1");
+//                            clientSocket.connect("192.168.42.1");
+                            clientSocket.deconnect();
+                            clientSocket.connect("127.0.0.1");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -441,6 +442,63 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
         });
     }
 
+    private double calculPosLevage(double angleInitial) {
+        double levageCallibZero = ConfigManager.model.LEVAGE_CALLIB_ZERO;
+        double levageCallibCent = ConfigManager.model.LEVAGE_CALLIB_CENT;
+
+        double droiteXa = levageCallibZero;
+        double droiteXb = levageCallibCent;
+        double droiteYa = 0;
+        double droiteYb = 100;
+
+        double droiteX = angleInitial;
+
+        double droiteA = (droiteYb - droiteYa) / (droiteXb - droiteXa);
+        double droiteB = - (droiteA * droiteXa);
+
+        double droiteY = droiteA * droiteX + droiteB;
+
+        return droiteY;
+    }
+
+    private double calculPosPorte(double angleInitial) {
+        double porteCallibZero = ConfigManager.model.PORTE_CALLIB_ZERO;
+        double porteCallibCent = ConfigManager.model.PORTE_CALLIB_CENT;
+
+        double droiteXa = porteCallibZero;
+        double droiteXb = porteCallibCent;
+        double droiteYa = 0;
+        double droiteYb = 100;
+
+        double droiteX = angleInitial;
+
+        double droiteA = (droiteYb - droiteYa) / (droiteXb - droiteXa);
+        double droiteB = - (droiteA * droiteXa);
+
+        double droiteY = droiteA * droiteX + droiteB;
+
+        return droiteY;
+    }
+
+    private double calculPosFleche(double angleInitial) {
+        double flecheCallibZero = ConfigManager.model.FLECHE_CALLIB_ZERO;
+        double flecheCallibCent = ConfigManager.model.FLECHE_CALLIB_CENT;
+
+        double droiteXa = flecheCallibZero;
+        double droiteXb = flecheCallibCent;
+        double droiteYa = 0;
+        double droiteYb = 100;
+
+        double droiteX = angleInitial;
+
+        double droiteA = (droiteYb - droiteYa) / (droiteXb - droiteXa);
+        double droiteB = - (droiteA * droiteXa);
+
+        double droiteY = droiteA * droiteX + droiteB;
+
+        return droiteY;
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -452,7 +510,53 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
     }
 
     @Override
-    public void onPositionsReceivedFromServer(double flechePos, double levagePos, double portePos, double niveauX, double niveauY) {
+    public void onPositionsReceivedFromServer(final double flechePos, final double levagePos, final double portePos, final double niveauX, double niveauY) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                angleFleche = flechePos;
+                angleLevage = levagePos;
+                anglePorte = portePos;
+                niveau = niveauX;
 
+                TextView textViewFleche = findViewById(R.id.textViewFlecheValue);
+                TextView textViewLevage = findViewById(R.id.textViewLevageValue);
+                TextView textViewPorte = findViewById(R.id.textViewPorteValue);
+
+                FlecheDesigner flecheDesigner = findViewById(R.id.flecheView);
+                RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
+                NiveauDesigner niveauDesigner = findViewById(R.id.niveauView);
+
+                flecheDesigner.setAngle(calculPosFleche(flechePos));
+                remorqueDesigner.setAngle(calculPosLevage(levagePos));
+                remorqueDesigner.setAngleBenne(calculPosPorte(portePos));
+                niveauDesigner.setNiveau(niveauX);
+
+                textViewFleche.setText(formatDouble(flechePos));
+                textViewLevage.setText(formatDouble(levagePos));
+                textViewPorte.setText(formatDouble(portePos));
+            }
+        });
+    }
+
+    @Override
+    public void onSocketStatusUpdate(final int status) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                FancyButton fancyButton = findViewById(R.id.btnRefresh);
+                switch (status) {
+                    case ClientSocket.STATUS_CONNECTED:
+                        fancyButton.setBorderColor(R.color.myGreen);
+                        fancyButton.setBackgroundColor(getResources().getColor(R.color.myGreen));
+                        break;
+
+                    case ClientSocket.STATUS_NOT_CONNECTED:
+                        fancyButton.setBorderColor(R.color.myRed);
+                        fancyButton.setBackgroundColor(getResources().getColor(R.color.myRed));
+                        break;
+                }
+            }
+        });
     }
 }

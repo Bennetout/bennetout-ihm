@@ -26,6 +26,7 @@ public class CallibLevageActivity extends Activity implements ClientSocket.Clien
 
         btnCallibLevageZeroInit();
         btnCallibLevageCentInit();
+        ClientSocket.addListener(this);
     }
 
     private void btnCallibLevageCentInit() {
@@ -63,6 +64,11 @@ public class CallibLevageActivity extends Activity implements ClientSocket.Clien
                 levageCent = levagePos;
             }
         });
+    }
+
+    @Override
+    public void onSocketStatusUpdate(int status) {
+
     }
 
 }

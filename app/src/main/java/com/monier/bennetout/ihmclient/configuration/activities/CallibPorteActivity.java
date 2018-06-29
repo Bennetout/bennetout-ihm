@@ -26,6 +26,7 @@ public class CallibPorteActivity extends Activity implements ClientSocket.Client
 
         btnCallibPorteZeroInit();
         btnCallibPorteCentInit();
+        ClientSocket.addListener(this);
     }
 
     private void btnCallibPorteCentInit() {
@@ -63,5 +64,10 @@ public class CallibPorteActivity extends Activity implements ClientSocket.Client
                 porteCent = portePos;
             }
         });
+    }
+
+    @Override
+    public void onSocketStatusUpdate(int status) {
+
     }
 }
