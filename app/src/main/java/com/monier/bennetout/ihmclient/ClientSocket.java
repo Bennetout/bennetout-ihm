@@ -12,7 +12,7 @@ public class ClientSocket implements Runnable {
 
     public static final int STATUS_CONNECTED        = 1;
     public static final int STATUS_NOT_CONNECTED    = 2;
-    private static final int SOCK_TIMEOUT = 10000;
+    private static final int SOCK_TIMEOUT = 2000;
 
     private static final int SOCKET_PORT = 65001;
     private Socket mySocket = null;
@@ -56,11 +56,19 @@ public class ClientSocket implements Runnable {
         if (mySocket == null)
             return;
 
+        stopRxThread();
+        while (!threadJoined) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         mySocket.close();
         mySocket = null;
+        myThread = null;
         myInputStream = null;
         myOutputStream = null;
-        stopRxThread();
     }
 
     private void writeToSocket(String texte) throws IOException {
@@ -115,6 +123,7 @@ public class ClientSocket implements Runnable {
         }
     }
 
+    private boolean threadJoined = false;
     @Override
     public void run() {
 
@@ -130,6 +139,7 @@ public class ClientSocket implements Runnable {
         byte[] data = new byte[64];
         int indexData = 0;
 
+        threadJoined = false;
         while (isRunning) {
             switch (state) {
                 case WRITE_STATE:
@@ -145,6 +155,23 @@ public class ClientSocket implements Runnable {
                 case READ_STATE:
                     try {
                         value = readNextByte();
+                        data[indexData] = (byte) value;
+                        indexData++;
+                        if (value == '/') {
+                            nbSlash++;
+                        }
+                        if (nbSlash >= NB_SLASH_PROTOC) {
+                            nbSlash = 0;
+                            fireData(new String(Arrays.copyOf(data, indexData)));
+                            try {
+                                writeToSocket(new String(Arrays.copyOf(data, indexData)));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            data = new byte[64];
+                            indexData = 0;
+                            state = WRITE_STATE;
+                        }
                     }catch (SocketTimeoutException ste) {
                         state = WRITE_STATE;
                     }catch (IOException e) {
@@ -152,25 +179,6 @@ public class ClientSocket implements Runnable {
                         e.printStackTrace();
                     }
 
-//                    sValue += (new String(new byte[]{(byte) value}));
-                    data[indexData] = (byte) value;
-                    indexData++;
-                    if (value == '/') {
-                        nbSlash++;
-                    }
-                    if (nbSlash >= NB_SLASH_PROTOC) {
-                        nbSlash = 0;
-                        fireData(new String(Arrays.copyOf(data, indexData)));
-                        try {
-                            writeToSocket(new String(Arrays.copyOf(data, indexData)));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-//                        sValue = "";
-                        data = new byte[64];
-                        indexData = 0;
-                        state = WRITE_STATE;
-                    }
 
                     break;
             }
@@ -180,5 +188,6 @@ public class ClientSocket implements Runnable {
                 e.printStackTrace();
             }
         }
+        threadJoined = true;
     }
 }

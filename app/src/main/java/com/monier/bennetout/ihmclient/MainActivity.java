@@ -442,7 +442,7 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
         });
     }
 
-    private double calculPosLevage(double angleInitial) {
+    public static double calculPosLevage(double angleInitial) {
         double levageCallibZero = ConfigManager.model.LEVAGE_CALLIB_ZERO;
         double levageCallibCent = ConfigManager.model.LEVAGE_CALLIB_CENT;
 
@@ -458,10 +458,10 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
 
         double droiteY = droiteA * droiteX + droiteB;
 
-        return droiteY;
+        return droiteY *0.45;
     }
 
-    private double calculPosPorte(double angleInitial) {
+    public static double calculPosPorte(double angleInitial) {
         double porteCallibZero = ConfigManager.model.PORTE_CALLIB_ZERO;
         double porteCallibCent = ConfigManager.model.PORTE_CALLIB_CENT;
 
@@ -477,10 +477,10 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
 
         double droiteY = droiteA * droiteX + droiteB;
 
-        return droiteY;
+        return droiteY *0.9;
     }
 
-    private double calculPosFleche(double angleInitial) {
+    public static double calculPosFleche(double angleInitial) {
         double flecheCallibZero = ConfigManager.model.FLECHE_CALLIB_ZERO;
         double flecheCallibCent = ConfigManager.model.FLECHE_CALLIB_CENT;
 
@@ -496,7 +496,7 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
 
         double droiteY = droiteA * droiteX + droiteB;
 
-        return droiteY;
+        return droiteY*0.9 -45;
     }
 
     @Override
