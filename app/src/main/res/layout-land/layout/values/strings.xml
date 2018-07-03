@@ -19,6 +19,7 @@
     <string name="callibration_fleche_maj">CALLIBRATION FLECHE</string>
     <string name="callibration_levage_maj">CALLIBRATION LEVAGE</string>
     <string name="callibration_porte_maj">CALLIBRATION PORTE</string>
+    <string name="callibration_niveau_maj">CALLIBRATION NIVEAU</string>
 
     <string name="figer_le_0">Figer le 0</string>
     <string name="figer_le_100">Figer le 100</string>

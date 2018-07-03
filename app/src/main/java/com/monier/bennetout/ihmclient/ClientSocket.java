@@ -1,5 +1,7 @@
 package com.monier.bennetout.ihmclient;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,7 +16,7 @@ public class ClientSocket implements Runnable {
     public static final int STATUS_NOT_CONNECTED    = 2;
     private static final int SOCK_TIMEOUT = 2000;
 
-    private static final int SOCKET_PORT = 65001;
+    private static final int SOCKET_PORT = 65000;
     private Socket mySocket = null;
     private boolean isRunning = false;
 
@@ -94,6 +96,7 @@ public class ClientSocket implements Runnable {
 
     private void fireData(String data) {
 
+        Log.e("AA", data);
         String[] values = data.split("/");
         if (values.length < 6)
             return;
@@ -137,6 +140,7 @@ public class ClientSocket implements Runnable {
 
 //        String sValue = "";
         byte[] data = new byte[64];
+        Arrays.fill(data, (byte) 0);
         int indexData = 0;
 
         threadJoined = false;
@@ -155,24 +159,29 @@ public class ClientSocket implements Runnable {
                 case READ_STATE:
                     try {
                         value = readNextByte();
-                        data[indexData] = (byte) value;
-                        indexData++;
+                        if (value > 0x1F && value < 0x7F) {
+                            data[indexData] = (byte) value;
+                            indexData++;
+                        }
+
                         if (value == '/') {
                             nbSlash++;
                         }
+
                         if (nbSlash >= NB_SLASH_PROTOC) {
                             nbSlash = 0;
                             fireData(new String(Arrays.copyOf(data, indexData)));
-                            try {
-                                writeToSocket(new String(Arrays.copyOf(data, indexData)));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
                             data = new byte[64];
+                            Arrays.fill(data, (byte) 0);
                             indexData = 0;
                             state = WRITE_STATE;
                         }
                     }catch (SocketTimeoutException ste) {
+                        try {
+                            Thread.sleep(20);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         state = WRITE_STATE;
                     }catch (IOException e) {
                         stopRxThread();
@@ -182,11 +191,11 @@ public class ClientSocket implements Runnable {
 
                     break;
             }
-            try {
-                Thread.sleep(20);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                Thread.sleep(20);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
         }
         threadJoined = true;
     }

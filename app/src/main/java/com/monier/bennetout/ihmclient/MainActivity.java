@@ -419,9 +419,9 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                     @Override
                     public void run() {
                         try {
-//                            clientSocket.connect("192.168.42.1");
                             clientSocket.deconnect();
-                            clientSocket.connect("127.0.0.1");
+                            clientSocket.connect("192.168.42.1");
+//                            clientSocket.connect("10.42.0.1");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -459,6 +459,25 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
         double droiteY = droiteA * droiteX + droiteB;
 
         return droiteY *0.45;
+    }
+
+    public static double calculPosNiveau(double angleInitial) {
+        double niveauCallibZero = ConfigManager.model.NIVEAU_CALLIB_ZERO;
+        double niveauCallibCent = ConfigManager.model.NIVEAU_CALLIB_CENT;
+
+        double droiteXa = niveauCallibZero;
+        double droiteXb = niveauCallibCent;
+        double droiteYa = 0;
+        double droiteYb = 100;
+
+        double droiteX = angleInitial;
+
+        double droiteA = (droiteYb - droiteYa) / (droiteXb - droiteXa);
+        double droiteB = - (droiteA * droiteXa);
+
+        double droiteY = droiteA * droiteX + droiteB;
+
+        return droiteY *0.2 - 10;
     }
 
     public static double calculPosPorte(double angleInitial) {
@@ -530,7 +549,7 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                 flecheDesigner.setAngle(calculPosFleche(flechePos));
                 remorqueDesigner.setAngle(calculPosLevage(levagePos));
                 remorqueDesigner.setAngleBenne(calculPosPorte(portePos));
-                niveauDesigner.setNiveau(niveauX);
+                niveauDesigner.setNiveau(calculPosNiveau(niveauX));
 
                 textViewFleche.setText(formatDouble(flechePos));
                 textViewLevage.setText(formatDouble(levagePos));

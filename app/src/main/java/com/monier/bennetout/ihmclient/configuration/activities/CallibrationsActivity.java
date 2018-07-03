@@ -20,6 +20,18 @@ public class CallibrationsActivity extends Activity {
         btnCallibFlecheInit();
         btnCallibLevageInit();
         btnCallibPorteInit();
+        btnCallibNiveauInit();
+    }
+
+    private void btnCallibNiveauInit() {
+        FancyButton fancyButton = findViewById(R.id.btnCallibNiveau);
+        fancyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), CallibNiveauActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void btnCallibPorteInit() {

@@ -41,5 +41,9 @@
         <activity android:name=".configuration.activities.CallibPorteActivity"
             android:screenOrientation="landscape">
         </activity>
+
+        <activity android:name=".configuration.activities.CallibNiveauActivity"
+            android:screenOrientation="landscape">
+        </activity>
     </application>
 </manifest>

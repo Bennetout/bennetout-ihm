@@ -9,4 +9,7 @@ public class ConfigModel {
 
     public double PORTE_CALLIB_ZERO = ConfigDefaults.PORTE_CALLIB_ZERO_D;
     public double PORTE_CALLIB_CENT = ConfigDefaults.PORTE_CALLIB_CENT_D;
+
+    public double NIVEAU_CALLIB_ZERO = ConfigDefaults.NIVEAU_CALLIB_ZERO_D;
+    public double NIVEAU_CALLIB_CENT = ConfigDefaults.NIVEAU_CALLIB_CENT_D;
 }
