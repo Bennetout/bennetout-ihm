@@ -43,10 +43,14 @@ public class ConfigManager {
 
         int action;
 
-        if (configFile.length() == 0)
+        if (configFile.length() == 0) {
             action = CREATE_NEW_CONFIG;
-        else
+            Log.e(TAG, "No config file found, create a new one");
+        }
+        else {
             action = LOAD_CONFIG_FROM_JSON;
+            Log.i(TAG, "Config file found");
+        }
 
 
         switch (action) {

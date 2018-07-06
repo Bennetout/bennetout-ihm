@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.monier.bennetout.ihmclient.configuration.ConfigManager;
+import com.monier.bennetout.ihmclient.configuration.ConfigModel;
 import com.monier.bennetout.ihmclient.configuration.activities.ConfigActivity;
 
 import java.io.IOException;
@@ -68,8 +69,8 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                 isBtnPorteArretPressed = false;
                 handler.removeCallbacksAndMessages(null);
                 anglePorte -= 1;
-                if (anglePorte < RemorqueDesigner.BORNE_MIN_BENNE)
-                    anglePorte = RemorqueDesigner.BORNE_MIN_BENNE;
+                if (anglePorte < ConfigManager.model.BORNE_MIN_PORTE)
+                    anglePorte = ConfigManager.model.BORNE_MIN_PORTE;
 
                 TextView textView = findViewById(R.id.textViewPorteValue);
                 textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(anglePorte)));
@@ -86,8 +87,8 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                     @Override
                     public void run() {
                         anglePorte -= 1;
-                        if (anglePorte < RemorqueDesigner.BORNE_MIN_BENNE)
-                            anglePorte = RemorqueDesigner.BORNE_MIN_BENNE;
+                        if (anglePorte < ConfigManager.model.BORNE_MIN_PORTE)
+                            anglePorte = ConfigManager.model.BORNE_MIN_PORTE;
 
                         TextView textView = findViewById(R.id.textViewPorteValue);
                         textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(anglePorte)));
@@ -114,8 +115,8 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                 isBtnPorteMarchePressed = false;
                 handler.removeCallbacksAndMessages(null);
                 anglePorte += 1;
-                if (anglePorte > RemorqueDesigner.BORNE_MAX_BENNE)
-                    anglePorte = RemorqueDesigner.BORNE_MAX_BENNE;
+                if (anglePorte > ConfigManager.model.BORNE_MAX_PORTE)
+                    anglePorte = ConfigManager.model.BORNE_MAX_PORTE;
 
                 RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
                 remorqueDesigner.setAngleBenne(anglePorte);
@@ -132,8 +133,8 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                     @Override
                     public void run() {
                         anglePorte += 1;
-                        if (anglePorte > RemorqueDesigner.BORNE_MAX_BENNE)
-                            anglePorte = RemorqueDesigner.BORNE_MAX_BENNE;
+                        if (anglePorte > ConfigManager.model.BORNE_MAX_PORTE)
+                            anglePorte = ConfigManager.model.BORNE_MAX_PORTE;
 
                         TextView textView = findViewById(R.id.textViewPorteValue);
                         textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(anglePorte)));
@@ -161,8 +162,8 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                 isBtnLevageArretPressed = false;
                 handler.removeCallbacksAndMessages(null);
                 angleLevage -= 1;
-                if (angleLevage < RemorqueDesigner.BORNE_MIN)
-                    angleLevage = RemorqueDesigner.BORNE_MIN;
+                if (angleLevage < ConfigManager.model.BORNE_MIN_LEVAGE)
+                    angleLevage = ConfigManager.model.BORNE_MIN_LEVAGE;
 
                 TextView textView = findViewById(R.id.textViewLevageValue);
                 textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(angleLevage)));
@@ -179,8 +180,8 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                     @Override
                     public void run() {
                         angleLevage -= 1;
-                        if (angleLevage < RemorqueDesigner.BORNE_MIN)
-                            angleLevage = RemorqueDesigner.BORNE_MIN;
+                        if (angleLevage < ConfigManager.model.BORNE_MIN_LEVAGE)
+                            angleLevage = ConfigManager.model.BORNE_MIN_LEVAGE;
 
                         TextView textView = findViewById(R.id.textViewLevageValue);
                         textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(angleLevage)));
@@ -207,8 +208,8 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                 isBtnLevageMarchePressed = false;
                 handler.removeCallbacksAndMessages(null);
                 angleLevage += 1;
-                if (angleLevage > RemorqueDesigner.BORNE_MAX)
-                    angleLevage = RemorqueDesigner.BORNE_MAX;
+                if (angleLevage > ConfigManager.model.BORNE_MAX_LEVAGE)
+                    angleLevage = ConfigManager.model.BORNE_MAX_LEVAGE;
 
                 RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
                 remorqueDesigner.setAngle(angleLevage);
@@ -225,8 +226,8 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                     @Override
                     public void run() {
                         angleLevage += 1;
-                        if (angleLevage > RemorqueDesigner.BORNE_MAX)
-                            angleLevage = RemorqueDesigner.BORNE_MAX;
+                        if (angleLevage > ConfigManager.model.BORNE_MAX_LEVAGE)
+                            angleLevage = ConfigManager.model.BORNE_MAX_LEVAGE;
 
                         TextView textView = findViewById(R.id.textViewLevageValue);
                         textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(angleLevage)));
@@ -458,7 +459,8 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
 
         double droiteY = droiteA * droiteX + droiteB;
 
-        return droiteY *0.45;
+        return droiteY *((ConfigManager.model.BORNE_MAX_LEVAGE - ConfigManager.model.BORNE_MIN_LEVAGE)*0.01);
+//        return droiteY *0.45;
     }
 
     public static double calculPosNiveau(double angleInitial) {
@@ -496,7 +498,8 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
 
         double droiteY = droiteA * droiteX + droiteB;
 
-        return droiteY *0.9;
+        return droiteY *((ConfigManager.model.BORNE_MAX_PORTE - ConfigManager.model.BORNE_MIN_PORTE)*0.01);
+//        return droiteY *0.9;
     }
 
     public static double calculPosFleche(double angleInitial) {
@@ -515,7 +518,8 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
 
         double droiteY = droiteA * droiteX + droiteB;
 
-        return droiteY*0.9 -45;
+        return droiteY * (ConfigManager.model.BORNE_MAX_FLECHE - ConfigManager.model.BORNE_MIN_FLECHE)*0.01 - ConfigManager.model.BORNE_MAX_FLECHE;
+//        return droiteY*0.9 -45;
     }
 
     @Override

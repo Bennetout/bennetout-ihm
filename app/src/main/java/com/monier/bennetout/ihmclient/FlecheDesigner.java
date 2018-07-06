@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.monier.bennetout.ihmclient.configuration.ConfigManager;
+
 import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 
 public class FlecheDesigner extends View {
@@ -107,11 +109,11 @@ public class FlecheDesigner extends View {
 
         this.angle = angle;
 
-        if (angle > 45)
-            this.angle = 45;
+        if (angle > ConfigManager.model.BORNE_MAX_FLECHE)
+            this.angle = ConfigManager.model.BORNE_MAX_FLECHE;
 
-        if (angle < -45)
-            this.angle = -45;
+        if (angle < ConfigManager.model.BORNE_MIN_FLECHE)
+            this.angle = ConfigManager.model.BORNE_MIN_FLECHE;
 
         postInvalidate();
     }

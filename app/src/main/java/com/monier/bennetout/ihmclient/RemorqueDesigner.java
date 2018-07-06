@@ -10,15 +10,11 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.monier.bennetout.ihmclient.configuration.ConfigManager;
+
 import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 
 public class RemorqueDesigner extends View {
-
-    public static final int BORNE_MAX   = 45;
-    public static final int BORNE_MIN   = 0;
-
-    public static final int BORNE_MAX_BENNE   = 90;
-    public static final int BORNE_MIN_BENNE   = 0;
 
     public static final int CANVAS_SIZE_REF   = 160;
 
@@ -147,11 +143,11 @@ public class RemorqueDesigner extends View {
 
         this.angle = angle;
 
-        if (this.angle > BORNE_MAX)
-            this.angle = BORNE_MAX;
+        if (this.angle > ConfigManager.model.BORNE_MAX_LEVAGE)
+            this.angle = ConfigManager.model.BORNE_MAX_LEVAGE;
 
-        if (this.angle < BORNE_MIN)
-            this.angle = BORNE_MIN;
+        if (this.angle < ConfigManager.model.BORNE_MIN_LEVAGE)
+            this.angle = ConfigManager.model.BORNE_MIN_LEVAGE;
 
         postInvalidate();
     }
@@ -160,11 +156,11 @@ public class RemorqueDesigner extends View {
 
         this.angleBenne = angle;
 
-        if (this.angleBenne > BORNE_MAX_BENNE)
-            this.angleBenne = BORNE_MAX_BENNE;
+        if (this.angleBenne > ConfigManager.model.BORNE_MAX_PORTE)
+            this.angleBenne = ConfigManager.model.BORNE_MAX_PORTE;
 
-        if (this.angleBenne < BORNE_MIN_BENNE)
-            this.angleBenne = BORNE_MIN_BENNE;
+        if (this.angleBenne < ConfigManager.model.BORNE_MIN_PORTE)
+            this.angleBenne = ConfigManager.model.BORNE_MIN_PORTE;
 
         postInvalidate();
     }

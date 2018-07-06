@@ -96,7 +96,7 @@ public class ClientSocket implements Runnable {
 
     private void fireData(String data) {
 
-        Log.e("AA", data);
+//        Log.e("AA", data);
         String[] values = data.split("/");
         if (values.length < 6)
             return;
@@ -148,11 +148,15 @@ public class ClientSocket implements Runnable {
             switch (state) {
                 case WRITE_STATE:
                     try {
+//                        Thread.sleep(100);
                         writeToSocket("A");
                     } catch (IOException e) {
                         e.printStackTrace();
                         stopRxThread();
                     }
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
                     state = READ_STATE;
                     break;
 
@@ -171,6 +175,11 @@ public class ClientSocket implements Runnable {
                         if (nbSlash >= NB_SLASH_PROTOC) {
                             nbSlash = 0;
                             fireData(new String(Arrays.copyOf(data, indexData)));
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                             data = new byte[64];
                             Arrays.fill(data, (byte) 0);
                             indexData = 0;
@@ -178,7 +187,7 @@ public class ClientSocket implements Runnable {
                         }
                     }catch (SocketTimeoutException ste) {
                         try {
-                            Thread.sleep(20);
+                            Thread.sleep(100);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -192,7 +201,7 @@ public class ClientSocket implements Runnable {
                     break;
             }
 //            try {
-//                Thread.sleep(20);
+//                Thread.sleep(2);
 //            } catch (InterruptedException e) {
 //                e.printStackTrace();
 //            }

@@ -12,4 +12,13 @@ public class ConfigModel {
 
     public double NIVEAU_CALLIB_ZERO = ConfigDefaults.NIVEAU_CALLIB_ZERO_D;
     public double NIVEAU_CALLIB_CENT = ConfigDefaults.NIVEAU_CALLIB_CENT_D;
+
+    public double BORNE_MAX_FLECHE = ConfigDefaults.BORNE_MAX_FLECHE_D;
+    public double BORNE_MIN_FLECHE = ConfigDefaults.BORNE_MIN_FLECHE_D;
+
+    public double BORNE_MAX_LEVAGE = ConfigDefaults.BORNE_MAX_LEVAGE_D;
+    public double BORNE_MIN_LEVAGE = ConfigDefaults.BORNE_MIN_LEVAGE_D;
+
+    public double BORNE_MAX_PORTE = ConfigDefaults.BORNE_MAX_PORTE_D;
+    public double BORNE_MIN_PORTE = ConfigDefaults.BORNE_MIN_PORTE_D;
 }

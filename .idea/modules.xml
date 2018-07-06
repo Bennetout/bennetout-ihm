@@ -4,9 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/bennetout-ihm.iml" filepath="$PROJECT_DIR$/bennetout-ihm.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/libs/libs.iml" filepath="$PROJECT_DIR$/app/libs/libs.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/libs/sdp/sdp.iml" filepath="$PROJECT_DIR$/app/libs/sdp/sdp.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/libs/sdp/sdp-android/sdp-android.iml" filepath="$PROJECT_DIR$/app/libs/sdp/sdp-android/sdp-android.iml" />
     </modules>
   </component>
 </project>
