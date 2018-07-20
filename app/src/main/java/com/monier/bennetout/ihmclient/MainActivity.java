@@ -421,8 +421,8 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                     public void run() {
                         try {
                             clientSocket.deconnect();
-                            clientSocket.connect("192.168.42.1");
-//                            clientSocket.connect("10.42.0.1");
+//                            clientSocket.connect("192.168.42.1");
+                            clientSocket.connect("10.42.0.1");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
