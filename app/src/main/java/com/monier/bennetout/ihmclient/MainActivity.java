@@ -10,25 +10,40 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.monier.bennetout.ihmclient.communication.Lvl2ClientSocket;
 import com.monier.bennetout.ihmclient.configuration.ConfigManager;
-import com.monier.bennetout.ihmclient.configuration.ConfigModel;
 import com.monier.bennetout.ihmclient.configuration.activities.ConfigActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Locale;
 
 import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 
-public class MainActivity extends Activity implements ClientSocket.ClientSocketListener {
+public class MainActivity extends Activity implements Lvl2ClientSocket.SocketClientListener {
+
+    private static final String TAG = MainActivity.class.getCanonicalName();
 
     private double angleFleche = 0, angleLevage = 0, anglePorte = 0;
     private double niveau = 0;
     private final Handler handler = new Handler();
+    Lvl2ClientSocket myLvl2ClientSocket = new Lvl2ClientSocket("10.3.141.1", 65000);
+
+    private TextView textViewFleche;
+    private TextView textViewLevage;
+    private TextView textViewPorte;
+
+//    private FlecheDesigner flecheDesigner;
+//    private RemorqueDesigner remorqueDesigner;
+//    private NiveauDesigner niveauDesigner;
+
+    private RemorquePainter remorquePainter;
+    private FlechePainter flechePainter;
+    private NiveauPainter niveauPainter;
+
+    private Handler myHandler;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,10 +53,17 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
         // les modifications utilisateurs si besoin
         ConfigManager.initConfig(this);
 
-        ClientSocket.addListener(this);
-
+        myLvl2ClientSocket.setListener(this);
 
         setContentView(R.layout.main);
+        textViewFleche = findViewById(R.id.textViewFlecheValue);
+        textViewLevage = findViewById(R.id.textViewLevageValue);
+        textViewPorte = findViewById(R.id.textViewPorteValue);
+
+        remorquePainter = findViewById(R.id.remorqueView);
+        flechePainter = findViewById(R.id.flecheView);
+        niveauPainter = findViewById(R.id.niveauView);
+
         btnReglageInit();
         btnRefreshInit();
 
@@ -57,6 +79,9 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
         listViewPorteInit();
         listViewFlecheInit();
         listViewLevageInit();
+
+        myHandler = new Handler();
+        myHandler.postDelayed(majIhm, 0);
     }
 
     private boolean isBtnPorteArretPressed = false;
@@ -71,11 +96,6 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                 anglePorte -= 1;
                 if (anglePorte < ConfigManager.model.BORNE_MIN_PORTE)
                     anglePorte = ConfigManager.model.BORNE_MIN_PORTE;
-
-                TextView textView = findViewById(R.id.textViewPorteValue);
-                textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(anglePorte)));
-                RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
-                remorqueDesigner.setAngleBenne(anglePorte);
             }
         });
 
@@ -89,11 +109,6 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                         anglePorte -= 1;
                         if (anglePorte < ConfigManager.model.BORNE_MIN_PORTE)
                             anglePorte = ConfigManager.model.BORNE_MIN_PORTE;
-
-                        TextView textView = findViewById(R.id.textViewPorteValue);
-                        textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(anglePorte)));
-                        RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
-                        remorqueDesigner.setAngleBenne(anglePorte);
 
                         if (isBtnPorteArretPressed)
                             handler.postDelayed(this, 20);
@@ -117,11 +132,6 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                 anglePorte += 1;
                 if (anglePorte > ConfigManager.model.BORNE_MAX_PORTE)
                     anglePorte = ConfigManager.model.BORNE_MAX_PORTE;
-
-                RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
-                remorqueDesigner.setAngleBenne(anglePorte);
-                TextView textView = findViewById(R.id.textViewPorteValue);
-                textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(anglePorte)));
             }
         });
 
@@ -135,11 +145,6 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                         anglePorte += 1;
                         if (anglePorte > ConfigManager.model.BORNE_MAX_PORTE)
                             anglePorte = ConfigManager.model.BORNE_MAX_PORTE;
-
-                        TextView textView = findViewById(R.id.textViewPorteValue);
-                        textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(anglePorte)));
-                        RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
-                        remorqueDesigner.setAngleBenne(anglePorte);
 
                         if (isBtnPorteMarchePressed)
                             handler.postDelayed(this, 20);
@@ -164,11 +169,6 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                 angleLevage -= 1;
                 if (angleLevage < ConfigManager.model.BORNE_MIN_LEVAGE)
                     angleLevage = ConfigManager.model.BORNE_MIN_LEVAGE;
-
-                TextView textView = findViewById(R.id.textViewLevageValue);
-                textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(angleLevage)));
-                RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
-                remorqueDesigner.setAngle(angleLevage);
             }
         });
 
@@ -182,11 +182,6 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                         angleLevage -= 1;
                         if (angleLevage < ConfigManager.model.BORNE_MIN_LEVAGE)
                             angleLevage = ConfigManager.model.BORNE_MIN_LEVAGE;
-
-                        TextView textView = findViewById(R.id.textViewLevageValue);
-                        textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(angleLevage)));
-                        RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
-                        remorqueDesigner.setAngle(angleLevage);
 
                         if (isBtnLevageArretPressed)
                             handler.postDelayed(this, 20);
@@ -210,11 +205,6 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                 angleLevage += 1;
                 if (angleLevage > ConfigManager.model.BORNE_MAX_LEVAGE)
                     angleLevage = ConfigManager.model.BORNE_MAX_LEVAGE;
-
-                RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
-                remorqueDesigner.setAngle(angleLevage);
-                TextView textView = findViewById(R.id.textViewLevageValue);
-                textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(angleLevage)));
             }
         });
 
@@ -228,11 +218,6 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                         angleLevage += 1;
                         if (angleLevage > ConfigManager.model.BORNE_MAX_LEVAGE)
                             angleLevage = ConfigManager.model.BORNE_MAX_LEVAGE;
-
-                        TextView textView = findViewById(R.id.textViewLevageValue);
-                        textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(angleLevage)));
-                        RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
-                        remorqueDesigner.setAngle(angleLevage);
 
                         if (isBtnLevageMarchePressed)
                             handler.postDelayed(this, 20);
@@ -255,15 +240,6 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                 isBtnFlecheArretPressed = false;
                 handler.removeCallbacksAndMessages(null);
                 angleFleche -= 1;
-                TextView textView = findViewById(R.id.textViewFlecheValue);
-                textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(angleFleche)));
-                FlecheDesigner flecheDesigner = findViewById(R.id.flecheView);
-                flecheDesigner.setAngle(angleFleche);
-
-//                niveau -= 1;
-//                NiveauDesigner niveauDesigner = findViewById(R.id.niveauView);
-//                niveauDesigner.setNiveau(niveau);
-
             }
         });
 
@@ -275,15 +251,6 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                     @Override
                     public void run() {
                         angleFleche -= 1;
-                        TextView textView = findViewById(R.id.textViewFlecheValue);
-                        textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(angleFleche)));
-                        FlecheDesigner flecheDesigner = findViewById(R.id.flecheView);
-                        flecheDesigner.setAngle(angleFleche);
-
-//                        niveau -= 1;
-//                        NiveauDesigner niveauDesigner = findViewById(R.id.niveauView);
-//                        niveauDesigner.setNiveau(niveau);
-
                         if (isBtnFlecheArretPressed)
                             handler.postDelayed(this, 20);
                         else
@@ -304,14 +271,6 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                 isBtnFlecheMarchePressed = false;
                 handler.removeCallbacksAndMessages(null);
                 angleFleche += 1;
-                FlecheDesigner flecheDesigner = findViewById(R.id.flecheView);
-                flecheDesigner.setAngle(angleFleche);
-                TextView textView = findViewById(R.id.textViewFlecheValue);
-                textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(angleFleche)));
-
-//                niveau += 1;
-//                NiveauDesigner niveauDesigner = findViewById(R.id.niveauView);
-//                niveauDesigner.setNiveau(niveau);
             }
         });
 
@@ -323,14 +282,7 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                     @Override
                     public void run() {
                         angleFleche += 1;
-                        TextView textView = findViewById(R.id.textViewFlecheValue);
-                        textView.setText(String.format(Locale.FRANCE, "%s°", formatDouble(angleFleche)));
-                        FlecheDesigner flecheDesigner = findViewById(R.id.flecheView);
-                        flecheDesigner.setAngle(angleFleche);
 
-//                        niveau += 1;
-//                        NiveauDesigner niveauDesigner = findViewById(R.id.niveauView);
-//                        niveauDesigner.setNiveau(niveau);
                         if (isBtnFlecheMarchePressed)
                             handler.postDelayed(this, 20);
                         else
@@ -343,7 +295,7 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
     }
 
     private void listViewLevageInit() {
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.listViewLevage);
+        RecyclerView mRecyclerView = findViewById(R.id.listViewLevage);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -367,7 +319,7 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
     }
 
     private void listViewFlecheInit() {
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.listViewFleche);
+        RecyclerView mRecyclerView = findViewById(R.id.listViewFleche);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -389,7 +341,7 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
     }
 
     private void listViewPorteInit() {
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.listViewPorte);
+        RecyclerView mRecyclerView = findViewById(R.id.listViewPorte);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -410,7 +362,6 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
         mRecyclerView.setAdapter(myListViewAdapter);
     }
 
-    private ClientSocket clientSocket = new ClientSocket();
     private void btnRefreshInit() {
         final FancyButton fancyButton = findViewById(R.id.btnRefresh);
         fancyButton.setOnClickListener(new View.OnClickListener() {
@@ -420,9 +371,10 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
                     @Override
                     public void run() {
                         try {
-                            clientSocket.deconnect();
-//                            clientSocket.connect("192.168.42.1");
-                            clientSocket.connect("10.42.0.1");
+                            myLvl2ClientSocket.deconnect();
+//                            clientSocket.connect("10.42.0.1");
+                            myLvl2ClientSocket.connect();
+                            myLvl2ClientSocket.getSensorsValues();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -532,34 +484,34 @@ public class MainActivity extends Activity implements ClientSocket.ClientSocketL
         super.onBackPressed();
     }
 
+    private Runnable majIhm = new Runnable() {
+        @Override
+        public void run() {
+
+            myLvl2ClientSocket.getSensorsValues();
+
+//            remorquePainter.setAngle(calculPosLevage(angleLevage), calculPosPorte(anglePorte));
+//            flechePainter.setAngle(calculPosFleche(angleFleche));
+//            niveauPainter.setNiveau(calculPosNiveau(niveau));
+
+            remorquePainter.setAngle(angleLevage, anglePorte);
+            flechePainter.setAngle(angleFleche);
+            niveauPainter.setNiveau(niveau);
+
+            textViewFleche.setText(formatDouble(angleFleche));
+            textViewLevage.setText(formatDouble(angleLevage));
+            textViewPorte.setText(formatDouble(anglePorte));
+
+            myHandler.postDelayed(this, 100);
+        }
+    };
+
     @Override
     public void onPositionsReceivedFromServer(final double flechePos, final double levagePos, final double portePos, final double niveauX, double niveauY) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                angleFleche = flechePos;
-                angleLevage = levagePos;
-                anglePorte = portePos;
-                niveau = niveauX;
-
-                TextView textViewFleche = findViewById(R.id.textViewFlecheValue);
-                TextView textViewLevage = findViewById(R.id.textViewLevageValue);
-                TextView textViewPorte = findViewById(R.id.textViewPorteValue);
-
-                FlecheDesigner flecheDesigner = findViewById(R.id.flecheView);
-                RemorqueDesigner remorqueDesigner = findViewById(R.id.remorqueView);
-                NiveauDesigner niveauDesigner = findViewById(R.id.niveauView);
-
-                flecheDesigner.setAngle(calculPosFleche(flechePos));
-                remorqueDesigner.setAngle(calculPosLevage(levagePos));
-                remorqueDesigner.setAngleBenne(calculPosPorte(portePos));
-                niveauDesigner.setNiveau(calculPosNiveau(niveauX));
-
-                textViewFleche.setText(formatDouble(flechePos));
-                textViewLevage.setText(formatDouble(levagePos));
-                textViewPorte.setText(formatDouble(portePos));
-            }
-        });
+        angleFleche = flechePos;
+        angleLevage = levagePos;
+        anglePorte = portePos;
+        niveau = niveauX;
     }
 
     @Override

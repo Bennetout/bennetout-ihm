@@ -54,7 +54,7 @@
                 fancy:fb_radius="@dimen/_60sdp" />
         </LinearLayout>
 
-        <com.monier.bennetout.ihmclient.FlecheDesigner
+        <com.monier.bennetout.ihmclient.FlechePainter
             android:id="@+id/flecheView"
             android:layout_width="@dimen/_130sdp"
             android:layout_height="@dimen/_130sdp"
@@ -64,17 +64,23 @@
             android:layout_width="@dimen/_10sdp"
             android:layout_height="match_parent" />
 
-        <com.monier.bennetout.ihmclient.RemorqueDesigner
+        <!--<com.monier.bennetout.ihmclient.RemorqueDesigner-->
+            <!--android:id="@+id/remorqueView"-->
+            <!--android:layout_height="@dimen/_130sdp"-->
+            <!--android:layout_width="@dimen/_130sdp"-->
+            <!--android:layout_gravity="center_vertical|center_horizontal" />-->
+
+        <com.monier.bennetout.ihmclient.RemorquePainter
             android:id="@+id/remorqueView"
-            android:layout_height="@dimen/_130sdp"
             android:layout_width="@dimen/_130sdp"
+            android:layout_height="@dimen/_130sdp"
             android:layout_gravity="center_vertical|center_horizontal" />
 
         <Space
             android:layout_width="@dimen/_30sdp"
             android:layout_height="match_parent" />
 
-        <com.monier.bennetout.ihmclient.NiveauDesigner
+        <com.monier.bennetout.ihmclient.NiveauPainter
             android:id="@+id/niveauView"
             android:layout_width="@dimen/_130sdp"
             android:layout_height="@dimen/_130sdp"

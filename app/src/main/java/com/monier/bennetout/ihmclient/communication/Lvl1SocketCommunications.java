@@ -1,6 +1,7 @@
 package com.monier.bennetout.ihmclient.communication;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.net.Socket;
 import java.util.Arrays;
@@ -16,14 +17,11 @@ public class Lvl1SocketCommunications implements Lvl0ProtocolThread.Lvl0Protocol
 
     private Lvl0ProtocolThread myLvl0ProtocolThread;
 
-    public enum fileType{PLANNING, CONFIG, LOG_AUDIO, LOG_MOVE, LOG_ERROR}
-    private fileType fileType;
-
     Lvl1SocketCommunications() {
     }
 
-    protected void logOnConsole(byte[] log) {
-
+    protected void onLogReceived(byte[] log) {
+        Log.i(TAG, new String(log));
     }
 
 
@@ -43,34 +41,24 @@ public class Lvl1SocketCommunications implements Lvl0ProtocolThread.Lvl0Protocol
 
     private int writeToSocket(byte[] toWrite) {
         if (myLvl0ProtocolThread == null) {
-            logOnConsole("Socket not connected".getBytes());
+            onLogReceived("Socket not connected".getBytes());
             return -1;
         }
 
         if (myLvl0ProtocolThread.sendToLvl0(idCounter, toWrite) == ERROR_EPIPE) {
             myLvl0ProtocolThread.stopThread();
-            logOnConsole("Socket not yet connected, rx thread will close automatically".getBytes());
+            onLogReceived("Socket not yet connected, rx thread will close automatically".getBytes());
             return -1;
         }
 
-//        logOnConsole("write on socket successful".getBytes());
+//        onLogReceived("write on socket successful".getBytes());
         return 0;
-    }
-
-    public void sendUselessMessage(byte[] message) {
-        byte[] headers = new byte[]{ID_USELESS};
-
-        byte[] toSend = new byte[headers.length + message.length];
-        System.arraycopy(headers,0,toSend,0         ,headers.length);
-        System.arraycopy(message,0,toSend,headers.length,message.length);
-
-        write(toSend);
     }
 
     private void sendAck() {
         byte[] headers = new byte[]{ID_ACK};
         write(headers);
-        logOnConsole("ACK sent".getBytes());
+        onLogReceived("ACK sent".getBytes());
     }
 
     private boolean ackReceived = false;
@@ -78,7 +66,7 @@ public class Lvl1SocketCommunications implements Lvl0ProtocolThread.Lvl0Protocol
     public void onDataReceivedFromLvl0(byte[] data) {
 
         if (data.length < 1) {
-            logOnConsole("Empty data received from Socket".getBytes());
+            onLogReceived("Empty data received from Socket".getBytes());
             return;
         }
 
@@ -88,13 +76,25 @@ public class Lvl1SocketCommunications implements Lvl0ProtocolThread.Lvl0Protocol
         id = data[0];
         switch (id) {
             case ID_USELESS:
-                logOnConsole(Arrays.copyOfRange(data, 6, data.length));
+                onLogReceived(Arrays.copyOfRange(data, 6, data.length));
                 break;
 
             case ID_ACK:
                 ackReceived = true;
                 break;
+
+            case ID_SEND_SENSORS_VALUES:
+                onSensorsValuesReceived(Arrays.copyOfRange(data, 1, data.length));
+                break;
         }
+    }
+
+    protected void onSensorsValuesReceived(byte[] data) {
+
+    }
+
+    @Override
+    public void onSocketStatusUpdate(int status) {
     }
 
     private class SendOnSocket extends AsyncTask<Void, Void, Void> {
@@ -114,7 +114,9 @@ public class Lvl1SocketCommunications implements Lvl0ProtocolThread.Lvl0Protocol
         }
     }
 
-    private void write(byte[] message) {
-        new SendOnSocket(message).execute();
+    void write(byte[] message) {
+//        new SendOnSocket(message).execute();
+//        new SendOnSocket(message).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        writeToSocket(message);
     }
 }

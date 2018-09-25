@@ -1,5 +1,7 @@
 package com.monier.bennetout.ihmclient.communication;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -15,6 +17,7 @@ import static com.monier.bennetout.ihmclient.communication.Lvl0ProtocolThread.ma
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ERROR_EPIPE;
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ERROR_UNKNOW;
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.NO_ERROR;
+import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.STATUS_NOT_CONNECTED;
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.TRAME_LENGTH_MAX_SIZE;
 
 /**
@@ -34,7 +37,6 @@ public class Lvl0ProtocolThread implements Runnable {
     private static final int WITHOUT_DATA_LENGTH = 1 +2 +1 +4;
     private static final int CHECKSUM_LENGTH = 4;
 
-    private static final int SOCK_TIMEOUT = 5000;
     private static final int STX = 0x02;
 
     private InputStream inputStream;
@@ -47,33 +49,17 @@ public class Lvl0ProtocolThread implements Runnable {
     Lvl0ProtocolThread(Socket clientSocket) {
         Socket socket = clientSocket;
         try {
-            socket.setSoTimeout(SOCK_TIMEOUT);
             this.inputStream = socket.getInputStream();
             this.outputStream = socket.getOutputStream();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    //******************************For debug only**************************************************
-    private void logOnConsole(byte[] log) {
-        if (myDebugListener != null)
-            myDebugListener.onLowLevelLogReceived(log);
-    }
-
-    static private OnLowLevelListener myDebugListener;
-    public static void setListener(OnLowLevelListener listener) {
-        myDebugListener = listener;
-    }
-    public interface OnLowLevelListener{
-        void onLowLevelLogReceived(byte[] log);
-    }
-    //******************************For debug only**************************************************
-
     private Lvl0ProtocolListener myListener;
     public interface Lvl0ProtocolListener {
         void onDataReceivedFromLvl0(byte[] data);
+        void onSocketStatusUpdate(int status);
     }
 
     public void setObserver(Lvl0ProtocolListener mObserver) {
@@ -114,7 +100,7 @@ public class Lvl0ProtocolThread implements Runnable {
                             lengthMsb = value;
                             length = lengthMsb * 256 + lengthLsb;
                             if (length > TRAME_LENGTH_MAX_SIZE) {
-                                logOnConsole(("Error, length is larger than TRAME_LENGTH_MAX_SIZE = " + TRAME_LENGTH_MAX_SIZE + "bytes").getBytes());
+                                Log.e(TAG, ("Error, length is larger than TRAME_LENGTH_MAX_SIZE = " + TRAME_LENGTH_MAX_SIZE + "bytes"));
                                 state = WAIT_STX;
                                 continue;
                             }
@@ -184,7 +170,7 @@ public class Lvl0ProtocolThread implements Runnable {
             } catch (SocketTimeoutException ste) {
                 state = WAIT_STX;
             } catch (IOException e) {
-                if (e.getMessage().contains("EPIPE")) {
+                if (e.getMessage().contains("EPIPE") || e.getMessage().contains("ECONNRESET")) {
                     stopThread();
                 } else {
                     e.printStackTrace();
@@ -200,7 +186,7 @@ public class Lvl0ProtocolThread implements Runnable {
 
         boolean isSameChecksum = checksumExpected.getValue() == checksum;
         if (!isSameChecksum)
-            logOnConsole(("checksum = " + checksum + "\nchecksumExpected.getValue() = " + checksumExpected.getValue()).getBytes());
+            Log.e(TAG, "checksum = " + checksum + "\nchecksumExpected.getValue() = " + checksumExpected.getValue());
 
         return isSameChecksum;
     }
@@ -215,6 +201,8 @@ public class Lvl0ProtocolThread implements Runnable {
 
     public void stopThread() {
         running = false;
+        if (myListener != null)
+            myListener.onSocketStatusUpdate(STATUS_NOT_CONNECTED);
     }
 
     public int sendToLvl0(byte idTrame, byte[] data) {
@@ -240,8 +228,6 @@ public class Lvl0ProtocolThread implements Runnable {
 
         byte[] checksumByteArray = byteBufferChecksum.array();
         System.arraycopy(checksumByteArray, 0, toSend, INDEX_CHECKSUM, 4);
-
-        myDebugListener.onLowLevelLogReceived(("checksum out = " + checksum).getBytes());
 
         try {
             outputStream.write(toSend);

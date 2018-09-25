@@ -57,7 +57,7 @@ public class MyListViewAdapter extends RecyclerView.Adapter<MyListViewAdapter.Vi
         });
     }
 
-    void deleteItem(int index) {
+    private void deleteItem(int index) {
         mDataset.remove(index);
         notifyItemRemoved(index);
     }

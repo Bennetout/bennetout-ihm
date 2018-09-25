@@ -23,7 +23,6 @@ public class ClientSocket implements Runnable {
 
     public interface ClientSocketListener {
         void onPositionsReceivedFromServer(double flechePos, double levagePos, double portePos, double niveauX, double niveauY);
-
         void onSocketStatusUpdate(int status);
     }
 

@@ -5,16 +5,16 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.RectF;
-import android.support.annotation.Nullable;
+import android.graphics.PorterDuff;
 import android.util.AttributeSet;
-import android.view.View;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 
 import com.monier.bennetout.ihmclient.configuration.ConfigManager;
 
 import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 
-public class RemorqueDesigner extends View {
+public class RemorquePainter extends SurfaceView implements SurfaceHolder.Callback {
 
     public static final int CANVAS_SIZE_REF   = 160;
 
@@ -37,17 +37,40 @@ public class RemorqueDesigner extends View {
             myBrownStroke = new Paint();
 //    private RectF canvasBorder = new RectF();
 
-    public RemorqueDesigner(Context context) {
-        super(context);
-        init();
-    }
+    Path remorqueDraw = new Path();
+    Path benneDraw = new Path();
 
-    public RemorqueDesigner(Context context, @Nullable AttributeSet attrs) {
+    private float canvasSize;
+
+    private SurfaceHolder mySurfaceHolder;
+
+    public RemorquePainter(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    private void init() {
+    public RemorquePainter(Context context) {
+        super(context);
+        init();
+    }
+
+    void init() {
+
+        mySurfaceHolder = getHolder();
+        mySurfaceHolder.addCallback(this);
+
+        canvasSize = getResources().getDimension(R.dimen._130sdp);
+
+        remorqueDraw.moveTo(canvasSize*40/CANVAS_SIZE_REF, canvasSize*110/CANVAS_SIZE_REF);
+        remorqueDraw.lineTo(canvasSize*120/CANVAS_SIZE_REF, canvasSize*110/CANVAS_SIZE_REF);
+        remorqueDraw.lineTo(canvasSize*100/CANVAS_SIZE_REF, canvasSize*145/CANVAS_SIZE_REF);
+        remorqueDraw.lineTo(canvasSize*40/CANVAS_SIZE_REF, canvasSize*145/CANVAS_SIZE_REF);
+        remorqueDraw.lineTo(canvasSize*40/CANVAS_SIZE_REF, canvasSize*110/CANVAS_SIZE_REF);
+
+        benneDraw.moveTo(canvasSize*120/CANVAS_SIZE_REF, canvasSize*110/CANVAS_SIZE_REF);
+        benneDraw.lineTo(canvasSize*120/CANVAS_SIZE_REF, canvasSize*145/CANVAS_SIZE_REF);
+        benneDraw.lineTo(canvasSize*100/CANVAS_SIZE_REF, canvasSize*145/CANVAS_SIZE_REF);
+        benneDraw.lineTo(canvasSize*120/CANVAS_SIZE_REF, canvasSize*110/CANVAS_SIZE_REF);
 
         myBorderPaint.setStyle(Paint.Style.STROKE);
         myBorderPaint.setColor(MY_RED);
@@ -84,27 +107,65 @@ public class RemorqueDesigner extends View {
         myGrayPaint.setColor(MY_GRAY);
     }
 
-    Path remorqueDraw = new Path();
-    Path benneDraw = new Path();
     @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+    public void surfaceCreated(SurfaceHolder surfaceHolder) {
 
-        float canvasSize = canvas.getWidth();
+        Canvas canvas = mySurfaceHolder.lockCanvas();
+        if (canvas == null) {
+            return;
+        }
 
-//        canvasBorder.set(1,1,canvasSize -1,canvasSize -1);
-//        canvas.drawRect(canvasBorder, myBorderPaint);
+        // Remorque
+        canvas.drawPath(remorqueDraw, myRedPaint);
+        canvas.drawPath(remorqueDraw, myBlackStroke);
+
+        // Text remorque
+        canvas.drawText(" " + formatDouble(angle) + "°",canvasSize*65/CANVAS_SIZE_REF, canvasSize*135/CANVAS_SIZE_REF, myWhitePaint);
+
+        // Text benne
+        canvas.drawText(" " + formatDouble(angleBenne) + "°",canvasSize*122/CANVAS_SIZE_REF, canvasSize*105/CANVAS_SIZE_REF, myBlackPaint);
+
+        // Fleche
+        canvas.drawRect(canvasSize*5/CANVAS_SIZE_REF, canvasSize*145/CANVAS_SIZE_REF, canvasSize*52.5f/CANVAS_SIZE_REF, canvasSize*150/CANVAS_SIZE_REF, myBlackPaint);
+
+        // Benne
+        canvas.drawPath(benneDraw, myBlackPaint);
+        canvas.drawPath(benneDraw, myBlackStroke);
+
+        // Fleche côté roue
+        canvas.drawRect(canvasSize*50/CANVAS_SIZE_REF, canvasSize*145/CANVAS_SIZE_REF, canvasSize*95/CANVAS_SIZE_REF, canvasSize*150/CANVAS_SIZE_REF, myBlackPaint);
+
+        // Roue
+        canvas.drawCircle(canvasSize*90/CANVAS_SIZE_REF, canvasSize*147.5f/CANVAS_SIZE_REF, canvasSize*10/CANVAS_SIZE_REF, myBlackPaint);
+        canvas.drawCircle(canvasSize*90/CANVAS_SIZE_REF, canvasSize*147.5f/CANVAS_SIZE_REF, canvasSize*2.5f/CANVAS_SIZE_REF, myWhitePaint);
+        canvas.drawCircle(canvasSize*90/CANVAS_SIZE_REF, canvasSize*147.5f/CANVAS_SIZE_REF, canvasSize*10/CANVAS_SIZE_REF, myBrownStroke);
+
+        mySurfaceHolder.unlockCanvasAndPost(canvas);
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+
+    }
+
+    public void drawRemorque() {
+
+        Canvas canvas = mySurfaceHolder.lockCanvas();
+        if (canvas == null) {
+            return;
+        }
+
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        canvas.drawColor(Color.WHITE);
 
         canvas.rotate((float) -this.angle, canvasSize*7.5f/CANVAS_SIZE_REF, canvasSize*147.5f/CANVAS_SIZE_REF);
 
         // Remorque
-//        canvas.drawRect(canvasSize*55/CANVAS_SIZE_REF, canvasSize*85/CANVAS_SIZE_REF, canvasSize*135/CANVAS_SIZE_REF, canvasSize*125/CANVAS_SIZE_REF, myRedPaint);
-//        canvas.drawRect(canvasSize*55/CANVAS_SIZE_REF, canvasSize*85/CANVAS_SIZE_REF, canvasSize*135/CANVAS_SIZE_REF, canvasSize*125/CANVAS_SIZE_REF, myBlackStroke);
-        remorqueDraw.moveTo(canvasSize*40/CANVAS_SIZE_REF, canvasSize*110/CANVAS_SIZE_REF);
-        remorqueDraw.lineTo(canvasSize*120/CANVAS_SIZE_REF, canvasSize*110/CANVAS_SIZE_REF);
-        remorqueDraw.lineTo(canvasSize*100/CANVAS_SIZE_REF, canvasSize*145/CANVAS_SIZE_REF);
-        remorqueDraw.lineTo(canvasSize*40/CANVAS_SIZE_REF, canvasSize*145/CANVAS_SIZE_REF);
-        remorqueDraw.lineTo(canvasSize*40/CANVAS_SIZE_REF, canvasSize*110/CANVAS_SIZE_REF);
         canvas.drawPath(remorqueDraw, myRedPaint);
         canvas.drawPath(remorqueDraw, myBlackStroke);
 
@@ -118,11 +179,8 @@ public class RemorqueDesigner extends View {
         canvas.drawRect(canvasSize*5/CANVAS_SIZE_REF, canvasSize*145/CANVAS_SIZE_REF, canvasSize*52.5f/CANVAS_SIZE_REF, canvasSize*150/CANVAS_SIZE_REF, myBlackPaint);
 
         canvas.rotate((float) -angleBenne, canvasSize*120/CANVAS_SIZE_REF, canvasSize*110/CANVAS_SIZE_REF);
+
         // Benne
-        benneDraw.moveTo(canvasSize*120/CANVAS_SIZE_REF, canvasSize*110/CANVAS_SIZE_REF);
-        benneDraw.lineTo(canvasSize*120/CANVAS_SIZE_REF, canvasSize*145/CANVAS_SIZE_REF);
-        benneDraw.lineTo(canvasSize*100/CANVAS_SIZE_REF, canvasSize*145/CANVAS_SIZE_REF);
-        benneDraw.lineTo(canvasSize*120/CANVAS_SIZE_REF, canvasSize*110/CANVAS_SIZE_REF);
         canvas.drawPath(benneDraw, myBlackPaint);
         canvas.drawPath(benneDraw, myBlackStroke);
 
@@ -137,9 +195,11 @@ public class RemorqueDesigner extends View {
         canvas.drawCircle(canvasSize*90/CANVAS_SIZE_REF, canvasSize*147.5f/CANVAS_SIZE_REF, canvasSize*10/CANVAS_SIZE_REF, myBlackPaint);
         canvas.drawCircle(canvasSize*90/CANVAS_SIZE_REF, canvasSize*147.5f/CANVAS_SIZE_REF, canvasSize*2.5f/CANVAS_SIZE_REF, myWhitePaint);
         canvas.drawCircle(canvasSize*90/CANVAS_SIZE_REF, canvasSize*147.5f/CANVAS_SIZE_REF, canvasSize*10/CANVAS_SIZE_REF, myBrownStroke);
+
+        mySurfaceHolder.unlockCanvasAndPost(canvas);
     }
 
-    public void setAngle(double angle) {
+    public void setAngle(double angle, double angleBenne) {
 
         this.angle = angle;
 
@@ -149,12 +209,7 @@ public class RemorqueDesigner extends View {
         if (this.angle < ConfigManager.model.BORNE_MIN_LEVAGE)
             this.angle = ConfigManager.model.BORNE_MIN_LEVAGE;
 
-        postInvalidate();
-    }
-
-    public void setAngleBenne(double angle) {
-
-        this.angleBenne = angle;
+        this.angleBenne = angleBenne;
 
         if (this.angleBenne > ConfigManager.model.BORNE_MAX_PORTE)
             this.angleBenne = ConfigManager.model.BORNE_MAX_PORTE;
@@ -162,6 +217,7 @@ public class RemorqueDesigner extends View {
         if (this.angleBenne < ConfigManager.model.BORNE_MIN_PORTE)
             this.angleBenne = ConfigManager.model.BORNE_MIN_PORTE;
 
-        postInvalidate();
+
+        drawRemorque();
     }
 }

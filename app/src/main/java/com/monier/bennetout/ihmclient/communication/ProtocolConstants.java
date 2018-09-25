@@ -9,8 +9,14 @@ class ProtocolConstants {
     static final int ERROR_UNKNOW                   = -1;
     static final int NO_ERROR                       = 0;
 
+    static final int STATUS_CONNECTED               = 1;
+    static final int STATUS_NOT_CONNECTED           = 2;
+
     static final byte ID_ACK                        = (byte) 0xFD;
     static final byte ID_NACK                       = (byte) 0xFE;
+
+    static final byte ID_GET_SENSORS_VALUES         = (byte) 0xE0;
+    static final byte ID_SEND_SENSORS_VALUES        = (byte) 0xE1;
 
     static final byte ID_USELESS                    = (byte) 0xD0;
 }

@@ -4,14 +4,15 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.RectF;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.View;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 
 import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 
-public class NiveauDesigner extends View {
+public class NiveauPainter extends SurfaceView implements SurfaceHolder.Callback {
 
     private int MY_RED    = Color.parseColor("#800000");
     private int MY_BLACK    = Color.parseColor("#000000");
@@ -32,17 +33,27 @@ public class NiveauDesigner extends View {
     private double niveau = 0;
     RectF canvasBorder = new RectF();
 
-    public NiveauDesigner(Context context) {
-        super(context);
-        init();
-    }
+    private float canvasSize;
 
-    public NiveauDesigner(Context context, @Nullable AttributeSet attrs) {
+    private SurfaceHolder mySurfaceHolder;
+
+    public NiveauPainter(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
+    public NiveauPainter(Context context) {
+        super(context);
+        init();
+    }
+
     private void init() {
+
+        mySurfaceHolder = getHolder();
+        mySurfaceHolder.addCallback(this);
+
+        canvasSize = getResources().getDimension(R.dimen._130sdp);
+        canvasBorder.set(canvasSize*10/100,canvasSize*35/100,canvasSize*90/100, canvasSize*90/100);
 
         myBorderPaint.setStyle(Paint.Style.STROKE);
         myBorderPaint.setColor(MY_RED);
@@ -76,19 +87,19 @@ public class NiveauDesigner extends View {
         myGrayPaint.setColor(MY_GRAY);
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+    public void drawNiveau() {
 
-        float canvasSize = canvas.getWidth();
+        Canvas canvas = mySurfaceHolder.lockCanvas();
+        if (canvas == null) {
+            return;
+        }
 
-//        canvasBorder.set(1,1,canvasSize -1,canvasSize -1);
-//        canvas.drawRect(canvasBorder, myBorderPaint);
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        canvas.drawColor(Color.WHITE);
 
         canvas.rotate((float) this.niveau, canvasSize*50/100, canvasSize*50/100);
 
         // Sol
-        canvasBorder.set(canvasSize*10/100,canvasSize*35/100,canvasSize*90/100, canvasSize*90/100);
         canvas.drawArc(canvasBorder, 0, 180, true, myBlackStroke);
         canvas.drawArc(canvasBorder, 0, 180, true, myGrayPaint);
 
@@ -109,10 +120,8 @@ public class NiveauDesigner extends View {
         canvas.drawRect(canvasSize*70/100, canvasSize*65/100, canvasSize*80/100, canvasSize*80/100, myBrownStroke);
 
         canvas.drawText(" " + formatDouble(niveau) + "°", canvasSize*50/100, canvasSize*60/100, myWhitePaint);
-    }
 
-    private double degree2radian(double degree) {
-        return (Math.PI / (double) 180) * degree;
+        mySurfaceHolder.unlockCanvasAndPost(canvas);
     }
 
     public void setNiveau(double niveau) {
@@ -125,6 +134,21 @@ public class NiveauDesigner extends View {
         if (niveau < -10)
             this.niveau = -10;
 
-        postInvalidate();
+        drawNiveau();
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        drawNiveau();
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+
     }
 }
