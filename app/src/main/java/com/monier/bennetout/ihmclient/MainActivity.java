@@ -1,5 +1,6 @@
 package com.monier.bennetout.ihmclient;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,6 +22,16 @@ import java.util.ArrayList;
 
 import mehdi.sakout.fancybuttons.FancyButton;
 
+import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_ACTION_FLECHE_OFF;
+import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_ACTION_FLECHE_ON;
+import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_ACTION_LEVAGE_OFF;
+import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_ACTION_LEVAGE_ON;
+import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_ACTION_PORTE_OFF;
+import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_ACTION_PORTE_ON;
+import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_ACTION_TAPIS_OFF;
+import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_ACTION_TAPIS_ON;
+import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_STATE_HIGH;
+import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_STATE_LOW;
 import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 
 public class MainActivity extends Activity implements Lvl2ClientSocket.SocketClientListener {
@@ -28,7 +40,6 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 
     private double angleFleche = 0, angleLevage = 0, anglePorte = 0;
     private double niveau = 0;
-    private final Handler handler = new Handler();
     Lvl2ClientSocket myLvl2ClientSocket = new Lvl2ClientSocket("10.3.141.1", 65000);
 
     private TextView textViewFleche;
@@ -76,6 +87,9 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         btnPorteMarcheInit();
         btnPorteArretInit();
 
+        btnTapisMarcheInit();
+        btnTapisArretInit();
+
         listViewPorteInit();
         listViewFlecheInit();
         listViewLevageInit();
@@ -84,211 +98,179 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         myHandler.postDelayed(majIhm, 0);
     }
 
-    private boolean isBtnPorteArretPressed = false;
+    @SuppressLint("ClickableViewAccessibility")
+    private void btnTapisArretInit() {
+
+        Button button = findViewById(R.id.buttonTapisArret);
+        button.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_TAPIS_OFF, ARG_STATE_HIGH);
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_TAPIS_OFF, ARG_STATE_LOW);
+                        break;
+                }
+
+                return false;
+            }
+        });
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void btnTapisMarcheInit() {
+        Button button = findViewById(R.id.buttonTapisMarche);
+        button.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_TAPIS_ON, ARG_STATE_HIGH);
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_TAPIS_ON, ARG_STATE_LOW);
+                        break;
+                }
+
+                return false;
+            }
+        });
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
     private void btnPorteArretInit() {
 
         Button button = findViewById(R.id.buttonPorteArret);
-        button.setOnClickListener(new View.OnClickListener() {
+        button.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View view) {
-                isBtnPorteArretPressed = false;
-                handler.removeCallbacksAndMessages(null);
-                anglePorte -= 1;
-                if (anglePorte < ConfigManager.model.BORNE_MIN_PORTE)
-                    anglePorte = ConfigManager.model.BORNE_MIN_PORTE;
-            }
-        });
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_PORTE_OFF, ARG_STATE_HIGH);
+                        break;
 
-        button.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                isBtnPorteArretPressed = true;
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        anglePorte -= 1;
-                        if (anglePorte < ConfigManager.model.BORNE_MIN_PORTE)
-                            anglePorte = ConfigManager.model.BORNE_MIN_PORTE;
+                    case MotionEvent.ACTION_UP:
+                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_PORTE_OFF, ARG_STATE_LOW);
+                        break;
+                }
 
-                        if (isBtnPorteArretPressed)
-                            handler.postDelayed(this, 20);
-                        else
-                            handler.removeCallbacksAndMessages(null);
-                    }
-                }, 100);
                 return false;
             }
         });
     }
-    private boolean isBtnPorteMarchePressed = false;
+
+    @SuppressLint("ClickableViewAccessibility")
     private void btnPorteMarcheInit() {
 
         Button button = findViewById(R.id.buttonPorteMarche);
-        button.setOnClickListener(new View.OnClickListener() {
+        button.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View view) {
-                isBtnPorteMarchePressed = false;
-                handler.removeCallbacksAndMessages(null);
-                anglePorte += 1;
-                if (anglePorte > ConfigManager.model.BORNE_MAX_PORTE)
-                    anglePorte = ConfigManager.model.BORNE_MAX_PORTE;
-            }
-        });
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_PORTE_ON, ARG_STATE_HIGH);
+                        break;
 
-        button.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                isBtnPorteMarchePressed = true;
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        anglePorte += 1;
-                        if (anglePorte > ConfigManager.model.BORNE_MAX_PORTE)
-                            anglePorte = ConfigManager.model.BORNE_MAX_PORTE;
+                    case MotionEvent.ACTION_UP:
+                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_PORTE_ON, ARG_STATE_LOW);
+                        break;
+                }
 
-                        if (isBtnPorteMarchePressed)
-                            handler.postDelayed(this, 20);
-                        else
-                            handler.removeCallbacksAndMessages(null);
-                    }
-                }, 100);
                 return false;
             }
+
         });
     }
 
-    private boolean isBtnLevageArretPressed = false;
+    @SuppressLint("ClickableViewAccessibility")
     private void btnLevageArretInit() {
 
         Button button = findViewById(R.id.buttonLevageArret);
-        button.setOnClickListener(new View.OnClickListener() {
+        button.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View view) {
-                isBtnLevageArretPressed = false;
-                handler.removeCallbacksAndMessages(null);
-                angleLevage -= 1;
-                if (angleLevage < ConfigManager.model.BORNE_MIN_LEVAGE)
-                    angleLevage = ConfigManager.model.BORNE_MIN_LEVAGE;
-            }
-        });
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_OFF, ARG_STATE_HIGH);
+                        break;
 
-        button.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                isBtnLevageArretPressed = true;
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        angleLevage -= 1;
-                        if (angleLevage < ConfigManager.model.BORNE_MIN_LEVAGE)
-                            angleLevage = ConfigManager.model.BORNE_MIN_LEVAGE;
+                    case MotionEvent.ACTION_UP:
+                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_OFF, ARG_STATE_LOW);
+                        break;
+                }
 
-                        if (isBtnLevageArretPressed)
-                            handler.postDelayed(this, 20);
-                        else
-                            handler.removeCallbacksAndMessages(null);
-                    }
-                }, 100);
                 return false;
             }
+
         });
     }
-    private boolean isBtnLevageMarchePressed = false;
+
+    @SuppressLint("ClickableViewAccessibility")
     private void btnLevageMarcheInit() {
 
         Button button = findViewById(R.id.buttonLevageMarche);
-        button.setOnClickListener(new View.OnClickListener() {
+        button.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View view) {
-                isBtnLevageMarchePressed = false;
-                handler.removeCallbacksAndMessages(null);
-                angleLevage += 1;
-                if (angleLevage > ConfigManager.model.BORNE_MAX_LEVAGE)
-                    angleLevage = ConfigManager.model.BORNE_MAX_LEVAGE;
-            }
-        });
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_ON, ARG_STATE_HIGH);
+                        break;
 
-        button.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                isBtnLevageMarchePressed = true;
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        angleLevage += 1;
-                        if (angleLevage > ConfigManager.model.BORNE_MAX_LEVAGE)
-                            angleLevage = ConfigManager.model.BORNE_MAX_LEVAGE;
+                    case MotionEvent.ACTION_UP:
+                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_ON, ARG_STATE_LOW);
+                        break;
+                }
 
-                        if (isBtnLevageMarchePressed)
-                            handler.postDelayed(this, 20);
-                        else
-                            handler.removeCallbacksAndMessages(null);
-                    }
-                }, 100);
                 return false;
             }
+
         });
     }
 
-    private boolean isBtnFlecheArretPressed = false;
+    @SuppressLint("ClickableViewAccessibility")
     private void btnFlecheArretInit() {
 
         Button button = findViewById(R.id.buttonFlecheArret);
-        button.setOnClickListener(new View.OnClickListener() {
+        button.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View view) {
-                isBtnFlecheArretPressed = false;
-                handler.removeCallbacksAndMessages(null);
-                angleFleche -= 1;
-            }
-        });
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_FLECHE_OFF, ARG_STATE_HIGH);
+                        break;
 
-        button.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                isBtnFlecheArretPressed = true;
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        angleFleche -= 1;
-                        if (isBtnFlecheArretPressed)
-                            handler.postDelayed(this, 20);
-                        else
-                            handler.removeCallbacksAndMessages(null);
-                    }
-                }, 100);
+                    case MotionEvent.ACTION_UP:
+                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_FLECHE_OFF, ARG_STATE_LOW);
+                        break;
+                }
+
                 return false;
             }
         });
     }
-    private boolean isBtnFlecheMarchePressed = false;
+
+    @SuppressLint("ClickableViewAccessibility")
     private void btnFlecheMarcheInit() {
 
         Button button = findViewById(R.id.buttonFlecheMarche);
-        button.setOnClickListener(new View.OnClickListener() {
+        button.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View view) {
-                isBtnFlecheMarchePressed = false;
-                handler.removeCallbacksAndMessages(null);
-                angleFleche += 1;
-            }
-        });
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_FLECHE_ON, ARG_STATE_HIGH);
+                        break;
 
-        button.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                isBtnFlecheMarchePressed = true;
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        angleFleche += 1;
+                    case MotionEvent.ACTION_UP:
+                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_FLECHE_ON, ARG_STATE_LOW);
+                        break;
+                }
 
-                        if (isBtnFlecheMarchePressed)
-                            handler.postDelayed(this, 20);
-                        else
-                            handler.removeCallbacksAndMessages(null);
-                    }
-                }, 100);
                 return false;
             }
         });
@@ -502,7 +484,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
             textViewLevage.setText(formatDouble(angleLevage));
             textViewPorte.setText(formatDouble(anglePorte));
 
-            myHandler.postDelayed(this, 100);
+            myHandler.postDelayed(this, 50);
         }
     };
 

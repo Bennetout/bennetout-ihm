@@ -3,6 +3,7 @@ package com.monier.bennetout.ihmclient.communication;
 import java.io.IOException;
 import java.net.Socket;
 
+import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ID_ACTION;
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ID_GET_SENSORS_VALUES;
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.STATUS_CONNECTED;
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.STATUS_NOT_CONNECTED;
@@ -46,6 +47,11 @@ public class Lvl2ClientSocket extends Lvl1SocketCommunications {
 
     public void getSensorsValues() {
         byte[] headers = new byte[]{ID_GET_SENSORS_VALUES};
+        write(headers);
+    }
+
+    public void setActuatorState(byte actionNb, byte state) {
+        byte[] headers = new byte[]{ID_ACTION, actionNb, state};
         write(headers);
     }
 

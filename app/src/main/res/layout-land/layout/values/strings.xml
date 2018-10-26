@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="textviewtapis">Tapis : </string>
     <string name="textviewporte">Porte : </string>
     <string name="textviewfleche">Fleche : </string>
     <string name="textviewlevage">Levage : </string>
