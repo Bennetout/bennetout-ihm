@@ -1,13 +1,13 @@
 package com.monier.bennetout.ihmclient.configuration.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
-import com.monier.bennetout.ihmclient.ClientSocket;
+import com.monier.bennetout.ihmclient.CaptorValuesSingleton;
 import com.monier.bennetout.ihmclient.R;
 import com.monier.bennetout.ihmclient.configuration.ConfigManager;
 
@@ -15,9 +15,11 @@ import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 
-public class CallibFlecheActivity extends Activity implements ClientSocket.ClientSocketListener {
+public class CallibFlecheActivity extends Activity {
 
     private double flecheZero = 0, flecheCent = 100;
+
+    private Handler myHandler;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,13 +29,9 @@ public class CallibFlecheActivity extends Activity implements ClientSocket.Clien
 
         btnCallibFlecheZeroInit();
         btnCallibFlecheCentInit();
-        ClientSocket.addListener(this);
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ClientSocket.removeListener(this);
+        myHandler = new Handler();
+        myHandler.postDelayed(majIhm, 0);
     }
 
     private void btnCallibFlecheCentInit() {
@@ -58,23 +56,19 @@ public class CallibFlecheActivity extends Activity implements ClientSocket.Clien
         });
     }
 
-    @Override
-    public void onPositionsReceivedFromServer(final double flechePos, double levagePos, double portePos, double niveauX, double niveauY) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                TextView zero = findViewById(R.id.textViewCallibFlecheZero);
-                TextView cent = findViewById(R.id.textViewCallibFlecheCent);
-                zero.setText(formatDouble(flechePos));
-                cent.setText(formatDouble(flechePos));
-                flecheZero = flechePos;
-                flecheCent = flechePos;
-            }
-        });
-    }
+    private Runnable majIhm = new Runnable() {
+        @Override
+        public void run() {
 
-    @Override
-    public void onSocketStatusUpdate(int status) {
+            double flechePos = CaptorValuesSingleton.getAngleFleche();
+            TextView zero = findViewById(R.id.textViewCallibFlecheZero);
+            TextView cent = findViewById(R.id.textViewCallibFlecheCent);
+            zero.setText(formatDouble(flechePos));
+            cent.setText(formatDouble(flechePos));
+            flecheZero = flechePos;
+            flecheCent = flechePos;
 
-    }
+            myHandler.postDelayed(this, 500);
+        }
+    };
 }

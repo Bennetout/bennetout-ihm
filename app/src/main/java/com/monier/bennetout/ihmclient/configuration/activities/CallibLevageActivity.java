@@ -2,21 +2,25 @@ package com.monier.bennetout.ihmclient.configuration.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
-import com.monier.bennetout.ihmclient.ClientSocket;
+import com.monier.bennetout.ihmclient.CaptorValuesSingleton;
 import com.monier.bennetout.ihmclient.R;
+import com.monier.bennetout.ihmclient.communication.Lvl2ClientSocket;
 import com.monier.bennetout.ihmclient.configuration.ConfigManager;
 
 import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 
-public class CallibLevageActivity extends Activity implements ClientSocket.ClientSocketListener {
+public class CallibLevageActivity extends Activity {
 
     private double levageZero = 0, levageCent = 100;
+
+    private Handler myHandler;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -26,7 +30,8 @@ public class CallibLevageActivity extends Activity implements ClientSocket.Clien
 
         btnCallibLevageZeroInit();
         btnCallibLevageCentInit();
-        ClientSocket.addListener(this);
+        myHandler = new Handler();
+        myHandler.postDelayed(majIhm, 0);
     }
 
     private void btnCallibLevageCentInit() {
@@ -51,24 +56,19 @@ public class CallibLevageActivity extends Activity implements ClientSocket.Clien
         });
     }
 
-    @Override
-    public void onPositionsReceivedFromServer(double flechePos, final double levagePos, double portePos, double niveauX, double niveauY) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                TextView zero = findViewById(R.id.textViewCallibLevageZero);
-                TextView cent = findViewById(R.id.textViewCallibLevageCent);
-                zero.setText(formatDouble(levagePos));
-                cent.setText(formatDouble(levagePos));
-                levageZero = levagePos;
-                levageCent = levagePos;
-            }
-        });
-    }
+    private Runnable majIhm = new Runnable() {
+        @Override
+        public void run() {
 
-    @Override
-    public void onSocketStatusUpdate(int status) {
+            double levagePos = CaptorValuesSingleton.getAngleLevage();
+            TextView zero = findViewById(R.id.textViewCallibLevageZero);
+            TextView cent = findViewById(R.id.textViewCallibLevageCent);
+            zero.setText(formatDouble(levagePos));
+            cent.setText(formatDouble(levagePos));
+            levageZero = levagePos;
+            levageCent = levagePos;
 
-    }
-
+            myHandler.postDelayed(this, 500);
+        }
+    };
 }

@@ -2,11 +2,12 @@ package com.monier.bennetout.ihmclient.configuration.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
-import com.monier.bennetout.ihmclient.ClientSocket;
+import com.monier.bennetout.ihmclient.CaptorValuesSingleton;
 import com.monier.bennetout.ihmclient.R;
 import com.monier.bennetout.ihmclient.configuration.ConfigManager;
 
@@ -14,9 +15,11 @@ import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 
-public class CallibNiveauActivity extends Activity implements ClientSocket.ClientSocketListener {
+public class CallibNiveauActivity extends Activity {
 
     private double niveauZero = 0, niveauCent = 100;
+
+    private Handler myHandler;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -26,13 +29,9 @@ public class CallibNiveauActivity extends Activity implements ClientSocket.Clien
 
         btnCallibNiveauZeroInit();
         btnCallibNiveauCentInit();
-        ClientSocket.addListener(this);
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ClientSocket.removeListener(this);
+        myHandler = new Handler();
+        myHandler.postDelayed(majIhm, 0);
     }
 
     private void btnCallibNiveauCentInit() {
@@ -57,23 +56,19 @@ public class CallibNiveauActivity extends Activity implements ClientSocket.Clien
         });
     }
 
-    @Override
-    public void onPositionsReceivedFromServer(final double flechePos, double levagePos, double portePos, final double niveauX, double niveauY) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                TextView zero = findViewById(R.id.textViewCallibNiveauZero);
-                TextView cent = findViewById(R.id.textViewCallibNiveauCent);
-                zero.setText(formatDouble(niveauX));
-                cent.setText(formatDouble(niveauX));
-                niveauZero = niveauX;
-                niveauCent = niveauX;
-            }
-        });
-    }
+    private Runnable majIhm = new Runnable() {
+        @Override
+        public void run() {
 
-    @Override
-    public void onSocketStatusUpdate(int status) {
+            double niveauX = CaptorValuesSingleton.getNiveau();
+            TextView zero = findViewById(R.id.textViewCallibNiveauZero);
+            TextView cent = findViewById(R.id.textViewCallibNiveauCent);
+            zero.setText(formatDouble(niveauX));
+            cent.setText(formatDouble(niveauX));
+            niveauZero = niveauX;
+            niveauCent = niveauX;
 
-    }
+            myHandler.postDelayed(this, 500);
+        }
+    };
 }

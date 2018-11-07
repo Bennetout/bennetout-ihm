@@ -2,11 +2,12 @@ package com.monier.bennetout.ihmclient.configuration.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
-import com.monier.bennetout.ihmclient.ClientSocket;
+import com.monier.bennetout.ihmclient.CaptorValuesSingleton;
 import com.monier.bennetout.ihmclient.R;
 import com.monier.bennetout.ihmclient.configuration.ConfigManager;
 
@@ -14,9 +15,11 @@ import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 
-public class CallibPorteActivity extends Activity implements ClientSocket.ClientSocketListener {
+public class CallibPorteActivity extends Activity {
 
     private double porteZero = 0, porteCent = 100;
+
+    private Handler myHandler;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -26,7 +29,9 @@ public class CallibPorteActivity extends Activity implements ClientSocket.Client
 
         btnCallibPorteZeroInit();
         btnCallibPorteCentInit();
-        ClientSocket.addListener(this);
+
+        myHandler = new Handler();
+        myHandler.postDelayed(majIhm, 0);
     }
 
     private void btnCallibPorteCentInit() {
@@ -51,23 +56,19 @@ public class CallibPorteActivity extends Activity implements ClientSocket.Client
         });
     }
 
-    @Override
-    public void onPositionsReceivedFromServer(double flechePos, double levagePos, final double portePos, double niveauX, double niveauY) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                TextView zero = findViewById(R.id.textViewCallibPorteZero);
-                TextView cent = findViewById(R.id.textViewCallibPorteCent);
-                zero.setText(formatDouble(portePos));
-                cent.setText(formatDouble(portePos));
-                porteZero = portePos;
-                porteCent = portePos;
-            }
-        });
-    }
+    private Runnable majIhm = new Runnable() {
+        @Override
+        public void run() {
 
-    @Override
-    public void onSocketStatusUpdate(int status) {
+            double portePos = CaptorValuesSingleton.getAnglePorte();
+            TextView zero = findViewById(R.id.textViewCallibPorteZero);
+            TextView cent = findViewById(R.id.textViewCallibPorteCent);
+            zero.setText(formatDouble(portePos));
+            cent.setText(formatDouble(portePos));
+            porteZero = portePos;
+            porteCent = portePos;
 
-    }
+            myHandler.postDelayed(this, 500);
+        }
+    };
 }

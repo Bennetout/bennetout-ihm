@@ -9,8 +9,8 @@ public class ProtocolConstants {
     static final int ERROR_UNKNOW                   = -1;
     static final int NO_ERROR                       = 0;
 
-    static final int STATUS_CONNECTED               = 1;
-    static final int STATUS_NOT_CONNECTED           = 2;
+    public static final int STATUS_CONNECTED               = 1;
+    public static final int STATUS_NOT_CONNECTED           = 2;
 
     static final byte ID_ACK                        = (byte) 0xFD;
     static final byte ID_NACK                       = (byte) 0xFE;

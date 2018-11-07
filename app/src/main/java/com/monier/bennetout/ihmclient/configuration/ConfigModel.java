@@ -21,4 +21,8 @@ public class ConfigModel {
 
     public double BORNE_MAX_PORTE = ConfigDefaults.BORNE_MAX_PORTE_D;
     public double BORNE_MIN_PORTE = ConfigDefaults.BORNE_MIN_PORTE_D;
+
+    public double[] PORTE_CONFIGS = ConfigDefaults.PORTE_CONFIGS_D;
+    public double[] FLECHE_CONFIGS = ConfigDefaults.FLECHE_CONFIGS_D;
+    public double[] LEVAGE_CONFIGS = ConfigDefaults.LEVAGE_CONFIGS_D;
 }

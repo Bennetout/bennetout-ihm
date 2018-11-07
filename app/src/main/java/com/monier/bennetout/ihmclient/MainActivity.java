@@ -14,10 +14,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.monier.bennetout.ihmclient.communication.Lvl2ClientSocket;
+import com.monier.bennetout.ihmclient.communication.ProtocolConstants;
 import com.monier.bennetout.ihmclient.configuration.ConfigManager;
 import com.monier.bennetout.ihmclient.configuration.activities.ConfigActivity;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import mehdi.sakout.fancybuttons.FancyButton;
@@ -46,7 +50,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     private TextView textViewLevage;
     private TextView textViewPorte;
 
-//    private FlecheDesigner flecheDesigner;
+//    private FlecheDesigner flecheDesigner;ArrayList
 //    private RemorqueDesigner remorqueDesigner;
 //    private NiveauDesigner niveauDesigner;
 
@@ -95,7 +99,6 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         listViewLevageInit();
 
         myHandler = new Handler();
-        myHandler.postDelayed(majIhm, 0);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -287,16 +290,17 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        // specify an adapter (see also next example)
+        ArrayList<MyCustomHolder> configs = new ArrayList<>();
+        double[] userConfig = ConfigManager.model.LEVAGE_CONFIGS;
+        NumberFormat numberFormat = NumberFormat.getInstance();
+        numberFormat.setMaximumFractionDigits(0);
 
-        ArrayList<String> arrayList = new ArrayList<>();
-        arrayList.add("0°");
-        arrayList.add("10°");
-        arrayList.add("30°");
-        arrayList.add("100°");
-        arrayList.add("150°");
-        arrayList.add("175°");
-        MyListViewAdapter myListViewAdapter = new MyListViewAdapter(arrayList);
+        int colorId = getResources().getColor(R.color.myGreen);
+        for (double anUserConfig : userConfig) {
+            configs.add(new MyCustomHolder(numberFormat.format(anUserConfig) + "°", false, colorId));
+        }
+
+        MyListViewAdapter myListViewAdapter = new MyListViewAdapter(configs, getResources().getDimension(R.dimen._11sdp));
         mRecyclerView.setAdapter(myListViewAdapter);
     }
 
@@ -311,14 +315,17 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        ArrayList<String> arrayList = new ArrayList<>();
-        arrayList.add("0°");
-        arrayList.add("10°");
-        arrayList.add("30°");
-        arrayList.add("100°");
-        arrayList.add("150°");
-        arrayList.add("175°");
-        MyListViewAdapter myListViewAdapter = new MyListViewAdapter(arrayList);
+        ArrayList<MyCustomHolder> configs = new ArrayList<>();
+        double[] userConfig = ConfigManager.model.FLECHE_CONFIGS;
+        NumberFormat numberFormat = NumberFormat.getInstance();
+        numberFormat.setMaximumFractionDigits(0);
+
+        int colorId = getResources().getColor(R.color.myGreen);
+        for (double anUserConfig : userConfig) {
+            configs.add(new MyCustomHolder(numberFormat.format(anUserConfig) + "°", false, colorId));
+        }
+
+        MyListViewAdapter myListViewAdapter = new MyListViewAdapter(configs, getResources().getDimension(R.dimen._11sdp));
         mRecyclerView.setAdapter(myListViewAdapter);
     }
 
@@ -333,14 +340,17 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        ArrayList<String> arrayList = new ArrayList<>();
-        arrayList.add("0°");
-        arrayList.add("10°");
-        arrayList.add("30°");
-        arrayList.add("100°");
-        arrayList.add("150°");
-        arrayList.add("175°");
-        MyListViewAdapter myListViewAdapter = new MyListViewAdapter(arrayList);
+        ArrayList<MyCustomHolder> configs = new ArrayList<>();
+        double[] userConfig = ConfigManager.model.PORTE_CONFIGS;
+        NumberFormat numberFormat = NumberFormat.getInstance();
+        numberFormat.setMaximumFractionDigits(0);
+
+        int colorId = getResources().getColor(R.color.myGreen);
+        for (double anUserConfig : userConfig) {
+            configs.add(new MyCustomHolder(numberFormat.format(anUserConfig) + "°", false, colorId));
+        }
+
+        MyListViewAdapter myListViewAdapter = new MyListViewAdapter(configs, getResources().getDimension(R.dimen._11sdp));
         mRecyclerView.setAdapter(myListViewAdapter);
     }
 
@@ -356,7 +366,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
                             myLvl2ClientSocket.deconnect();
 //                            clientSocket.connect("10.42.0.1");
                             myLvl2ClientSocket.connect();
-                            myLvl2ClientSocket.getSensorsValues();
+                            myHandler.postDelayed(majIhm, 0);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -470,21 +480,21 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         @Override
         public void run() {
 
-            myLvl2ClientSocket.getSensorsValues();
+            remorquePainter.setAngle(calculPosLevage(angleLevage), calculPosPorte(anglePorte));
+            flechePainter.setAngle(calculPosFleche(angleFleche));
+            niveauPainter.setNiveau(calculPosNiveau(niveau));
 
-//            remorquePainter.setAngle(calculPosLevage(angleLevage), calculPosPorte(anglePorte));
-//            flechePainter.setAngle(calculPosFleche(angleFleche));
-//            niveauPainter.setNiveau(calculPosNiveau(niveau));
-
-            remorquePainter.setAngle(angleLevage, anglePorte);
-            flechePainter.setAngle(angleFleche);
-            niveauPainter.setNiveau(niveau);
+//            remorquePainter.setAngle(angleLevage, anglePorte);
+//            flechePainter.setAngle(angleFleche);
+//            niveauPainter.setNiveau(niveau);
 
             textViewFleche.setText(formatDouble(angleFleche));
             textViewLevage.setText(formatDouble(angleLevage));
             textViewPorte.setText(formatDouble(anglePorte));
 
-            myHandler.postDelayed(this, 50);
+            myLvl2ClientSocket.getSensorsValues();
+
+            myHandler.postDelayed(this, 500);
         }
     };
 
@@ -494,6 +504,11 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         angleLevage = levagePos;
         anglePorte = portePos;
         niveau = niveauX;
+
+        CaptorValuesSingleton.setAngleFleche(angleFleche);
+        CaptorValuesSingleton.setAngleLevage(angleLevage);
+        CaptorValuesSingleton.setAnglePorte(anglePorte);
+        CaptorValuesSingleton.setNiveau(niveau);
     }
 
     @Override
@@ -503,12 +518,12 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
             public void run() {
                 FancyButton fancyButton = findViewById(R.id.btnRefresh);
                 switch (status) {
-                    case ClientSocket.STATUS_CONNECTED:
+                    case ProtocolConstants.STATUS_CONNECTED:
                         fancyButton.setBorderColor(R.color.myGreen);
                         fancyButton.setBackgroundColor(getResources().getColor(R.color.myGreen));
                         break;
 
-                    case ClientSocket.STATUS_NOT_CONNECTED:
+                    case ProtocolConstants.STATUS_NOT_CONNECTED:
                         fancyButton.setBorderColor(R.color.myRed);
                         fancyButton.setBackgroundColor(getResources().getColor(R.color.myRed));
                         break;
