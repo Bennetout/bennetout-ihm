@@ -11,9 +11,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:hardwareAccelerated="true"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
+        android:background="@color/myWhite"
+        android:theme="@style/myStyle">
         <activity
             android:name=".MainActivity"
+            android:background="@color/myWhite"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

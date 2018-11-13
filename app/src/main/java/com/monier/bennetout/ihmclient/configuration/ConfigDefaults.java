@@ -14,7 +14,6 @@ public class ConfigDefaults {
     public static final double PORTE_CALLIB_CENT_D = 100;
 
     public static final double NIVEAU_CALLIB_ZERO_D = 0;
-    public static final double NIVEAU_CALLIB_CENT_D = 100;
 
     public static final double BORNE_MAX_FLECHE_D   = 30;
     public static final double BORNE_MIN_FLECHE_D   = -30;

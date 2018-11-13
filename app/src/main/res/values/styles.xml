@@ -1,10 +1,11 @@
 <resources>
 
-    <style name="Theme.AppCompat.Light.NoActionBar.FullScreen" parent="@style/Theme.AppCompat.Light">
+    <style name="myStyle" parent="@style/Theme.AppCompat.Light">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
+        <!--<item name="android:background">#FFFFFF</item>-->
     </style>
 
 </resources>

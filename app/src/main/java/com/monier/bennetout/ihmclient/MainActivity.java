@@ -3,6 +3,7 @@ package com.monier.bennetout.ihmclient;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -71,6 +72,12 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         myLvl2ClientSocket.setListener(this);
 
         setContentView(R.layout.main);
+
+        // Get a random id into the main View
+        View randomView = findViewById(R.id.btnRefresh);
+        View root = randomView.getRootView();
+        root.setBackgroundColor(Color.WHITE);
+
         textViewFleche = findViewById(R.id.textViewFlecheValue);
         textViewLevage = findViewById(R.id.textViewLevageValue);
         textViewPorte = findViewById(R.id.textViewPorteValue);
@@ -409,21 +416,8 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 
     public static double calculPosNiveau(double angleInitial) {
         double niveauCallibZero = ConfigManager.model.NIVEAU_CALLIB_ZERO;
-        double niveauCallibCent = ConfigManager.model.NIVEAU_CALLIB_CENT;
 
-        double droiteXa = niveauCallibZero;
-        double droiteXb = niveauCallibCent;
-        double droiteYa = 0;
-        double droiteYb = 100;
-
-        double droiteX = angleInitial;
-
-        double droiteA = (droiteYb - droiteYa) / (droiteXb - droiteXa);
-        double droiteB = - (droiteA * droiteXa);
-
-        double droiteY = droiteA * droiteX + droiteB;
-
-        return droiteY *0.2 - 10;
+        return angleInitial - niveauCallibZero;
     }
 
     public static double calculPosPorte(double angleInitial) {

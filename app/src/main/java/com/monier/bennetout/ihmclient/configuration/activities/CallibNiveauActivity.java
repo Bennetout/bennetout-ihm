@@ -17,7 +17,7 @@ import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 
 public class CallibNiveauActivity extends Activity {
 
-    private double niveauZero = 0, niveauCent = 100;
+    private double niveauZero = 0;
 
     private Handler myHandler;
 
@@ -28,21 +28,9 @@ public class CallibNiveauActivity extends Activity {
         setContentView(R.layout.callib_niveau);
 
         btnCallibNiveauZeroInit();
-        btnCallibNiveauCentInit();
 
         myHandler = new Handler();
         myHandler.postDelayed(majIhm, 0);
-    }
-
-    private void btnCallibNiveauCentInit() {
-        FancyButton fancyButton = findViewById(R.id.btnCallibNiveauCent);
-        fancyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ConfigManager.model.NIVEAU_CALLIB_CENT = niveauCent;
-                ConfigManager.model2ConfigFile(getApplicationContext());
-            }
-        });
     }
 
     private void btnCallibNiveauZeroInit() {
@@ -62,11 +50,8 @@ public class CallibNiveauActivity extends Activity {
 
             double niveauX = CaptorValuesSingleton.getNiveau();
             TextView zero = findViewById(R.id.textViewCallibNiveauZero);
-            TextView cent = findViewById(R.id.textViewCallibNiveauCent);
             zero.setText(formatDouble(niveauX));
-            cent.setText(formatDouble(niveauX));
             niveauZero = niveauX;
-            niveauCent = niveauX;
 
             myHandler.postDelayed(this, 500);
         }

@@ -87,6 +87,8 @@ public class FlechePainter extends SurfaceView implements SurfaceHolder.Callback
         myBrownStroke.setStyle(Paint.Style.STROKE);
         myBrownStroke.setColor(MY_BROWN);
         myBrownStroke.setStrokeWidth(4);
+
+        drawFleche();
     }
 
     public void drawFleche() {

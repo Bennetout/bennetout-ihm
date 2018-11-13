@@ -44,6 +44,16 @@
             android:orientation="horizontal"
             android:baselineAligned="false">
 
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutTrois"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_36sdp"
+            android:layout_below="@+id/layoutDeux"
+            android:orientation="horizontal">
+
             <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -88,60 +98,12 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/layoutTrois"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_36sdp"
-            android:layout_below="@+id/layoutDeux"
-            android:orientation="horizontal"></LinearLayout>
-
-        <LinearLayout
             android:id="@+id/layoutQuatre"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_36sdp"
             android:layout_below="@+id/layoutTrois"
             android:orientation="horizontal">
 
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <mehdi.sakout.fancybuttons.FancyButton
-                    android:id="@+id/btnCallibNiveauCent"
-                    android:layout_width="@dimen/_150sdp"
-                    android:layout_height="@dimen/_36sdp"
-                    android:layout_marginBottom="@dimen/_2sdp"
-                    android:layout_marginLeft="@dimen/_2sdp"
-                    android:layout_marginRight="@dimen/_2sdp"
-                    android:layout_marginTop="@dimen/_2sdp"
-                    android:layout_alignParentEnd="true"
-                    android:text="@string/figer_le_100"
-                    android:textSize="@dimen/_12sdp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    fancy:fb_borderColor="@color/myBlack"
-                    fancy:fb_borderWidth="@dimen/_2sdp"
-                    fancy:fb_defaultColor="@color/myRed"
-                    fancy:fb_focusColor="#FFFFFF"
-                    fancy:fb_radius="@dimen/_60sdp" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <TextView
-                    android:id="@+id/textViewCallibNiveauCent"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginStart="@dimen/_40sdp"
-                    android:gravity="center_vertical"
-                    android:text="100"
-                    android:textSize="@dimen/_20sdp"/>
-
-            </RelativeLayout>
         </LinearLayout>
 
         <LinearLayout

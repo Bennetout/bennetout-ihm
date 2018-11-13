@@ -85,6 +85,8 @@ public class NiveauPainter extends SurfaceView implements SurfaceHolder.Callback
 
         myGrayPaint.setStyle(Paint.Style.FILL);
         myGrayPaint.setColor(MY_GRAY);
+
+        drawNiveau();
     }
 
     public void drawNiveau() {

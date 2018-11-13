@@ -105,42 +105,14 @@ public class RemorquePainter extends SurfaceView implements SurfaceHolder.Callba
 
         myGrayPaint.setStyle(Paint.Style.FILL);
         myGrayPaint.setColor(MY_GRAY);
+
+        drawRemorque();
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
 
-        Canvas canvas = mySurfaceHolder.lockCanvas();
-        if (canvas == null) {
-            return;
-        }
-
-        // Remorque
-        canvas.drawPath(remorqueDraw, myRedPaint);
-        canvas.drawPath(remorqueDraw, myBlackStroke);
-
-        // Text remorque
-        canvas.drawText(" " + formatDouble(angle) + "°",canvasSize*65/CANVAS_SIZE_REF, canvasSize*135/CANVAS_SIZE_REF, myWhitePaint);
-
-        // Text benne
-        canvas.drawText(" " + formatDouble(angleBenne) + "°",canvasSize*122/CANVAS_SIZE_REF, canvasSize*105/CANVAS_SIZE_REF, myBlackPaint);
-
-        // Fleche
-        canvas.drawRect(canvasSize*5/CANVAS_SIZE_REF, canvasSize*145/CANVAS_SIZE_REF, canvasSize*52.5f/CANVAS_SIZE_REF, canvasSize*150/CANVAS_SIZE_REF, myBlackPaint);
-
-        // Benne
-        canvas.drawPath(benneDraw, myBlackPaint);
-        canvas.drawPath(benneDraw, myBlackStroke);
-
-        // Fleche côté roue
-        canvas.drawRect(canvasSize*50/CANVAS_SIZE_REF, canvasSize*145/CANVAS_SIZE_REF, canvasSize*95/CANVAS_SIZE_REF, canvasSize*150/CANVAS_SIZE_REF, myBlackPaint);
-
-        // Roue
-        canvas.drawCircle(canvasSize*90/CANVAS_SIZE_REF, canvasSize*147.5f/CANVAS_SIZE_REF, canvasSize*10/CANVAS_SIZE_REF, myBlackPaint);
-        canvas.drawCircle(canvasSize*90/CANVAS_SIZE_REF, canvasSize*147.5f/CANVAS_SIZE_REF, canvasSize*2.5f/CANVAS_SIZE_REF, myWhitePaint);
-        canvas.drawCircle(canvasSize*90/CANVAS_SIZE_REF, canvasSize*147.5f/CANVAS_SIZE_REF, canvasSize*10/CANVAS_SIZE_REF, myBrownStroke);
-
-        mySurfaceHolder.unlockCanvasAndPost(canvas);
+        drawRemorque();
     }
 
     @Override
