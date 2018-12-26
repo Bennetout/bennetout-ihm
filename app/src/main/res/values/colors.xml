@@ -6,7 +6,8 @@
     <color name="colorAccent">#FF4081</color>
     <color name="myBlue">#7198DD</color>
     <color name="myWhite">#FFFFFF</color>
-    <color name="myPeach">#f8a055</color>
+    <color name="myOrange">#f8a055</color>
     <color name="myRed">#800000</color>
     <color name="myGreen">#009933</color>
+    <color name="myGray">#d3d3d3</color>
 </resources>

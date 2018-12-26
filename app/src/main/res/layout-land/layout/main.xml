@@ -109,22 +109,37 @@
                 android:text="@string/textviewtapis"
                 android:textSize="@dimen/_15sdp" />
 
-            <Button
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/buttonTapisMarche"
                 android:layout_width="@dimen/_30sdp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/_5sdp"
-                android:text="@string/m"
-                android:textColor="@color/myGreen"
-                android:textSize="@dimen/_15sdp" />
+                android:text=""
+                fancy:fb_borderColor="@color/myGray"
+                fancy:fb_borderWidth="@dimen/_1sdp"
+                fancy:fb_defaultColor="@color/myGray"
+                fancy:fb_textColor="@color/myGreen"
+                fancy:fb_textSize="0dp"
+                fancy:fb_focusColor="#FFFFFF"
+                fancy:fb_fontIconResource="\uf062"
+                fancy:fb_fontIconSize="@dimen/_15sdp"
+                fancy:fb_radius="@dimen/_2sdp" />
 
-            <Button
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/buttonTapisArret"
                 android:layout_width="@dimen/_30sdp"
                 android:layout_height="match_parent"
-                android:text="@string/a"
-                android:textColor="@color/myRed"
-                android:textSize="@dimen/_15sdp" />
+                android:layout_marginStart="@dimen/_1sdp"
+                android:text=""
+                fancy:fb_borderColor="@color/myGray"
+                fancy:fb_borderWidth="@dimen/_1sdp"
+                fancy:fb_defaultColor="@color/myGray"
+                fancy:fb_textColor="@color/myGreen"
+                fancy:fb_textSize="0dp"
+                fancy:fb_focusColor="#FFFFFF"
+                fancy:fb_fontIconResource="\uf063"
+                fancy:fb_fontIconSize="@dimen/_15sdp"
+                fancy:fb_radius="@dimen/_2sdp" />
 
         </LinearLayout>
 
@@ -146,22 +161,37 @@
                 android:text="@string/textviewporte"
                 android:textSize="@dimen/_15sdp" />
 
-            <Button
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/buttonPorteMarche"
                 android:layout_width="@dimen/_30sdp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:text="@string/m"
-                android:textColor="@color/myGreen"
-                android:textSize="@dimen/_15sdp" />
+                fancy:fb_borderColor="@color/myGray"
+                fancy:fb_borderWidth="@dimen/_1sdp"
+                fancy:fb_defaultColor="@color/myGray"
+                fancy:fb_textColor="@color/myGreen"
+                fancy:fb_textSize="0dp"
+                fancy:fb_focusColor="#FFFFFF"
+                fancy:fb_fontIconResource="\uf062"
+                fancy:fb_fontIconSize="@dimen/_15sdp"
+                fancy:fb_radius="@dimen/_2sdp" />
 
-            <Button
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/buttonPorteArret"
                 android:layout_width="@dimen/_30sdp"
                 android:layout_height="match_parent"
-                android:text="@string/a"
-                android:textColor="@color/myRed"
-                android:textSize="@dimen/_15sdp" />
+                android:layout_marginStart="@dimen/_1sdp"
+                android:text="@string/m"
+                fancy:fb_borderColor="@color/myGray"
+                fancy:fb_borderWidth="@dimen/_1sdp"
+                fancy:fb_defaultColor="@color/myGray"
+                fancy:fb_textColor="@color/myGreen"
+                fancy:fb_textSize="0dp"
+                fancy:fb_focusColor="#FFFFFF"
+                fancy:fb_fontIconResource="\uf063"
+                fancy:fb_fontIconSize="@dimen/_15sdp"
+                fancy:fb_radius="@dimen/_2sdp" />
 
             <TextView
                 android:id="@+id/textViewPorteValue"
@@ -199,22 +229,37 @@
                 android:text="@string/textviewfleche"
                 android:textSize="@dimen/_15sdp" />
 
-            <Button
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/buttonFlecheMarche"
                 android:layout_width="@dimen/_30sdp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:text="@string/m"
-                android:textColor="@color/myGreen"
-                android:textSize="@dimen/_15sdp" />
+                fancy:fb_borderColor="@color/myGray"
+                fancy:fb_borderWidth="@dimen/_1sdp"
+                fancy:fb_defaultColor="@color/myGray"
+                fancy:fb_textColor="@color/myGreen"
+                fancy:fb_textSize="0dp"
+                fancy:fb_focusColor="#FFFFFF"
+                fancy:fb_fontIconResource="\uf060"
+                fancy:fb_fontIconSize="@dimen/_15sdp"
+                fancy:fb_radius="@dimen/_2sdp" />
 
-            <Button
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/buttonFlecheArret"
                 android:layout_width="@dimen/_30sdp"
                 android:layout_height="match_parent"
-                android:text="@string/a"
-                android:textColor="@color/myRed"
-                android:textSize="@dimen/_15sdp" />
+                android:layout_marginStart="@dimen/_1sdp"
+                android:text="@string/m"
+                fancy:fb_borderColor="@color/myGray"
+                fancy:fb_borderWidth="@dimen/_1sdp"
+                fancy:fb_defaultColor="@color/myGray"
+                fancy:fb_textColor="@color/myGreen"
+                fancy:fb_textSize="0dp"
+                fancy:fb_focusColor="#FFFFFF"
+                fancy:fb_fontIconResource="\uf061"
+                fancy:fb_fontIconSize="@dimen/_15sdp"
+                fancy:fb_radius="@dimen/_2sdp" />
 
             <TextView
                 android:id="@+id/textViewFlecheValue"
@@ -252,22 +297,37 @@
                 android:text="@string/textviewlevage"
                 android:textSize="@dimen/_15sdp" />
 
-            <Button
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/buttonLevageMarche"
                 android:layout_width="@dimen/_30sdp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:text="@string/m"
-                android:textColor="@color/myGreen"
-                android:textSize="@dimen/_15sdp" />
+                fancy:fb_borderColor="@color/myGray"
+                fancy:fb_borderWidth="@dimen/_1sdp"
+                fancy:fb_defaultColor="@color/myGray"
+                fancy:fb_textColor="@color/myGreen"
+                fancy:fb_textSize="0dp"
+                fancy:fb_focusColor="#FFFFFF"
+                fancy:fb_fontIconResource="\uf062"
+                fancy:fb_fontIconSize="@dimen/_15sdp"
+                fancy:fb_radius="@dimen/_2sdp" />
 
-            <Button
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/buttonLevageArret"
                 android:layout_width="@dimen/_30sdp"
                 android:layout_height="match_parent"
-                android:text="@string/a"
-                android:textColor="@color/myRed"
-                android:textSize="@dimen/_15sdp" />
+                android:layout_marginStart="@dimen/_1sdp"
+                android:text="@string/m"
+                fancy:fb_borderColor="@color/myGray"
+                fancy:fb_borderWidth="@dimen/_1sdp"
+                fancy:fb_defaultColor="@color/myGray"
+                fancy:fb_textColor="@color/myGreen"
+                fancy:fb_textSize="0dp"
+                fancy:fb_focusColor="#FFFFFF"
+                fancy:fb_fontIconResource="\uf063"
+                fancy:fb_fontIconSize="@dimen/_15sdp"
+                fancy:fb_radius="@dimen/_2sdp" />
 
             <TextView
                 android:id="@+id/textViewLevageValue"

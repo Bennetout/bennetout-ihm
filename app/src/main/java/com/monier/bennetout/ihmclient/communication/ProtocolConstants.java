@@ -18,6 +18,10 @@ public class ProtocolConstants {
     static final byte ID_GET_SENSORS_VALUES         = (byte) 0xE0;
     static final byte ID_SEND_SENSORS_VALUES        = (byte) 0xE1;
     static final byte ID_ACTION                     = (byte) 0xE2;
+    static final byte ID_SET_SENSOR_VALUE           = (byte) 0xE3;
+    static final byte ID_STOP_SET_SENSOR_VALUE      = (byte) 0xE4;
+    static final byte ID_SET_SENSOR_VALUE_FINISH    = (byte) 0xE5;
+
     static final byte ID_USELESS                    = (byte) 0xD0;
 
     static final byte ARG_ACTION_1                  = (byte) 0x00;
@@ -31,6 +35,10 @@ public class ProtocolConstants {
 
     public static final byte ARG_STATE_HIGH                = (byte) 0x00;
     public static final byte ARG_STATE_LOW                 = (byte) 0x01;
+
+    public static final byte ARG_PORTE              = (byte) 0x01;
+    public static final byte ARG_FLECHE             = (byte) 0x02;
+    public static final byte ARG_LEVAGE             = (byte) 0x03;
 
     public static final byte ARG_ACTION_PORTE_ON    = ARG_ACTION_1;
     public static final byte ARG_ACTION_PORTE_OFF   = ARG_ACTION_2;

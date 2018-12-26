@@ -86,10 +86,19 @@ public class Lvl1SocketCommunications implements Lvl0ProtocolThread.Lvl0Protocol
             case ID_SEND_SENSORS_VALUES:
                 onSensorsValuesReceived(Arrays.copyOfRange(data, 1, data.length));
                 break;
+
+            case ID_SET_SENSOR_VALUE_FINISH:
+                arg = data[1];
+                onSetSensorValueFinish(arg);
+                break;
         }
     }
 
     protected void onSensorsValuesReceived(byte[] data) {
+
+    }
+
+    protected void onSetSensorValueFinish(byte sensorArg) {
 
     }
 

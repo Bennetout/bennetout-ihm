@@ -16,6 +16,12 @@ public class MyListViewAdapter extends RecyclerView.Adapter<MyListViewAdapter.Vi
 
     private ArrayList<MyCustomHolder> mDataset;
     private float myDefaultTextSize;
+    private MyListViewListener myListener;
+    private double valueSelect = 0;
+
+    public interface MyListViewListener {
+        void onNewPositionClicked(boolean state, double value);
+    }
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -30,9 +36,10 @@ public class MyListViewAdapter extends RecyclerView.Adapter<MyListViewAdapter.Vi
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    MyListViewAdapter(ArrayList<MyCustomHolder> myDataset, float defaultTextSize) {
-        mDataset = myDataset;
-        myDefaultTextSize = defaultTextSize;
+    MyListViewAdapter(ArrayList<MyCustomHolder> myDataset, float defaultTextSize, MyListViewListener listener) {
+        this.mDataset = myDataset;
+        this.myDefaultTextSize = defaultTextSize;
+        this.myListener = listener;
     }
 
     // Create new views (invoked by the layout manager)
@@ -83,6 +90,22 @@ public class MyListViewAdapter extends RecyclerView.Adapter<MyListViewAdapter.Vi
         });
     }
 
+    public void removeSelectedValue() {
+        for (MyCustomHolder index:mDataset) {
+            if (Double.parseDouble(index.textToShow.replace("°", "")) == valueSelect)
+                index.isActive = false;
+        }
+
+        notifyDataSetChanged();
+    }
+
+//    public void resetAll() {
+//        for (MyCustomHolder holder:mDataset) {
+//            holder.isActive = false;
+//        }
+//        notifyDataSetChanged();
+//    }
+
     private void switchActiveItem(int index) {
         if (mDataset.get(index).isActive) {
             mDataset.get(index).isActive = false;
@@ -94,6 +117,10 @@ public class MyListViewAdapter extends RecyclerView.Adapter<MyListViewAdapter.Vi
         }
 
         notifyDataSetChanged();
+
+        valueSelect = Double.parseDouble(mDataset.get(index).textToShow.replace("°", ""));
+        if (myListener != null)
+            myListener.onNewPositionClicked(mDataset.get(index).isActive, valueSelect);
     }
 
     private void deleteItem(int index) {

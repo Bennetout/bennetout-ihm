@@ -4,13 +4,18 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -24,6 +29,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import mehdi.sakout.fancybuttons.FancyButton;
 
@@ -35,6 +41,9 @@ import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_ACTION_PORTE_ON;
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_ACTION_TAPIS_OFF;
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_ACTION_TAPIS_ON;
+import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_FLECHE;
+import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_LEVAGE;
+import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_PORTE;
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_STATE_HIGH;
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_STATE_LOW;
 import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
@@ -50,6 +59,10 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     private TextView textViewFleche;
     private TextView textViewLevage;
     private TextView textViewPorte;
+
+    private MyListViewAdapter myListViewAdapterPorte;
+    private MyListViewAdapter myListViewAdapterLevage;
+    private MyListViewAdapter myListViewAdapterFleche;
 
 //    private FlecheDesigner flecheDesigner;ArrayList
 //    private RemorqueDesigner remorqueDesigner;
@@ -108,45 +121,64 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         myHandler = new Handler();
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    boolean tapisArretStatus = false;
     private void btnTapisArretInit() {
 
-        Button button = findViewById(R.id.buttonTapisArret);
-        button.setOnTouchListener(new View.OnTouchListener() {
+        final FancyButton button = findViewById(R.id.buttonTapisArret);
+        Drawable drawable = button.getBackground();
+
+        // On travaille avec des clones
+        final Drawable drawableInit = Objects.requireNonNull(drawable.getConstantState()).newDrawable();
+
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_TAPIS_OFF, ARG_STATE_HIGH);
-                        break;
+            public void onClick(View v) {
 
-                    case MotionEvent.ACTION_UP:
-                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_TAPIS_OFF, ARG_STATE_LOW);
-                        break;
+                if (tapisMarcheStatus)
+                    return;
+
+                tapisArretStatus = !tapisArretStatus;
+
+                if (tapisArretStatus) {
+                    Drawable drawable = button.getBackground();
+                    drawable.setColorFilter(getResources().getColor(R.color.myOrange), PorterDuff.Mode.MULTIPLY);
+                    button.setBackground(drawable);
+                    myLvl2ClientSocket.setActuatorState(ARG_ACTION_TAPIS_OFF, ARG_STATE_HIGH);
+                } else {
+                    button.setBackground(Objects.requireNonNull(drawableInit.getConstantState()).newDrawable());
+                    myLvl2ClientSocket.setActuatorState(ARG_ACTION_TAPIS_OFF, ARG_STATE_LOW);
                 }
-
-                return false;
             }
         });
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    boolean tapisMarcheStatus = false;
     private void btnTapisMarcheInit() {
-        Button button = findViewById(R.id.buttonTapisMarche);
-        button.setOnTouchListener(new View.OnTouchListener() {
+
+        final FancyButton button = findViewById(R.id.buttonTapisMarche);
+        Drawable drawable = button.getBackground();
+
+        // On travaille avec des clones
+        final Drawable drawableInit = Objects.requireNonNull(drawable.getConstantState()).newDrawable();
+
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_TAPIS_ON, ARG_STATE_HIGH);
-                        break;
+            public void onClick(View v) {
 
-                    case MotionEvent.ACTION_UP:
-                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_TAPIS_ON, ARG_STATE_LOW);
-                        break;
+                if (tapisArretStatus)
+                    return;
+
+                tapisMarcheStatus = !tapisMarcheStatus;
+
+                if (tapisMarcheStatus) {
+                    Drawable drawable = button.getBackground();
+                    drawable.setColorFilter(getResources().getColor(R.color.myOrange), PorterDuff.Mode.MULTIPLY);
+                    button.setBackground(drawable);
+                    myLvl2ClientSocket.setActuatorState(ARG_ACTION_TAPIS_ON, ARG_STATE_HIGH);
+                } else {
+                    button.setBackground(Objects.requireNonNull(drawableInit.getConstantState()).newDrawable());
+                    myLvl2ClientSocket.setActuatorState(ARG_ACTION_TAPIS_ON, ARG_STATE_LOW);
                 }
-
-                return false;
             }
         });
     }
@@ -154,7 +186,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     @SuppressLint("ClickableViewAccessibility")
     private void btnPorteArretInit() {
 
-        Button button = findViewById(R.id.buttonPorteArret);
+        FancyButton button = findViewById(R.id.buttonPorteArret);
         button.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -176,7 +208,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     @SuppressLint("ClickableViewAccessibility")
     private void btnPorteMarcheInit() {
 
-        Button button = findViewById(R.id.buttonPorteMarche);
+        FancyButton button = findViewById(R.id.buttonPorteMarche);
         button.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -199,7 +231,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     @SuppressLint("ClickableViewAccessibility")
     private void btnLevageArretInit() {
 
-        Button button = findViewById(R.id.buttonLevageArret);
+        FancyButton button = findViewById(R.id.buttonLevageArret);
         button.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -222,7 +254,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     @SuppressLint("ClickableViewAccessibility")
     private void btnLevageMarcheInit() {
 
-        Button button = findViewById(R.id.buttonLevageMarche);
+        FancyButton button = findViewById(R.id.buttonLevageMarche);
         button.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -245,7 +277,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     @SuppressLint("ClickableViewAccessibility")
     private void btnFlecheArretInit() {
 
-        Button button = findViewById(R.id.buttonFlecheArret);
+        FancyButton button = findViewById(R.id.buttonFlecheArret);
         button.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -267,7 +299,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     @SuppressLint("ClickableViewAccessibility")
     private void btnFlecheMarcheInit() {
 
-        Button button = findViewById(R.id.buttonFlecheMarche);
+        FancyButton button = findViewById(R.id.buttonFlecheMarche);
         button.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -307,8 +339,24 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
             configs.add(new MyCustomHolder(numberFormat.format(anUserConfig) + "°", false, colorId));
         }
 
-        MyListViewAdapter myListViewAdapter = new MyListViewAdapter(configs, getResources().getDimension(R.dimen._11sdp));
-        mRecyclerView.setAdapter(myListViewAdapter);
+        final GestionLevage[] gestionLevage = new GestionLevage[1];
+
+        myListViewAdapterLevage = new MyListViewAdapter(configs, getResources().getDimension(R.dimen._11sdp),
+                new MyListViewAdapter.MyListViewListener() {
+                    @Override
+                    public void onNewPositionClicked(boolean state, final double value) {
+
+                        if (!state) {
+                            gestionLevage[0].stopAll();
+                            return;
+                        }
+
+                        gestionLevage[0] = new GestionLevage();
+                        gestionLevage[0].value = value;
+                        gestionLevage[0].start();
+                    }
+                });
+        mRecyclerView.setAdapter(myListViewAdapterLevage);
     }
 
     private void listViewFlecheInit() {
@@ -332,8 +380,17 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
             configs.add(new MyCustomHolder(numberFormat.format(anUserConfig) + "°", false, colorId));
         }
 
-        MyListViewAdapter myListViewAdapter = new MyListViewAdapter(configs, getResources().getDimension(R.dimen._11sdp));
-        mRecyclerView.setAdapter(myListViewAdapter);
+        myListViewAdapterFleche = new MyListViewAdapter(configs, getResources().getDimension(R.dimen._11sdp),
+                new MyListViewAdapter.MyListViewListener() {
+                    @Override
+                    public void onNewPositionClicked(boolean state, double value) {
+//                        if (state)
+//                            myLvl2ClientSocket.setSensorValue(Lvl2ClientSocket.SENSOR_FLECHE, value);
+//                        else
+//                            myLvl2ClientSocket.stopSetSensorValue(Lvl2ClientSocket.SENSOR_FLECHE);
+                    }
+                });
+        mRecyclerView.setAdapter(myListViewAdapterFleche);
     }
 
     private void listViewPorteInit() {
@@ -357,8 +414,17 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
             configs.add(new MyCustomHolder(numberFormat.format(anUserConfig) + "°", false, colorId));
         }
 
-        MyListViewAdapter myListViewAdapter = new MyListViewAdapter(configs, getResources().getDimension(R.dimen._11sdp));
-        mRecyclerView.setAdapter(myListViewAdapter);
+        myListViewAdapterPorte = new MyListViewAdapter(configs, getResources().getDimension(R.dimen._11sdp),
+                new MyListViewAdapter.MyListViewListener() {
+                    @Override
+                    public void onNewPositionClicked(boolean state, double value) {
+//                        if (state)
+//                            myLvl2ClientSocket.setSensorValue(Lvl2ClientSocket.SENSOR_PORTE, value);
+//                        else
+//                            myLvl2ClientSocket.stopSetSensorValue(Lvl2ClientSocket.SENSOR_PORTE);
+                    }
+                });
+        mRecyclerView.setAdapter(myListViewAdapterPorte);
     }
 
     private void btnRefreshInit() {
@@ -506,6 +572,28 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     }
 
     @Override
+    public void onSetSensorValueFinish(final byte sensorArg) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                switch (sensorArg) {
+                    case ARG_PORTE:
+                        myListViewAdapterPorte.removeSelectedValue();
+                        break;
+
+                    case ARG_FLECHE:
+                        myListViewAdapterFleche.removeSelectedValue();
+                        break;
+
+                    case ARG_LEVAGE:
+                        myListViewAdapterLevage.removeSelectedValue();
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
     public void onSocketStatusUpdate(final int status) {
         runOnUiThread(new Runnable() {
             @Override
@@ -524,5 +612,57 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
                 }
             }
         });
+    }
+
+    private class GestionLevage extends Thread {
+
+        double value;
+        boolean isOk = false;
+
+        void stopAll() {
+            this.interrupt();
+            isOk = true;
+        }
+
+        @Override
+        public void run() {
+
+            isOk = false;
+
+            while (!isOk) {
+                if (angleLevage > value) {
+                    myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_OFF, ARG_STATE_LOW);
+                    myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_ON, ARG_STATE_HIGH);
+                }
+
+                if (angleLevage < value) {
+                    myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_ON, ARG_STATE_LOW);
+                    myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_OFF, ARG_STATE_HIGH);
+                }
+
+                if (angleLevage < value+3 &&
+                        angleLevage > value-3) {
+                    myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_OFF, ARG_STATE_LOW);
+                    myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_ON, ARG_STATE_LOW);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            myListViewAdapterLevage.removeSelectedValue();
+                        }
+                    });
+                    isOk = true;
+                }
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_OFF, ARG_STATE_LOW);
+            myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_ON, ARG_STATE_LOW);
+        }
     }
 }

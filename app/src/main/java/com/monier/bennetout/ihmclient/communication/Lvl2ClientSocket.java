@@ -1,18 +1,21 @@
 package com.monier.bennetout.ihmclient.communication;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.net.Socket;
 
-import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ID_ACTION;
-import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ID_GET_SENSORS_VALUES;
-import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.STATUS_CONNECTED;
-import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.STATUS_NOT_CONNECTED;
+import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.*;
 
 public class Lvl2ClientSocket extends Lvl1SocketCommunications {
 
     private static final String TAG = Lvl2ClientSocket.class.getCanonicalName();
 
     private static final int SOCK_TIMEOUT           = 2000;
+
+    public static final int SENSOR_PORTE       = 1;
+    public static final int SENSOR_LEVAGE      = 2;
+    public static final int SENSOR_FLECHE      = 3;
 
     private String ipAddr;
     private int port;
@@ -52,6 +55,63 @@ public class Lvl2ClientSocket extends Lvl1SocketCommunications {
 
     public void setActuatorState(byte actionNb, byte state) {
         byte[] headers = new byte[]{ID_ACTION, actionNb, state};
+        write(headers);
+    }
+
+    public void stopSetSensorValue(int sensorType) {
+
+        byte[] headers;
+
+        switch (sensorType) {
+            case SENSOR_PORTE:
+                headers = new byte[]{ID_STOP_SET_SENSOR_VALUE, ARG_PORTE};
+                break;
+
+            case SENSOR_LEVAGE:
+                headers = new byte[]{ID_STOP_SET_SENSOR_VALUE, ARG_LEVAGE};
+                break;
+
+            case SENSOR_FLECHE:
+                headers = new byte[]{ID_STOP_SET_SENSOR_VALUE, ARG_FLECHE};
+                break;
+
+            default:
+                Log.e(TAG, "stopSetSensorValue: unknown sensorType");
+                return;
+        }
+
+        write(headers);
+    }
+
+    public void setSensorValue(int sensorType, double value) {
+
+        byte[] headers;
+
+        if (value < -127 || value > 127) {
+            Log.e(TAG, "setSensorValue: value must be in range [0-255]");
+            return;
+        }
+
+        byte charValue = (byte) value;
+
+        switch (sensorType) {
+            case SENSOR_PORTE:
+                headers = new byte[]{ID_SET_SENSOR_VALUE, ARG_PORTE, charValue};
+                break;
+
+            case SENSOR_LEVAGE:
+                headers = new byte[]{ID_SET_SENSOR_VALUE, ARG_LEVAGE, charValue};
+                break;
+
+            case SENSOR_FLECHE:
+                headers = new byte[]{ID_SET_SENSOR_VALUE, ARG_FLECHE, charValue};
+                break;
+
+            default:
+                Log.e(TAG, "setSensorValue: unknown sensorType");
+                return;
+        }
+
         write(headers);
     }
 
@@ -96,8 +156,15 @@ public class Lvl2ClientSocket extends Lvl1SocketCommunications {
             myListener.onSocketStatusUpdate(status);
     }
 
+    @Override
+    protected void onSetSensorValueFinish(byte sensorArg) {
+        if (myListener != null)
+            myListener.onSetSensorValueFinish(sensorArg);
+    }
+
     public interface SocketClientListener {
         void onSocketStatusUpdate(int status);
         void onPositionsReceivedFromServer(double flechePos, double levagePos, double portePos, double niveauX, double niveauY);
+        void onSetSensorValueFinish(byte sensorArg);
     }
 }
