@@ -346,8 +346,10 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
                     @Override
                     public void onNewPositionClicked(boolean state, final double value) {
 
-                        if (!state) {
+                        if (gestionLevage[0] != null)
                             gestionLevage[0].stopAll();
+
+                        if (!state) {
                             return;
                         }
 
