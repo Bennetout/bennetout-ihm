@@ -543,24 +543,43 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     }
 
     private Runnable majIhm = new Runnable() {
+
+        private double angleFlecheRound = 0;
+        private double angleLevageRound = 0;
+        private double anglePorteRound = 0;
+        private double niveauRound = 0;
+
+        private int indexRound = 0;
+        private double nbRound = 4;
+
         @Override
         public void run() {
 
-            remorquePainter.setAngle(calculPosLevage(angleLevage), calculPosPorte(anglePorte));
-            flechePainter.setAngle(calculPosFleche(angleFleche));
-            niveauPainter.setNiveau(calculPosNiveau(niveau));
+            if (indexRound == nbRound) {
+                remorquePainter.setAngle(calculPosLevage(angleLevageRound/nbRound), calculPosPorte(anglePorteRound/nbRound));
+                flechePainter.setAngle(calculPosFleche(angleFlecheRound/nbRound));
+                niveauPainter.setNiveau(calculPosNiveau(niveauRound/nbRound));
 
-//            remorquePainter.setAngle(angleLevage, anglePorte);
-//            flechePainter.setAngle(angleFleche);
-//            niveauPainter.setNiveau(niveau);
+                textViewFleche.setText(formatDouble(angleFlecheRound/nbRound));
+                textViewLevage.setText(formatDouble(angleLevageRound/nbRound));
+                textViewPorte.setText(formatDouble(anglePorteRound/nbRound));
 
-            textViewFleche.setText(formatDouble(angleFleche));
-            textViewLevage.setText(formatDouble(angleLevage));
-            textViewPorte.setText(formatDouble(anglePorte));
+                angleFlecheRound = 0;
+                angleLevageRound = 0;
+                anglePorteRound = 0;
+                niveauRound = 0;
+                indexRound = 0;
+            } else {
+                angleFlecheRound += angleFleche;
+                angleLevageRound += angleLevage;
+                anglePorteRound += anglePorte;
+                niveauRound += niveau;
+                indexRound ++;
+            }
 
             myLvl2ClientSocket.getSensorsValues();
 
-            myHandler.postDelayed(this, 500);
+            myHandler.postDelayed(this, 200);
         }
     };
 
@@ -723,7 +742,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
