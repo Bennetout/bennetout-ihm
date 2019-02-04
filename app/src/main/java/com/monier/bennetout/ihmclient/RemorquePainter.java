@@ -192,4 +192,12 @@ public class RemorquePainter extends SurfaceView implements SurfaceHolder.Callba
 
         drawRemorque();
     }
+
+    public double getAngle() {
+        return this.angle;
+    }
+
+    public double getAngleBenne() {
+        return this.angleBenne;
+    }
 }

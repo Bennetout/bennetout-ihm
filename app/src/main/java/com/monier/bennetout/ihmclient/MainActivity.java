@@ -58,9 +58,9 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     private MyListViewAdapter myListViewAdapterLevage;
     private MyListViewAdapter myListViewAdapterFleche;
 
-    private RemorquePainter remorquePainter;
-    private FlechePainter flechePainter;
-    private NiveauPainter niveauPainter;
+    private RemorquePainter myRemorquePainter;
+    private FlechePainter myFlechePainter;
+    private NiveauPainter myNiveauPainter;
 
     private Handler myHandler;
 
@@ -85,9 +85,9 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         textViewLevage = findViewById(R.id.textViewLevageValue);
         textViewPorte = findViewById(R.id.textViewPorteValue);
 
-        remorquePainter = findViewById(R.id.remorqueView);
-        flechePainter = findViewById(R.id.flecheView);
-        niveauPainter = findViewById(R.id.niveauView);
+        myRemorquePainter = findViewById(R.id.remorqueView);
+        myFlechePainter = findViewById(R.id.flecheView);
+        myNiveauPainter = findViewById(R.id.niveauView);
 
         btnReglageInit();
         btnRefreshInit();
@@ -556,13 +556,20 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         public void run() {
 
             if (indexRound == nbRound) {
-                remorquePainter.setAngle(calculPosLevage(angleLevageRound/nbRound), calculPosPorte(anglePorteRound/nbRound));
-                flechePainter.setAngle(calculPosFleche(angleFlecheRound/nbRound));
-                niveauPainter.setNiveau(calculPosNiveau(niveauRound/nbRound));
 
-                textViewFleche.setText(formatDouble(angleFlecheRound/nbRound));
-                textViewLevage.setText(formatDouble(angleLevageRound/nbRound));
-                textViewPorte.setText(formatDouble(anglePorteRound/nbRound));
+                myNiveauPainter.setNiveau(calculPosNiveau(niveauRound/nbRound));
+
+                if (formatDouble(angleFlecheRound/nbRound) != textViewFleche.getText()) {
+                    textViewFleche.setText(formatDouble(calculPosFleche(angleFlecheRound/nbRound)));
+                    myFlechePainter.setAngle(calculPosFleche(angleFlecheRound/nbRound));
+                }
+
+                if (formatDouble(angleLevageRound/nbRound) != textViewLevage.getText() ||
+                        formatDouble(anglePorteRound/nbRound) != textViewPorte.getText()) {
+                    myRemorquePainter.setAngle(calculPosLevage(angleLevageRound/nbRound), calculPosPorte(anglePorteRound/nbRound));
+                    textViewLevage.setText(formatDouble(calculPosLevage(angleLevageRound/nbRound)));
+                    textViewPorte.setText(formatDouble(calculPosPorte(anglePorteRound/nbRound)));
+                }
 
                 angleFlecheRound = 0;
                 angleLevageRound = 0;
@@ -641,7 +648,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 
     private class GestionActionneur extends Thread {
 
-        double value;
+        double value, actualValue;
         boolean isOk = false;
         int type;
 
@@ -662,18 +669,19 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
             while (!isOk) {
                 switch (type) {
                     case ARG_LEVAGE:
-                        if (angleLevage > value) {
+                        actualValue = myRemorquePainter.getAngle();
+                        if (actualValue > value) {
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_OFF, ARG_STATE_LOW);
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_ON, ARG_STATE_HIGH);
                         }
 
-                        if (angleLevage < value) {
+                        if (actualValue < value) {
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_ON, ARG_STATE_LOW);
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_OFF, ARG_STATE_HIGH);
                         }
 
-                        if (angleLevage < value+3 &&
-                                angleLevage > value-3) {
+                        if (actualValue < value+3 &&
+                                actualValue > value-3) {
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_OFF, ARG_STATE_LOW);
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_ON, ARG_STATE_LOW);
 
@@ -688,18 +696,19 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
                         break;
 
                     case ARG_FLECHE:
-                        if (angleFleche > value) {
+                        actualValue = myFlechePainter.getAngle();
+                        if (actualValue > value) {
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_FLECHE_OFF, ARG_STATE_LOW);
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_FLECHE_ON, ARG_STATE_HIGH);
                         }
 
-                        if (angleFleche < value) {
+                        if (actualValue < value) {
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_FLECHE_ON, ARG_STATE_LOW);
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_FLECHE_OFF, ARG_STATE_HIGH);
                         }
 
-                        if (angleFleche < value+3 &&
-                                angleFleche > value-3) {
+                        if (actualValue < value+3 &&
+                                actualValue > value-3) {
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_FLECHE_OFF, ARG_STATE_LOW);
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_FLECHE_ON, ARG_STATE_LOW);
 
@@ -714,18 +723,19 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
                         break;
 
                     case ARG_PORTE:
-                        if (anglePorte > value) {
+                        actualValue = myRemorquePainter.getAngleBenne();
+                        if (actualValue > value) {
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_PORTE_OFF, ARG_STATE_LOW);
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_PORTE_ON, ARG_STATE_HIGH);
                         }
 
-                        if (anglePorte < value) {
+                        if (actualValue < value) {
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_PORTE_ON, ARG_STATE_LOW);
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_PORTE_OFF, ARG_STATE_HIGH);
                         }
 
-                        if (anglePorte < value+3 &&
-                                anglePorte > value-3) {
+                        if (actualValue < value+3 &&
+                                actualValue > value-3) {
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_PORTE_OFF, ARG_STATE_LOW);
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_PORTE_ON, ARG_STATE_LOW);
 

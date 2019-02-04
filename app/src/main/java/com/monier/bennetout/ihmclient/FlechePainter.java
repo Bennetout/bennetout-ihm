@@ -110,6 +110,8 @@ public class FlechePainter extends SurfaceView implements SurfaceHolder.Callback
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         canvas.drawColor(Color.WHITE);
 
+        canvas.rotate(180, canvasSize*(float)0.5, canvasSize*(float)0.5);
+
         // Fleche
         canvas.drawLine(flecheXFixe, flecheYFixe, flecheXMobile, flecheYMobile, myBlackPaint);
 
@@ -125,7 +127,7 @@ public class FlechePainter extends SurfaceView implements SurfaceHolder.Callback
         canvas.drawRect(remorqueXCointHautGauche, remorqueYCointHautGauche, remorqueXCointBasDroite, remorqueYCointBasDroite, myRedPaint);
         canvas.drawRect(remorqueXCointHautGauche, remorqueYCointHautGauche, remorqueXCointBasDroite, remorqueYCointBasDroite, myBlackStroke);
 
-        canvas.drawText(" " + formatDouble(angle) + "°", remorqueXCointBasDroite - largeurRemorque/2, remorqueYCointBasDroite - getResources().getDimension(R.dimen._5sdp), myWhitePaint);
+//        canvas.drawText(" " + formatDouble(angle) + "°", remorqueXCointBasDroite - largeurRemorque/2, remorqueYCointBasDroite - getResources().getDimension(R.dimen._5sdp), myWhitePaint);
 
         mySurfaceHolder.unlockCanvasAndPost(canvas);
     }
@@ -141,6 +143,10 @@ public class FlechePainter extends SurfaceView implements SurfaceHolder.Callback
             this.angle = ConfigManager.model.BORNE_MIN_FLECHE;
 
         drawFleche();
+    }
+
+    public double getAngle() {
+        return this.angle;
     }
 
     @Override

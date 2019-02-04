@@ -5,7 +5,7 @@ import java.util.Locale;
 public class Utils {
 
     public static String formatDouble(double number) {
-        return String.format(Locale.FRANCE,"%.1f", number);
+        return String.format(Locale.FRANCE,"%.0f", number);
     }
 
     public static double degree2radian(double degree) {
