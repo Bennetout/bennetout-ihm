@@ -123,9 +123,14 @@ public class Lvl1SocketCommunications implements Lvl0ProtocolThread.Lvl0Protocol
         }
     }
 
-    void write(byte[] message) {
+    void write(final byte[] message) {
 //        new SendOnSocket(message).execute();
 //        new SendOnSocket(message).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        writeToSocket(message);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                writeToSocket(message);
+            }
+        }).start();
     }
 }

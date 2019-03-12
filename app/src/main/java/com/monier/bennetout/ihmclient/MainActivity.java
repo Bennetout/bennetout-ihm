@@ -539,7 +539,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+//        super.onBackPressed();
     }
 
     private Runnable majIhm = new Runnable() {
@@ -635,11 +635,13 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
                     case ProtocolConstants.STATUS_CONNECTED:
                         fancyButton.setBorderColor(R.color.myGreen);
                         fancyButton.setBackgroundColor(getResources().getColor(R.color.myGreen));
+                        fancyButton.setClickable(false);
                         break;
 
                     case ProtocolConstants.STATUS_NOT_CONNECTED:
                         fancyButton.setBorderColor(R.color.myRed);
                         fancyButton.setBackgroundColor(getResources().getColor(R.color.myRed));
+                        fancyButton.setClickable(true);
                         break;
                 }
             }
