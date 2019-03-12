@@ -1,14 +1,18 @@
 package com.monier.bennetout.ihmclient;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
@@ -46,6 +50,9 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 
     private static final String TAG = MainActivity.class.getCanonicalName();
 
+    private String[] permissionsNeeded = {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
     private double angleFleche = 0, angleLevage = 0, anglePorte = 0;
     private double niveau = 0;
     Lvl2ClientSocket myLvl2ClientSocket = new Lvl2ClientSocket("10.3.141.1", 65000);
@@ -67,6 +74,16 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        grantPermissions(permissionsNeeded);
+
+        while (!isPermissionsGranted(permissionsNeeded)) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
         // On charge la configuration sur chaque changement d'activité pour appliquer
         // les modifications utilisateurs si besoin
@@ -109,6 +126,50 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         listViewLevageInit();
 
         myHandler = new Handler();
+    }
+
+    private boolean isPermissionsGranted(String... permissions) {
+
+        for (String permission: permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void grantPermissions(String... permissions) {
+
+        final int PERMISSIONS_SIMPLE_REQUEST      = 1;
+        final int PERMISSIONS_MULTIPLE_REQUEST    = 123;
+
+        if (permissions == null)
+            return;
+
+        ArrayList<String> notGranted = new ArrayList<>();
+
+        for (String permission: permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+                notGranted.add(permission);
+            }
+        }
+
+        if (notGranted.size() > 0) {
+            String[] permissionsToRequest = new String[notGranted.size()];
+            int index = 0;
+            for (String permission: notGranted) {
+                permissionsToRequest[index] = permission;
+                index++;
+            }
+
+            if (permissionsToRequest.length > 1)
+                ActivityCompat.requestPermissions(this, permissionsToRequest, PERMISSIONS_MULTIPLE_REQUEST);
+            else
+                ActivityCompat.requestPermissions(this, permissionsToRequest, PERMISSIONS_SIMPLE_REQUEST);
+        }
     }
 
     boolean tapisArretStatus = false;

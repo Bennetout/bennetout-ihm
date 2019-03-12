@@ -26,67 +26,6 @@ public class StorageManager {
 
     private static final String TAG = StorageManager.class.getName();
 
-    private static void writeToFile(File file, byte[] data) throws IOException {
-        FileOutputStream fos = new FileOutputStream(file);
-        fos.write(data);
-        fos.flush();
-        fos.close();
-    }
-
-    private static byte[] readFromFile(File file) throws IOException {
-        byte[] ret;
-        FileInputStream fis = new FileInputStream(file);
-        ret = new byte[fis.available()];
-        fis.read(ret);
-        fis.close();
-        return ret;
-    }
-
-    private static void performObjectSaving(File file, Context context, Object object) {
-
-        if (file == null)
-            return;
-
-        int retry = 100;
-
-        while (retry > 0) {
-            try {
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                ObjectMapper objectMapper = new ObjectMapper();
-                objectMapper.writeValue(byteArrayOutputStream, object);
-                byteArrayOutputStream.flush();
-                byte[] datas = byteArrayOutputStream.toByteArray();
-                writeToFile(file, datas);
-                retry = 0;
-            } catch (IOException e) {
-                /* Gestion de la saturation de la mémoire, dans ce cas on
-                 * supprime le fichier de log le plus anciennement modifié. */
-                if (e.getMessage().contains("ENOSPC")) {
-                    removeOldestLogFile(context);
-                    Log.e(TAG, "No space left on device, trying to remove old logs");
-                    retry--;
-                } else {
-                    e.printStackTrace();
-                    retry = 0;
-                }
-            }
-        }
-    }
-
-    private static Object performObjectLoading(File file, Class<?> valueType) throws IOException {
-        if (file == null)
-            return null;
-
-        Object object;
-        JsonFactory jsonFactory = new MappingJsonFactory();
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        JsonParser jsonParser = jsonFactory.createParser(readFromFile(file));
-        object = objectMapper.readValue(jsonParser, valueType);
-
-        return object;
-    }
-
     /* Checks if external storage is available for read and write */
     private static boolean isStorageReady(Context context) {
 
@@ -104,20 +43,6 @@ public class StorageManager {
         return true;
     }
 
-    private static double getFreeSize(Context context) {
-        StatFs statFs = new StatFs(getDocumentsDir(context).getPath());
-        long blockSize = statFs.getBlockSizeLong();
-        long availableBlocks = statFs.getAvailableBlocksLong();
-        return (double)availableBlocks * (double)blockSize;
-    }
-
-    //**********************************************************************************************
-    //                                  PUBLIC API                                                 *
-    //**********************************************************************************************
-
-    // Renvoi l'unique planning pour la supervision
-    // Créer un nouveau fichier planning sinon
-    // null
     @Nullable
     public static File getConfigFileFromDocExtStorage(Context context) {
 
@@ -158,134 +83,22 @@ public class StorageManager {
      * du smartphone si aucune carte SD n'est détectée.<p/>
      * Retourne null si un problème est détecté
      */
-    static File getDocumentsDir(Context context) {
+    private static File getDocumentsDir(Context context) {
 
-        File documentsDirName = null;
+        File documentsDirName;
 
         if (context == null)
             return null;
 
-        File[] filesDirs = context.getExternalFilesDirs(Environment.DIRECTORY_DOCUMENTS);
-        if (filesDirs == null)
-            return null;
+        documentsDirName = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "BENNETOUT");
 
-        // filesDirs[0] = mémoire interne
-        // filesDirs[1] = Sd Card
-        switch (filesDirs.length) {
-            case 2:
-                if (filesDirs[1] != null)
-                    documentsDirName = filesDirs[1];
-                else
-                    documentsDirName = filesDirs[0];
-                break;
-
-            case 1:
-                documentsDirName = filesDirs[0];
-                break;
-
-            default:
-                documentsDirName = null;
-                break;
+        if (!documentsDirName.exists()){
+            if (!documentsDirName.mkdirs()) {
+                Log.e(TAG, "Cannot create BENNETOUT base directory");
+                return null;
+            }
         }
 
         return documentsDirName;
-    }
-
-
-    // Renvoi dans l'ordre si erreur:
-    //  - Un fichier du nom de filename sauvegardé sur la SD card (accessible par tout le monde)
-    //  - Un fichier du nom de filename sauvegardé sur la mémoire interne (accessible par tout le monde)
-    //  - null
-    @Nullable
-    public static File getLogFileFromDocExtStorage(Context context, String filename, String extension, boolean withDate) {
-
-        if (!isStorageReady(context))
-            return null;
-
-        File documentsDirName = getDocumentsDir(context);
-        if (documentsDirName == null)
-            return null;
-
-        String completFilename = filename;
-        if (withDate) {
-            DateFormat dateFormat = new SimpleDateFormat("ddMMMHHmmss", Locale.FRANCE);
-            completFilename += "_" + dateFormat.format(new Date()) + extension;
-        } else {
-            completFilename += extension;
-        }
-
-        // Get the directory for the user's public document directory.
-        File logFolder = new File(documentsDirName, "logs");
-        if (!logFolder.exists()) {
-            if (!logFolder.mkdirs())
-                return null;
-        }
-        return new File(documentsDirName, "logs/" + completFilename);
-    }
-
-    @NonNull
-    public static String getFreeSizeString(Context context) {
-        double size = getFreeSize(context);
-        String suffix;
-
-        if (size >= 1024) {
-            suffix = "KB";
-            size /= 1024;
-            if (size >= 1024) {
-                suffix = "MB";
-                size /= 1024;
-                if (size >= 1024) {
-                    suffix = "GB";
-                    size /= 1024;
-                }
-            }
-        } else {
-            suffix = "Bits";
-        }
-
-        return String.format(Locale.FRANCE, "%.2f", size) + suffix;
-    }
-
-    /* true if the oldest file was deleted
-     * false otherwise */
-    public static boolean removeOldestLogFile(Context context) {
-        File dir = new File(getDocumentsDir(context), "logs");
-        if (!dir.isDirectory())
-            return false;
-
-        String[] childrens = dir.list();
-
-        if (childrens.length == 0)
-            return false;
-
-        Date oldestDate = new Date();
-        File oldestFile = null;
-
-        for (String file : childrens) {
-            File testFile = new File(dir, file);
-            Date testDate = new Date(testFile.lastModified());
-
-            if (testDate.before(oldestDate)) {
-                oldestDate = testDate;
-                oldestFile = testFile;
-            }
-        }
-
-        return oldestFile != null && oldestFile.delete();
-    }
-
-    public static boolean removeAllLogs(Context context) {
-        File dir = new File(getDocumentsDir(context), "logs");
-        if (!dir.isDirectory())
-            return false;
-
-        String[] childrens = dir.list();
-        for (String file:childrens) {
-            File toBeDeleted = new File(dir, file);
-            if (!toBeDeleted.delete())
-                return false;
-        }
-
-        return true;
     }
 }
