@@ -8,7 +8,7 @@
         android:layout_width="@dimen/_50sdp"
         android:layout_height="match_parent"
         android:gravity="center_horizontal|center_vertical"
-        android:textSize="@dimen/_15sdp"
+        android:textSize="@dimen/_5sdp"
         android:clickable="true"
         android:focusable="true" />
 </LinearLayout>

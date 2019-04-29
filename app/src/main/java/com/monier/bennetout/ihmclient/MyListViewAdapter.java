@@ -15,7 +15,6 @@ import java.util.ArrayList;
 public class MyListViewAdapter extends RecyclerView.Adapter<MyListViewAdapter.ViewHolder> {
 
     private ArrayList<MyCustomHolder> mDataset;
-    private float myDefaultTextSize;
     private MyListViewListener myListener;
     private double valueSelect = 0;
 
@@ -36,9 +35,9 @@ public class MyListViewAdapter extends RecyclerView.Adapter<MyListViewAdapter.Vi
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    MyListViewAdapter(ArrayList<MyCustomHolder> myDataset, float defaultTextSize, MyListViewListener listener) {
+    MyListViewAdapter(ArrayList<MyCustomHolder> myDataset, MyListViewListener listener) {
         this.mDataset = myDataset;
-        this.myDefaultTextSize = defaultTextSize;
+//        this.myDefaultTextSize = defaultTextSize;
         this.myListener = listener;
     }
 
@@ -61,16 +60,21 @@ public class MyListViewAdapter extends RecyclerView.Adapter<MyListViewAdapter.Vi
         // - replace the contents of the view with that element
         MyCustomHolder myCustomHolder = mDataset.get(position);
 
-//        holder.mTextView.setTextAlignment(TEXT_ALIGNMENT_CENTER);
+        float textSize;
+        if (holder.itemView.getResources().getBoolean(R.bool.isTablet)) {
+            textSize = 50;
+        } else {
+            textSize = 20;
+        }
         if (myCustomHolder.isActive) {
             holder.mTextView.setTextColor(myCustomHolder.activeColor);
             holder.mTextView.setText(Html.fromHtml("<b>" + myCustomHolder.textToShow + "</b>"));
-            holder.mTextView.setTextSize(myDefaultTextSize +5);
+            holder.mTextView.setTextSize(textSize +5);
         }
         else {
             holder.mTextView.setTextColor(Color.GRAY);
             holder.mTextView.setText(myCustomHolder.textToShow);
-            holder.mTextView.setTextSize(myDefaultTextSize);
+            holder.mTextView.setTextSize(textSize);
         }
 
         // Suppressin d'un item via un long click
@@ -90,7 +94,7 @@ public class MyListViewAdapter extends RecyclerView.Adapter<MyListViewAdapter.Vi
         });
     }
 
-    public void removeSelectedValue() {
+    void removeSelectedValue() {
         for (MyCustomHolder index:mDataset) {
             if (Double.parseDouble(index.textToShow.replace("°", "")) == valueSelect)
                 index.isActive = false;

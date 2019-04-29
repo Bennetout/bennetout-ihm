@@ -392,7 +392,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 
         final GestionActionneur[] gestionActionneur = new GestionActionneur[1];
 
-        myListViewAdapterLevage = new MyListViewAdapter(configs, getResources().getDimension(R.dimen._11sdp),
+        myListViewAdapterLevage = new MyListViewAdapter(configs,
                 new MyListViewAdapter.MyListViewListener() {
                     @Override
                     public void onNewPositionClicked(boolean state, final double value) {
@@ -434,7 +434,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         }
 
         final GestionActionneur[] gestionActionneur = new GestionActionneur[1];
-        myListViewAdapterFleche = new MyListViewAdapter(configs, getResources().getDimension(R.dimen._11sdp),
+        myListViewAdapterFleche = new MyListViewAdapter(configs,
                 new MyListViewAdapter.MyListViewListener() {
                     @Override
                     public void onNewPositionClicked(boolean state, double value) {
@@ -475,7 +475,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         }
 
         final GestionActionneur[] gestionActionneur = new GestionActionneur[1];
-        myListViewAdapterPorte = new MyListViewAdapter(configs, getResources().getDimension(R.dimen._11sdp),
+        myListViewAdapterPorte = new MyListViewAdapter(configs,
                 new MyListViewAdapter.MyListViewListener() {
                     @Override
                     public void onNewPositionClicked(boolean state, double value) {

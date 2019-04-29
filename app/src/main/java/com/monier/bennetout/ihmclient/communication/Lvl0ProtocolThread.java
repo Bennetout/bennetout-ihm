@@ -20,10 +20,6 @@ import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.NO_
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.STATUS_NOT_CONNECTED;
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.TRAME_LENGTH_MAX_SIZE;
 
-/**
- * Niveau 0 du protocol socket ihm supervision
- * Lien Wiki Bodet : http://172.17.20.19/mediawiki-1.28.2/index.php/Protocol_socket_ihm_supervision
- */
 public class Lvl0ProtocolThread implements Runnable {
 
     private static final String TAG = Lvl0ProtocolThread.class.getCanonicalName();
