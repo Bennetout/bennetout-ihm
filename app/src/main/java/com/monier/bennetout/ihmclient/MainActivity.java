@@ -18,11 +18,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.monier.bennetout.ihmclient.communication.Lvl2ClientSocket;
 import com.monier.bennetout.ihmclient.communication.ProtocolConstants;
 import com.monier.bennetout.ihmclient.configuration.ConfigManager;
 import com.monier.bennetout.ihmclient.configuration.activities.ConfigActivity;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
 
 import java.io.IOException;
 import java.text.NumberFormat;
@@ -74,6 +77,12 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        new FancyGifDialog.Builder(this)
+                .setTitle("Attention !")
+                .setGifResource(R.drawable.dontpanic)   //Pass your Gif here
+                .isCancellable(true)
+                .build();
 
         grantPermissions(permissionsNeeded);
 
