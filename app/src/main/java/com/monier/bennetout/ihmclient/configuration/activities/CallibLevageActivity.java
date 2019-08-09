@@ -18,7 +18,8 @@ import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 
 public class CallibLevageActivity extends Activity {
 
-    private double levageZero = 0, levageCent = 100;
+    private double levageZero = 0, levageCent = 100, levageZeroActual, levageCentActual;
+    private TextView textViewActualZero, textViewActualCent;
 
     private Handler myHandler;
 
@@ -28,10 +29,24 @@ public class CallibLevageActivity extends Activity {
 
         setContentView(R.layout.callib_levage);
 
+        levageZeroActual = ConfigManager.model.LEVAGE_CALLIB_ZERO;
+        levageCentActual = ConfigManager.model.LEVAGE_CALLIB_CENT;
+
+        textViewActualZero = findViewById(R.id.textViewCallibLevageZeroActual);
+        textViewActualCent = findViewById(R.id.textViewCallibLevageCentActual);
+        majTextViewActuals();
+
         btnCallibLevageZeroInit();
         btnCallibLevageCentInit();
+        btnCallibLevageSaveInit();
+
         myHandler = new Handler();
         myHandler.postDelayed(majIhm, 0);
+    }
+
+    private void majTextViewActuals() {
+        textViewActualZero.setText(formatDouble(levageZeroActual));
+        textViewActualCent.setText(formatDouble(levageCentActual));
     }
 
     private void btnCallibLevageCentInit() {
@@ -39,8 +54,8 @@ public class CallibLevageActivity extends Activity {
         fancyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ConfigManager.model.LEVAGE_CALLIB_CENT = levageCent;
-                ConfigManager.model2ConfigFile(getApplicationContext());
+                levageCentActual = levageCent;
+                majTextViewActuals();
             }
         });
     }
@@ -50,8 +65,22 @@ public class CallibLevageActivity extends Activity {
         fancyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ConfigManager.model.LEVAGE_CALLIB_ZERO = levageZero;
+                levageZeroActual = levageZero;
+                majTextViewActuals();
+            }
+        });
+    }
+
+    private void btnCallibLevageSaveInit() {
+        FancyButton fancyButton = findViewById(R.id.btnCallibLevageSave);
+        fancyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ConfigManager.model.LEVAGE_CALLIB_ZERO = levageZeroActual;
+                ConfigManager.model.LEVAGE_CALLIB_CENT = levageCentActual;
                 ConfigManager.model2ConfigFile(getApplicationContext());
+
+                finish();
             }
         });
     }

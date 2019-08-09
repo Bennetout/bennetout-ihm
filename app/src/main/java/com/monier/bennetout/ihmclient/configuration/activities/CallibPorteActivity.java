@@ -17,7 +17,8 @@ import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 
 public class CallibPorteActivity extends Activity {
 
-    private double porteZero = 0, porteCent = 100;
+    private double porteZero = 0, porteCent = 100, porteZeroActual, porteCentActual;
+    private TextView textViewActualZero, textViewActualCent;
 
     private Handler myHandler;
 
@@ -27,11 +28,24 @@ public class CallibPorteActivity extends Activity {
 
         setContentView(R.layout.callib_porte);
 
+        porteZeroActual = ConfigManager.model.PORTE_CALLIB_ZERO;
+        porteCentActual = ConfigManager.model.PORTE_CALLIB_CENT;
+
+        textViewActualZero = findViewById(R.id.textViewCallibPorteZeroActual);
+        textViewActualCent = findViewById(R.id.textViewCallibPorteCentActual);
+        majTextViewActuals();
+
         btnCallibPorteZeroInit();
         btnCallibPorteCentInit();
+        btnCallibPorteSaveInit();
 
         myHandler = new Handler();
         myHandler.postDelayed(majIhm, 0);
+    }
+
+    private void majTextViewActuals() {
+        textViewActualZero.setText(formatDouble(porteZeroActual));
+        textViewActualCent.setText(formatDouble(porteCentActual));
     }
 
     private void btnCallibPorteCentInit() {
@@ -39,8 +53,8 @@ public class CallibPorteActivity extends Activity {
         fancyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ConfigManager.model.PORTE_CALLIB_CENT = porteCent;
-                ConfigManager.model2ConfigFile(getApplicationContext());
+                porteCentActual = porteCent;
+                majTextViewActuals();
             }
         });
     }
@@ -50,8 +64,22 @@ public class CallibPorteActivity extends Activity {
         fancyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ConfigManager.model.PORTE_CALLIB_ZERO = porteZero;
+                porteZeroActual = porteZero;
+                majTextViewActuals();
+            }
+        });
+    }
+
+    private void btnCallibPorteSaveInit() {
+        FancyButton fancyButton = findViewById(R.id.btnCallibPorteSave);
+        fancyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ConfigManager.model.PORTE_CALLIB_ZERO = porteZeroActual;
+                ConfigManager.model.PORTE_CALLIB_CENT = porteCentActual;
                 ConfigManager.model2ConfigFile(getApplicationContext());
+
+                finish();
             }
         });
     }

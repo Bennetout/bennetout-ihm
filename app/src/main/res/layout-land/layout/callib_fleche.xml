@@ -49,6 +49,16 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
+                <TextView
+                    android:id="@+id/textViewCallibFlecheZeroActual"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="@dimen/_40sdp"
+                    android:gravity="center_vertical"
+                    android:text="0"
+                    android:textSize="@dimen/_20sdp"/>
+
                 <mehdi.sakout.fancybuttons.FancyButton
                     android:id="@+id/btnCallibFlecheZero"
                     android:layout_width="@dimen/_150sdp"
@@ -105,6 +115,16 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/textViewCallibFlecheCentActual"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="@dimen/_40sdp"
+                    android:gravity="center_vertical"
+                    android:text="0"
+                    android:textSize="@dimen/_20sdp"/>
 
                 <mehdi.sakout.fancybuttons.FancyButton
                     android:id="@+id/btnCallibFlecheCent"

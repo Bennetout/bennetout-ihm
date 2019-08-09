@@ -17,7 +17,8 @@ import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 
 public class CallibFlecheActivity extends Activity {
 
-    private double flecheZero = 0, flecheCent = 100;
+    private double flecheZero = 0, flecheCent = 100, flecheZeroActual, flecheCentActual;
+    private TextView textViewActualZero, textViewActualCent;
 
     private Handler myHandler;
 
@@ -27,11 +28,24 @@ public class CallibFlecheActivity extends Activity {
 
         setContentView(R.layout.callib_fleche);
 
+        flecheZeroActual = ConfigManager.model.FLECHE_CALLIB_ZERO;
+        flecheCentActual = ConfigManager.model.FLECHE_CALLIB_CENT;
+
+        textViewActualZero = findViewById(R.id.textViewCallibFlecheZeroActual);
+        textViewActualCent = findViewById(R.id.textViewCallibFlecheCentActual);
+        majTextViewActuals();
+
         btnCallibFlecheZeroInit();
         btnCallibFlecheCentInit();
+        btnCallibFlecheSaveInit();
 
         myHandler = new Handler();
         myHandler.postDelayed(majIhm, 0);
+    }
+
+    private void majTextViewActuals() {
+        textViewActualZero.setText(formatDouble(flecheZeroActual));
+        textViewActualCent.setText(formatDouble(flecheCentActual));
     }
 
     private void btnCallibFlecheCentInit() {
@@ -39,8 +53,8 @@ public class CallibFlecheActivity extends Activity {
         fancyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ConfigManager.model.FLECHE_CALLIB_CENT = flecheCent;
-                ConfigManager.model2ConfigFile(getApplicationContext());
+                flecheCentActual = flecheCent;
+                majTextViewActuals();
             }
         });
     }
@@ -50,8 +64,22 @@ public class CallibFlecheActivity extends Activity {
         fancyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ConfigManager.model.FLECHE_CALLIB_ZERO = flecheZero;
+                flecheZeroActual = flecheZero;
+                majTextViewActuals();
+            }
+        });
+    }
+
+    private void btnCallibFlecheSaveInit() {
+        FancyButton fancyButton = findViewById(R.id.btnCallibFlecheSave);
+        fancyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ConfigManager.model.FLECHE_CALLIB_ZERO = flecheZeroActual;
+                ConfigManager.model.FLECHE_CALLIB_CENT = flecheCentActual;
                 ConfigManager.model2ConfigFile(getApplicationContext());
+
+                finish();
             }
         });
     }
