@@ -18,6 +18,7 @@ public class ConfigActivity extends Activity {
 
         setContentView(R.layout.configurations);
         btnCallibrationsInit();
+        btnActionneursInit();
     }
 
     private void btnCallibrationsInit() {
@@ -26,6 +27,17 @@ public class ConfigActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), CallibrationsActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void btnActionneursInit() {
+        final FancyButton fancyButton = findViewById(R.id.btnActionneurs);
+        fancyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), ActionneursActivity.class);
                 startActivity(intent);
             }
         });

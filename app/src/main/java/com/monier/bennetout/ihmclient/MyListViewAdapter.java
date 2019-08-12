@@ -1,6 +1,8 @@
 package com.monier.bennetout.ihmclient;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -17,9 +20,19 @@ public class MyListViewAdapter extends RecyclerView.Adapter<MyListViewAdapter.Vi
     private ArrayList<MyCustomHolder> mDataset;
     private MyListViewListener myListener;
     private double valueSelect = 0;
+    private boolean customClickEnabled = true;
+    private boolean deleteOnLongClickEnable = false;
 
     public interface MyListViewListener {
         void onNewPositionClicked(boolean state, double value);
+    }
+
+    public void setCustomLongClickEnabled(boolean deleteOnLongClickEnable) {
+        this.deleteOnLongClickEnable = deleteOnLongClickEnable;
+    }
+
+    public void setCustomClickEnabled(boolean enabled) {
+        this.customClickEnabled = enabled;
     }
 
     // Provide a reference to the views for each data item
@@ -35,7 +48,7 @@ public class MyListViewAdapter extends RecyclerView.Adapter<MyListViewAdapter.Vi
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    MyListViewAdapter(ArrayList<MyCustomHolder> myDataset, MyListViewListener listener) {
+    public MyListViewAdapter(ArrayList<MyCustomHolder> myDataset, MyListViewListener listener) {
         this.mDataset = myDataset;
 //        this.myDefaultTextSize = defaultTextSize;
         this.myListener = listener;
@@ -78,25 +91,75 @@ public class MyListViewAdapter extends RecyclerView.Adapter<MyListViewAdapter.Vi
         }
 
         // Suppressin d'un item via un long click
-//        holder.mTextView.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View view) {
-//                deleteItem(holder.getAdapterPosition());
-//                return false;
-//            }
-//        });
+        if (deleteOnLongClickEnable) {
+            holder.mTextView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    AlertDialog.Builder alertDialogChoix = new AlertDialog.Builder(holder.itemView.getContext());
+                    alertDialogChoix.setTitle("Que voulez vous faire ?");
+                    alertDialogChoix.setItems(new CharSequence[]
+                                    {"Décaler à gauche", "Décaler à droite", "Supprimer"},
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // The 'which' argument contains the index position
+                                    // of the selected item
+                                    switch (which) {
+                                        case 0:
+                                            if (holder.getAdapterPosition() != 0) {
+                                                MyCustomHolder active = mDataset.get(holder.getAdapterPosition());
+                                                MyCustomHolder nMoinsUn = mDataset.get(holder.getAdapterPosition() -1);
+                                                mDataset.set(holder.getAdapterPosition(), nMoinsUn);
+                                                mDataset.set(holder.getAdapterPosition() -1, active);
+                                                notifyDataSetChanged();
+                                            }
+                                            break;
 
-        holder.mTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switchActiveItem(holder.getAdapterPosition());
-            }
-        });
+                                        case 1:
+                                            if (holder.getAdapterPosition() != (mDataset.size() -1)) {
+                                                MyCustomHolder active = mDataset.get(holder.getAdapterPosition());
+                                                MyCustomHolder nPlusUn = mDataset.get(holder.getAdapterPosition() + 1);
+                                                mDataset.set(holder.getAdapterPosition(), nPlusUn);
+                                                mDataset.set(holder.getAdapterPosition() + 1, active);
+                                                notifyDataSetChanged();
+                                            }
+                                            break;
+
+                                        case 2:
+                                            AlertDialog.Builder alertDialogSuppr = new AlertDialog.Builder(holder.itemView.getContext());
+                                            alertDialogSuppr.setTitle("Supprimer une valeur");
+                                            alertDialogSuppr.setMessage("Supprimer la valeur " + holder.mTextView.getText() + " ?");
+                                            alertDialogSuppr.setPositiveButton("Oui", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                    deleteItem(holder.getAdapterPosition());
+                                                }
+                                            });
+                                            alertDialogSuppr.setNegativeButton("Non", null);
+                                            alertDialogSuppr.show();
+                                            break;
+                                    }
+                                }
+                            });
+                    alertDialogChoix.show();
+                    return false;
+                }
+            });
+        }
+
+        if (customClickEnabled) {
+            holder.mTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    switchActiveItem(holder.getAdapterPosition());
+                }
+            });
+        }
     }
 
     void removeSelectedValue() {
         for (MyCustomHolder index:mDataset) {
-            if (Double.parseDouble(index.textToShow.replace("°", "")) == valueSelect)
+            if (index.value == valueSelect)
                 index.isActive = false;
         }
 
@@ -122,12 +185,28 @@ public class MyListViewAdapter extends RecyclerView.Adapter<MyListViewAdapter.Vi
 
         notifyDataSetChanged();
 
-        valueSelect = Double.parseDouble(mDataset.get(index).textToShow.replace("°", ""));
+        valueSelect = mDataset.get(index).value;
         if (myListener != null)
             myListener.onNewPositionClicked(mDataset.get(index).isActive, valueSelect);
     }
 
-    private void deleteItem(int index) {
+    public double[] getAllValues() {
+
+        double[] ret = new double[mDataset.size()];
+
+        for (int i = 0; i < mDataset.size(); i++) {
+            ret[i] = mDataset.get(i).value;
+        }
+
+        return ret;
+    }
+
+    public void addItem(MyCustomHolder holder) {
+        this.mDataset.add(holder);
+        notifyDataSetChanged();
+    }
+
+    public void deleteItem(int index) {
         mDataset.remove(index);
         notifyItemRemoved(index);
     }

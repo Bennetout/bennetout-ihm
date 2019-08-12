@@ -121,11 +121,15 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         btnTapisMarcheInit();
         btnTapisArretInit();
 
+        myHandler = new Handler();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         listViewPorteInit();
         listViewFlecheInit();
         listViewLevageInit();
-
-        myHandler = new Handler();
     }
 
     private boolean isPermissionsGranted(String... permissions) {
@@ -387,7 +391,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 
         int colorId = getResources().getColor(R.color.myGreen);
         for (double anUserConfig : userConfig) {
-            configs.add(new MyCustomHolder(numberFormat.format(anUserConfig) + "°", false, colorId));
+            configs.add(new MyCustomHolder(anUserConfig, false, colorId));
         }
 
         final GestionActionneur[] gestionActionneur = new GestionActionneur[1];
@@ -430,7 +434,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 
         int colorId = getResources().getColor(R.color.myGreen);
         for (double anUserConfig : userConfig) {
-            configs.add(new MyCustomHolder(numberFormat.format(anUserConfig) + "°", false, colorId));
+            configs.add(new MyCustomHolder(anUserConfig, false, colorId));
         }
 
         final GestionActionneur[] gestionActionneur = new GestionActionneur[1];
@@ -471,7 +475,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 
         int colorId = getResources().getColor(R.color.myGreen);
         for (double anUserConfig : userConfig) {
-            configs.add(new MyCustomHolder(numberFormat.format(anUserConfig) + "°", false, colorId));
+            configs.add(new MyCustomHolder(anUserConfig, false, colorId));
         }
 
         final GestionActionneur[] gestionActionneur = new GestionActionneur[1];

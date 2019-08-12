@@ -205,6 +205,7 @@
                 android:id="@+id/listViewPorte"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/_4sdp"
                 android:background="@drawable/layout_border"
                 android:orientation="horizontal"
                 android:scrollbars="horizontal" />
@@ -273,6 +274,7 @@
                 android:id="@+id/listViewFleche"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/_4sdp"
                 android:background="@drawable/layout_border"
                 android:orientation="horizontal"
                 android:scrollbars="horizontal" />
@@ -341,6 +343,7 @@
                 android:id="@+id/listViewLevage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/_4sdp"
                 android:background="@drawable/layout_border"
                 android:orientation="horizontal"
                 android:scrollbars="horizontal" />

@@ -11,6 +11,7 @@
     <string name="affichages">Affichages</string>
     <string name="actionneurs">Actionneurs</string>
     <string name="callibrations_maj">CALLIBRATIONS</string>
+    <string name="actionneurs_maj">ACTIONNEURS</string>
 
     <string name="callibration_fl_che">Callibration flèche</string>
     <string name="callibration_levage">Callibration levage</string>
@@ -21,6 +22,9 @@
     <string name="callibration_levage_maj">CALLIBRATION LEVAGE</string>
     <string name="callibration_porte_maj">CALLIBRATION PORTE</string>
     <string name="callibration_niveau_maj">CALLIBRATION NIVEAU</string>
+
+    <string name="actionneurs_bandeaux">Valeurs des bandeaux</string>
+    <string name="actionneurs_bandeaux_maj">VALEURS DES BANDEAUX</string>
 
     <string name="figer_le_0">Figer le 0</string>
     <string name="figer_le_100">Figer le 100</string>

@@ -48,5 +48,7 @@
         <activity android:name=".configuration.activities.CallibNiveauActivity"
             android:screenOrientation="landscape">
         </activity>
+        <activity android:name=".configuration.activities.ActionBandeauxActivity" />
+        <activity android:name=".configuration.activities.ActionneursActivity" />
     </application>
 </manifest>
