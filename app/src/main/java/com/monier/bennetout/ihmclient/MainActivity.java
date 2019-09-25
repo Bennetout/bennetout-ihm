@@ -49,6 +49,9 @@ import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 public class MainActivity extends Activity implements Lvl2ClientSocket.SocketClientListener {
 
     private static final String TAG = MainActivity.class.getCanonicalName();
+    private static final int PORTE  = 0;
+    private static final int FLECHE  = 1;
+    private static final int LEVAGE  = 2;
 
     private String[] permissionsNeeded = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -70,6 +73,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     private NiveauPainter myNiveauPainter;
 
     private Handler myHandler;
+    private final GestionActionneur[] gestionActionneur = new GestionActionneur[3];
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -394,23 +398,20 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
             configs.add(new MyCustomHolder(anUserConfig, false, colorId));
         }
 
-        final GestionActionneur[] gestionActionneur = new GestionActionneur[1];
-
         myListViewAdapterLevage = new MyListViewAdapter(configs,
                 new MyListViewAdapter.MyListViewListener() {
                     @Override
                     public void onNewPositionClicked(boolean state, final double value) {
 
-                        if (gestionActionneur[0] != null)
-                            gestionActionneur[0].stopAll();
+                        if (gestionActionneur[LEVAGE] != null)
+                            gestionActionneur[LEVAGE].stopAll();
 
                         if (!state) {
                             return;
                         }
 
-                        gestionActionneur[0] = new GestionActionneur(ARG_LEVAGE);
-                        gestionActionneur[0].value = value;
-                        gestionActionneur[0].start();
+                        gestionActionneur[LEVAGE] = new GestionActionneur(ARG_LEVAGE, value);
+                        gestionActionneur[LEVAGE].start();
                     }
                 });
         mRecyclerView.setAdapter(myListViewAdapterLevage);
@@ -437,21 +438,19 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
             configs.add(new MyCustomHolder(anUserConfig, false, colorId));
         }
 
-        final GestionActionneur[] gestionActionneur = new GestionActionneur[1];
         myListViewAdapterFleche = new MyListViewAdapter(configs,
                 new MyListViewAdapter.MyListViewListener() {
                     @Override
                     public void onNewPositionClicked(boolean state, double value) {
-                        if (gestionActionneur[0] != null)
-                            gestionActionneur[0].stopAll();
+                        if (gestionActionneur[FLECHE] != null)
+                            gestionActionneur[FLECHE].stopAll();
 
                         if (!state) {
                             return;
                         }
 
-                        gestionActionneur[0] = new GestionActionneur(ARG_FLECHE);
-                        gestionActionneur[0].value = value;
-                        gestionActionneur[0].start();
+                        gestionActionneur[FLECHE] = new GestionActionneur(ARG_FLECHE, value);
+                        gestionActionneur[FLECHE].start();
                     }
                 });
         mRecyclerView.setAdapter(myListViewAdapterFleche);
@@ -478,21 +477,19 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
             configs.add(new MyCustomHolder(anUserConfig, false, colorId));
         }
 
-        final GestionActionneur[] gestionActionneur = new GestionActionneur[1];
         myListViewAdapterPorte = new MyListViewAdapter(configs,
                 new MyListViewAdapter.MyListViewListener() {
                     @Override
                     public void onNewPositionClicked(boolean state, double value) {
-                        if (gestionActionneur[0] != null)
-                            gestionActionneur[0].stopAll();
+                        if (gestionActionneur[PORTE] != null)
+                            gestionActionneur[PORTE].stopAll();
 
                         if (!state) {
                             return;
                         }
 
-                        gestionActionneur[0] = new GestionActionneur(ARG_PORTE);
-                        gestionActionneur[0].value = value;
-                        gestionActionneur[0].start();
+                        gestionActionneur[PORTE] = new GestionActionneur(ARG_PORTE, value);
+                        gestionActionneur[PORTE].start();
                     }
                 });
         mRecyclerView.setAdapter(myListViewAdapterPorte);
@@ -511,6 +508,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 //                            clientSocket.connect("10.42.0.1");
                             myLvl2ClientSocket.connect();
                             myHandler.postDelayed(majIhm, 0);
+                            myLvl2ClientSocket.getSensorsValues();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -579,23 +577,29 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 
     public static double calculPosFleche(double angleInitial) {
         double flecheCallibZero = ConfigManager.model.FLECHE_CALLIB_ZERO;
-        double flecheCallibCent = ConfigManager.model.FLECHE_CALLIB_CENT;
 
-        double droiteXa = flecheCallibZero;
-        double droiteXb = flecheCallibCent;
-        double droiteYa = 0;
-        double droiteYb = 100;
-
-        double droiteX = angleInitial;
-
-        double droiteA = (droiteYb - droiteYa) / (droiteXb - droiteXa);
-        double droiteB = - (droiteA * droiteXa);
-
-        double droiteY = droiteA * droiteX + droiteB;
-
-        return droiteY * (ConfigManager.model.BORNE_MAX_FLECHE - ConfigManager.model.BORNE_MIN_FLECHE)*0.01 - ConfigManager.model.BORNE_MAX_FLECHE;
-//        return droiteY*0.9 -45;
+        return angleInitial - flecheCallibZero;
     }
+
+//    public static double calculPosFleche(double angleInitial) {
+//        double flecheCallibZero = ConfigManager.model.FLECHE_CALLIB_ZERO;
+//        double flecheCallibCent = ConfigManager.model.FLECHE_CALLIB_CENT;
+//
+//        double droiteXa = flecheCallibZero;
+//        double droiteXb = flecheCallibCent;
+//        double droiteYa = 0;
+//        double droiteYb = 100;
+//
+//        double droiteX = angleInitial;
+//
+//        double droiteA = (droiteYb - droiteYa) / (droiteXb - droiteXa);
+//        double droiteB = - (droiteA * droiteXa);
+//
+//        double droiteY = droiteA * droiteX + droiteB;
+//
+//        return droiteY * (ConfigManager.model.BORNE_MAX_FLECHE - ConfigManager.model.BORNE_MIN_FLECHE)*0.01 - ConfigManager.model.BORNE_MAX_FLECHE;
+////        return droiteY*0.9 -45;
+//    }
 
     @Override
     protected void onDestroy() {
@@ -649,9 +653,9 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
                 indexRound ++;
             }
 
-            myLvl2ClientSocket.getSensorsValues();
+//            myLvl2ClientSocket.getSensorsValues();
 
-            myHandler.postDelayed(this, 200);
+            myHandler.postDelayed(this, 30);
         }
     };
 
@@ -666,6 +670,14 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         CaptorValuesSingleton.setAngleLevage(angleLevage);
         CaptorValuesSingleton.setAnglePorte(anglePorte);
         CaptorValuesSingleton.setNiveau(niveau);
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        myLvl2ClientSocket.getSensorsValues();
     }
 
     @Override
@@ -715,12 +727,27 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 
     private class GestionActionneur extends Thread {
 
-        double value, actualValue;
-        boolean isOk = false;
-        int type;
+        private double value, actualValue, initialValue;
+        private boolean isOk = false;
+        private int type;
 
-        GestionActionneur(int type) {
+        GestionActionneur(int type, double valueToSet) {
             this.type = type;
+            this.value = valueToSet;
+
+            switch (type) {
+                case ARG_LEVAGE:
+                    this.initialValue = myRemorquePainter.getAngle();
+                    break;
+
+                case ARG_FLECHE:
+                    this.initialValue = myFlechePainter.getAngle();
+                    break;
+
+                case ARG_PORTE:
+                    this.initialValue = myRemorquePainter.getAngleBenne();
+                    break;
+            }
         }
 
         void stopAll() {
@@ -747,8 +774,10 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_OFF, ARG_STATE_HIGH);
                         }
 
-                        if (actualValue < value+3 &&
-                                actualValue > value-3) {
+                        if ((actualValue < (value+3) && actualValue > (value-3)) ||
+                                (actualValue > (initialValue+3) && actualValue > value) ||
+                                (actualValue < (initialValue-3) && actualValue < value)) {
+
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_OFF, ARG_STATE_LOW);
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_ON, ARG_STATE_LOW);
 
@@ -774,8 +803,9 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_FLECHE_OFF, ARG_STATE_HIGH);
                         }
 
-                        if (actualValue < value+3 &&
-                                actualValue > value-3) {
+                        if ((actualValue < (value+3) && actualValue > (value-3)) ||
+                                (actualValue > (initialValue+3) && actualValue > value) ||
+                                (actualValue < (initialValue-3) && actualValue < value)) {
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_FLECHE_OFF, ARG_STATE_LOW);
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_FLECHE_ON, ARG_STATE_LOW);
 
@@ -801,8 +831,9 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_PORTE_OFF, ARG_STATE_HIGH);
                         }
 
-                        if (actualValue < value+3 &&
-                                actualValue > value-3) {
+                        if ((actualValue < (value+3) && actualValue > (value-3)) ||
+                                (actualValue > (initialValue+3) && actualValue > value) ||
+                                (actualValue < (initialValue-3) && actualValue < value)) {
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_PORTE_OFF, ARG_STATE_LOW);
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_PORTE_ON, ARG_STATE_LOW);
 

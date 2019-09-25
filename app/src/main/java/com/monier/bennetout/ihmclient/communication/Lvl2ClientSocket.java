@@ -13,9 +13,9 @@ public class Lvl2ClientSocket extends Lvl1SocketCommunications {
 
     private static final int SOCK_TIMEOUT           = 2000;
 
-    public static final int SENSOR_PORTE       = 1;
-    public static final int SENSOR_LEVAGE      = 2;
-    public static final int SENSOR_FLECHE      = 3;
+    private static final int SENSOR_PORTE       = 1;
+    private static final int SENSOR_LEVAGE      = 2;
+    private static final int SENSOR_FLECHE      = 3;
 
     private String ipAddr;
     private int port;
