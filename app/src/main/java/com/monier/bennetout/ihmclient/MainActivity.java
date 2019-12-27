@@ -17,6 +17,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.monier.bennetout.ihmclient.communication.Lvl2ClientSocket;
@@ -96,6 +97,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         myLvl2ClientSocket.setListener(this);
 
         setContentView(R.layout.main);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         // Get a random id into the main View
         View randomView = findViewById(R.id.btnRefresh);
