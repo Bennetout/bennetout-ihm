@@ -21,6 +21,7 @@ public class CallibrationsActivity extends Activity {
         btnCallibLevageInit();
         btnCallibPorteInit();
         btnCallibNiveauInit();
+        btnCallibTamisInit();
     }
 
     private void btnCallibNiveauInit() {
@@ -62,6 +63,17 @@ public class CallibrationsActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), CallibFlecheActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void btnCallibTamisInit() {
+        FancyButton fancyButton = findViewById(R.id.btnCallibTamis);
+        fancyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), CallibTamisActivity.class);
                 startActivity(intent);
             }
         });

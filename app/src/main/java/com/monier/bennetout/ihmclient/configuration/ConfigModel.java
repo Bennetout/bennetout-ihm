@@ -12,6 +12,9 @@ public class ConfigModel {
 
     public double NIVEAU_CALLIB_ZERO = ConfigDefaults.NIVEAU_CALLIB_ZERO_D;
 
+    public double TAMIS_CALLIB_ZERO = ConfigDefaults.TAMIS_CALLIB_ZERO_D;
+    public double TAMIS_CALLIB_CENT = ConfigDefaults.TAMIS_CALLIB_CENT_D;
+
     public double BORNE_MAX_FLECHE = ConfigDefaults.BORNE_MAX_FLECHE_D;
     public double BORNE_MIN_FLECHE = ConfigDefaults.BORNE_MIN_FLECHE_D;
 
@@ -20,6 +23,9 @@ public class ConfigModel {
 
     public double BORNE_MAX_PORTE = ConfigDefaults.BORNE_MAX_PORTE_D;
     public double BORNE_MIN_PORTE = ConfigDefaults.BORNE_MIN_PORTE_D;
+
+    public double BORNE_MAX_TAMIS = ConfigDefaults.BORNE_MAX_TAMIS_D;
+    public double BORNE_MIN_TAMIS = ConfigDefaults.BORNE_MIN_TAMIS_D;
 
     public double[] PORTE_CONFIGS = ConfigDefaults.PORTE_CONFIGS_D;
     public double[] FLECHE_CONFIGS = ConfigDefaults.FLECHE_CONFIGS_D;

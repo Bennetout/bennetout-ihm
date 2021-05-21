@@ -48,7 +48,18 @@
         <activity android:name=".configuration.activities.CallibNiveauActivity"
             android:screenOrientation="landscape">
         </activity>
-        <activity android:name=".configuration.activities.ActionBandeauxActivity" />
-        <activity android:name=".configuration.activities.ActionneursActivity" />
+
+        <activity android:name=".configuration.activities.CallibTamisActivity"
+            android:screenOrientation="landscape">
+        </activity>
+
+        <activity android:name=".configuration.activities.ActionBandeauxActivity"
+            android:screenOrientation="landscape">
+        </activity>
+
+        <activity android:name=".configuration.activities.ActionneursActivity"
+            android:screenOrientation="landscape">
+        </activity>
+
     </application>
 </manifest>

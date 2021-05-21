@@ -17,8 +17,8 @@ public class Lvl2ClientSocket extends Lvl1SocketCommunications {
     private static final int SENSOR_LEVAGE      = 2;
     private static final int SENSOR_FLECHE      = 3;
 
-    private String ipAddr;
-    private int port;
+    private final String ipAddr;
+    private final int port;
     private Socket mySocket = null;
     private SocketClientListener myListener;
 
@@ -121,7 +121,7 @@ public class Lvl2ClientSocket extends Lvl1SocketCommunications {
         String values = new String(data);
 
         String[] splitValues = values.split("/");
-        if (splitValues.length < 6)
+        if (splitValues.length < 7)
             return;
 
         if (splitValues[1].isEmpty())
@@ -134,6 +134,8 @@ public class Lvl2ClientSocket extends Lvl1SocketCommunications {
             return;
         if (splitValues[5].isEmpty())
             return;
+        if (splitValues[6].isEmpty())
+            return;
 
         try {
             double fleche = Double.valueOf(splitValues[1]);
@@ -141,9 +143,10 @@ public class Lvl2ClientSocket extends Lvl1SocketCommunications {
             double porte = Double.valueOf(splitValues[3]);
             double inclinoX = Double.valueOf(splitValues[4]);
             double inclinoY = Double.valueOf(splitValues[5]);
+            double tamis = Double.valueOf(splitValues[6]);
 
             if (myListener != null)
-                myListener.onPositionsReceivedFromServer(fleche, levage, porte, inclinoX, inclinoY);
+                myListener.onPositionsReceivedFromServer(fleche, levage, porte, inclinoX, inclinoY, tamis);
 
         } catch (NumberFormatException nfe) {
             nfe.printStackTrace();
@@ -164,7 +167,7 @@ public class Lvl2ClientSocket extends Lvl1SocketCommunications {
 
     public interface SocketClientListener {
         void onSocketStatusUpdate(int status);
-        void onPositionsReceivedFromServer(double flechePos, double levagePos, double portePos, double niveauX, double niveauY);
+        void onPositionsReceivedFromServer(double flechePos, double levagePos, double portePos, double niveauX, double niveauY, double tamisPos);
         void onSetSensorValueFinish(byte sensorArg);
     }
 }

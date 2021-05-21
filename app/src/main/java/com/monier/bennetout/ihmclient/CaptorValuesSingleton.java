@@ -4,6 +4,7 @@ public class CaptorValuesSingleton {
 
     private static double angleFleche = 0, angleLevage = 0, anglePorte = 0;
     private static double niveau = 0;
+    private static double angleTamis = 0;
 
     public static double getAngleFleche() {
         return angleFleche;
@@ -35,5 +36,13 @@ public class CaptorValuesSingleton {
 
     public static void setNiveau(double newPos) {
         niveau = newPos;
+    }
+
+    public static void setAngleTamis(double newAngle) {
+        angleTamis = newAngle;
+    }
+
+    public static double getAngleTamis() {
+        return angleTamis;
     }
 }

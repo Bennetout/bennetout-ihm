@@ -1,7 +1,5 @@
 package com.monier.bennetout.ihmclient.configuration;
 
-import java.util.ArrayList;
-
 class ConfigDefaults {
 
     static final double FLECHE_CALLIB_ZERO_D = 0;
@@ -15,6 +13,9 @@ class ConfigDefaults {
 
     static final double NIVEAU_CALLIB_ZERO_D = 0;
 
+    static final double TAMIS_CALLIB_ZERO_D = 0;
+    static final double TAMIS_CALLIB_CENT_D = 100;
+
     static final double BORNE_MAX_FLECHE_D   = 30;
     static final double BORNE_MIN_FLECHE_D   = -30;
 
@@ -23,6 +24,9 @@ class ConfigDefaults {
 
     static final double BORNE_MAX_PORTE_D   = 90;
     static final double BORNE_MIN_PORTE_D   = 0;
+
+    static final double BORNE_MAX_TAMIS_D   = 45;
+    static final double BORNE_MIN_TAMIS_D   = 0;
 
     static final double[] PORTE_CONFIGS_D = {0, 50, 75, 100};
     static final double[] FLECHE_CONFIGS_D = {-5, -10, -15, -20, 20, 15, 10, 5};

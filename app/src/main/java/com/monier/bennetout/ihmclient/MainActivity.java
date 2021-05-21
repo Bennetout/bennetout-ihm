@@ -49,6 +49,8 @@ import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 
 public class MainActivity extends Activity implements Lvl2ClientSocket.SocketClientListener {
 
+    private static final String VERSION = "V2";
+
     private static final String TAG = MainActivity.class.getCanonicalName();
     private static final int PORTE  = 0;
     private static final int FLECHE  = 1;
@@ -59,11 +61,13 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 
     private double angleFleche = 0, angleLevage = 0, anglePorte = 0;
     private double niveau = 0;
+    private double angleTamis = 0;
     Lvl2ClientSocket myLvl2ClientSocket = new Lvl2ClientSocket("10.3.141.1", 65000);
 
     private TextView textViewFleche;
     private TextView textViewLevage;
     private TextView textViewPorte;
+    private TextView textViewTamis;
 
     private MyListViewAdapter myListViewAdapterPorte;
     private MyListViewAdapter myListViewAdapterLevage;
@@ -104,9 +108,13 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         View root = randomView.getRootView();
         root.setBackgroundColor(Color.WHITE);
 
+        TextView textViewVersion = findViewById(R.id.textViewVersion);
+        textViewVersion.setText(VERSION);
+
         textViewFleche = findViewById(R.id.textViewFlecheValue);
         textViewLevage = findViewById(R.id.textViewLevageValue);
         textViewPorte = findViewById(R.id.textViewPorteValue);
+        textViewTamis = findViewById(R.id.textViewTamisValue);
 
         myRemorquePainter = findViewById(R.id.remorqueView);
         myFlechePainter = findViewById(R.id.flecheView);
@@ -583,6 +591,25 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         return angleInitial - flecheCallibZero;
     }
 
+    public static double calculPosTamis(double angleInitial) {
+        double tamisCallibZero = ConfigManager.model.TAMIS_CALLIB_ZERO;
+        double tamisCallibCent = ConfigManager.model.TAMIS_CALLIB_CENT;
+
+        double droiteXa = tamisCallibZero;
+        double droiteXb = tamisCallibCent;
+        double droiteYa = 0;
+        double droiteYb = 100;
+
+        double droiteX = angleInitial;
+
+        double droiteA = (droiteYb - droiteYa) / (droiteXb - droiteXa);
+        double droiteB = - (droiteA * droiteXa);
+
+        double droiteY = droiteA * droiteX + droiteB;
+
+        return droiteY *((ConfigManager.model.BORNE_MAX_TAMIS - ConfigManager.model.BORNE_MIN_TAMIS)*0.01);
+    }
+
 //    public static double calculPosFleche(double angleInitial) {
 //        double flecheCallibZero = ConfigManager.model.FLECHE_CALLIB_ZERO;
 //        double flecheCallibCent = ConfigManager.model.FLECHE_CALLIB_CENT;
@@ -619,39 +646,50 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         private double angleLevageRound = 0;
         private double anglePorteRound = 0;
         private double niveauRound = 0;
+        private double angleTamisRound = 0;
 
         private int indexRound = 0;
-        private double nbRound = 4;
 
         @Override
         public void run() {
 
+            double nbRound = 4;
             if (indexRound == nbRound) {
 
-                myNiveauPainter.setNiveau(calculPosNiveau(niveauRound/nbRound));
+                // Affichage du devers
+                myNiveauPainter.setNiveau(calculPosNiveau(niveauRound/ nbRound));
 
-                if (formatDouble(angleFlecheRound/nbRound) != textViewFleche.getText()) {
-                    textViewFleche.setText(formatDouble(calculPosFleche(angleFlecheRound/nbRound)));
-                    myFlechePainter.setAngle(calculPosFleche(angleFlecheRound/nbRound));
+                // Affichage de la position du tamis
+                if (formatDouble(angleTamisRound/ nbRound) != textViewTamis.getText()) {
+                    textViewTamis.setText(formatDouble(calculPosTamis(angleTamisRound/ nbRound)));
                 }
 
-                if (formatDouble(angleLevageRound/nbRound) != textViewLevage.getText() ||
-                        formatDouble(anglePorteRound/nbRound) != textViewPorte.getText()) {
-                    myRemorquePainter.setAngle(calculPosLevage(angleLevageRound/nbRound), calculPosPorte(anglePorteRound/nbRound));
-                    textViewLevage.setText(formatDouble(calculPosLevage(angleLevageRound/nbRound)));
-                    textViewPorte.setText(formatDouble(calculPosPorte(anglePorteRound/nbRound)));
+                // Affichage de l'angle de la flèche
+                if (formatDouble(angleFlecheRound/ nbRound) != textViewFleche.getText()) {
+                    textViewFleche.setText(formatDouble(calculPosFleche(angleFlecheRound/ nbRound)));
+                    myFlechePainter.setAngle(calculPosFleche(angleFlecheRound/ nbRound));
+                }
+
+                // Affichage des angles levage + porte
+                if (formatDouble(angleLevageRound/ nbRound) != textViewLevage.getText() ||
+                        formatDouble(anglePorteRound/ nbRound) != textViewPorte.getText()) {
+                    myRemorquePainter.setAngle(calculPosLevage(angleLevageRound/ nbRound), calculPosPorte(anglePorteRound/ nbRound));
+                    textViewLevage.setText(formatDouble(calculPosLevage(angleLevageRound/ nbRound)));
+                    textViewPorte.setText(formatDouble(calculPosPorte(anglePorteRound/ nbRound)));
                 }
 
                 angleFlecheRound = 0;
                 angleLevageRound = 0;
                 anglePorteRound = 0;
                 niveauRound = 0;
+                angleTamisRound = 0;
                 indexRound = 0;
             } else {
                 angleFlecheRound += angleFleche;
                 angleLevageRound += angleLevage;
                 anglePorteRound += anglePorte;
                 niveauRound += niveau;
+                angleTamisRound += angleTamis;
                 indexRound ++;
             }
 
@@ -662,16 +700,18 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     };
 
     @Override
-    public void onPositionsReceivedFromServer(final double flechePos, final double levagePos, final double portePos, final double niveauX, double niveauY) {
+    public void onPositionsReceivedFromServer(final double flechePos, final double levagePos, final double portePos, final double niveauX, double niveauY, final double tamisPos) {
         angleFleche = flechePos;
         angleLevage = levagePos;
         anglePorte = portePos;
         niveau = niveauX;
+        angleTamis = tamisPos;
 
         CaptorValuesSingleton.setAngleFleche(angleFleche);
         CaptorValuesSingleton.setAngleLevage(angleLevage);
         CaptorValuesSingleton.setAnglePorte(anglePorte);
         CaptorValuesSingleton.setNiveau(niveau);
+        CaptorValuesSingleton.setAngleTamis(angleTamis);
 
         try {
             Thread.sleep(100);
