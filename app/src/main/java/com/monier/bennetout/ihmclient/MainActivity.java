@@ -547,6 +547,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         double droiteXb = levageCallibCent;
         double droiteYa = 0;
         double droiteYb = 100;
+        double resultat;
 
         double droiteX = angleInitial;
 
@@ -555,8 +556,15 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 
         double droiteY = droiteA * droiteX + droiteB;
 
-        return droiteY *((ConfigManager.model.BORNE_MAX_LEVAGE - ConfigManager.model.BORNE_MIN_LEVAGE)*0.01);
-//        return droiteY *0.45;
+        resultat = droiteY *((ConfigManager.model.BORNE_MAX_LEVAGE - ConfigManager.model.BORNE_MIN_LEVAGE)*0.01);
+
+        if (resultat > ConfigManager.model.BORNE_MAX_LEVAGE)
+            return ConfigManager.model.BORNE_MAX_LEVAGE;
+
+        if (resultat < ConfigManager.model.BORNE_MIN_LEVAGE)
+            return ConfigManager.model.BORNE_MIN_LEVAGE;
+
+        return resultat;
     }
 
     public static double calculPosNiveau(double angleInitial) {
@@ -573,6 +581,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         double droiteXb = porteCallibCent;
         double droiteYa = 0;
         double droiteYb = 100;
+        double resultat;
 
         double droiteX = angleInitial;
 
@@ -581,14 +590,30 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 
         double droiteY = droiteA * droiteX + droiteB;
 
-        return droiteY *((ConfigManager.model.BORNE_MAX_PORTE - ConfigManager.model.BORNE_MIN_PORTE)*0.01);
-//        return droiteY *0.9;
+        resultat = droiteY *((ConfigManager.model.BORNE_MAX_PORTE - ConfigManager.model.BORNE_MIN_PORTE)*0.01);
+
+        if (resultat > ConfigManager.model.BORNE_MAX_PORTE)
+            return ConfigManager.model.BORNE_MAX_PORTE;
+
+        if (resultat < ConfigManager.model.BORNE_MIN_PORTE)
+            return ConfigManager.model.BORNE_MIN_PORTE;
+
+        return resultat;
     }
 
     public static double calculPosFleche(double angleInitial) {
         double flecheCallibZero = ConfigManager.model.FLECHE_CALLIB_ZERO;
+        double resultat;
 
-        return angleInitial - flecheCallibZero;
+        resultat = angleInitial - flecheCallibZero;
+
+        if (resultat > ConfigManager.model.BORNE_MAX_FLECHE)
+            return ConfigManager.model.BORNE_MAX_FLECHE;
+
+        if (resultat < ConfigManager.model.BORNE_MIN_FLECHE)
+            return ConfigManager.model.BORNE_MIN_FLECHE;
+
+        return resultat;
     }
 
     public static double calculPosTamis(double angleInitial) {
@@ -599,6 +624,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         double droiteXb = tamisCallibCent;
         double droiteYa = 0;
         double droiteYb = 100;
+        double resultat;
 
         double droiteX = angleInitial;
 
@@ -607,7 +633,15 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 
         double droiteY = droiteA * droiteX + droiteB;
 
-        return droiteY *((ConfigManager.model.BORNE_MAX_TAMIS - ConfigManager.model.BORNE_MIN_TAMIS)*0.01);
+        resultat = droiteY *((ConfigManager.model.BORNE_MAX_TAMIS - ConfigManager.model.BORNE_MIN_TAMIS)*0.01);
+
+        if (resultat > ConfigManager.model.BORNE_MAX_TAMIS)
+            return ConfigManager.model.BORNE_MAX_TAMIS;
+
+        if (resultat < ConfigManager.model.BORNE_MIN_TAMIS)
+            return ConfigManager.model.BORNE_MIN_TAMIS;
+
+        return resultat;
     }
 
 //    public static double calculPosFleche(double angleInitial) {
