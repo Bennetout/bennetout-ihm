@@ -129,7 +129,9 @@ public class FlechePainter extends SurfaceView implements SurfaceHolder.Callback
 
         canvas.rotate(-180, canvasSize*(float)0.5, canvasSize*(float)0.5);
 
-        canvas.drawText(" " + formatDouble(angle) + "°", remorqueXCointBasDroite - largeurRemorque/2, remorqueYCointBasDroite - getResources().getDimension(R.dimen._50sdp), myWhitePaint);
+        canvas.drawText(" " + formatDouble(angle) + "°", canvas.getWidth() - flecheXMobile, canvas.getHeight() - remorqueYCointHautGauche - getResources().getDimension(R.dimen._60sdp), myWhitePaint);
+
+        canvas.rotate(180, canvasSize*(float)0.5, canvasSize*(float)0.5);
 
         mySurfaceHolder.unlockCanvasAndPost(canvas);
     }
