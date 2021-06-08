@@ -119,31 +119,40 @@ public class Lvl2ClientSocket extends Lvl1SocketCommunications {
     protected void onSensorsValuesReceived(byte[] data) {
 
         String values = new String(data);
+        double fleche = 0, levage = 0, porte = 0, inclinoX = 0, inclinoY = 0, tamis = 0;
 
         String[] splitValues = values.split("/");
-        if (splitValues.length < 7)
-            return;
-
-        if (splitValues[1].isEmpty())
-            return;
-        if (splitValues[2].isEmpty())
-            return;
-        if (splitValues[3].isEmpty())
-            return;
-        if (splitValues[4].isEmpty())
-            return;
-        if (splitValues[5].isEmpty())
-            return;
-        if (splitValues[6].isEmpty())
-            return;
 
         try {
-            double fleche = Double.valueOf(splitValues[1]);
-            double levage = Double.valueOf(splitValues[2]);
-            double porte = Double.valueOf(splitValues[3]);
-            double inclinoX = Double.valueOf(splitValues[4]);
-            double inclinoY = Double.valueOf(splitValues[5]);
-            double tamis = Double.valueOf(splitValues[6]);
+            if (splitValues.length > 1) {
+                if (!splitValues[1].isEmpty())
+                    fleche = Double.valueOf(splitValues[1]);
+            }
+
+            if (splitValues.length > 2) {
+                if (!splitValues[2].isEmpty())
+                    levage = Double.valueOf(splitValues[2]);
+            }
+
+            if (splitValues.length > 3) {
+                if (!splitValues[3].isEmpty())
+                    porte = Double.valueOf(splitValues[3]);
+            }
+
+            if (splitValues.length > 4) {
+                if (!splitValues[4].isEmpty())
+                    inclinoX = Double.valueOf(splitValues[4]);
+            }
+
+            if (splitValues.length > 5) {
+                if (!splitValues[5].isEmpty())
+                    inclinoY = Double.valueOf(splitValues[5]);
+            }
+
+            if (splitValues.length > 6) {
+                if (!splitValues[6].isEmpty())
+                    tamis = Double.valueOf(splitValues[6]);
+            }
 
             if (myListener != null)
                 myListener.onPositionsReceivedFromServer(fleche, levage, porte, inclinoX, inclinoY, tamis);
