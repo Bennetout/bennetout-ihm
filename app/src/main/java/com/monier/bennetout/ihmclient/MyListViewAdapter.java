@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class MyListViewAdapter extends RecyclerView.Adapter<MyListViewAdapter.ViewHolder> {
 
-    private ArrayList<MyCustomHolder> mDataset;
+    public ArrayList<MyCustomHolder> mDataset;
     private MyListViewListener myListener;
     private double valueSelect = 0;
     private boolean customClickEnabled = true;
@@ -173,7 +173,7 @@ public class MyListViewAdapter extends RecyclerView.Adapter<MyListViewAdapter.Vi
 //        notifyDataSetChanged();
 //    }
 
-    private void switchActiveItem(int index) {
+    public void switchActiveItem(int index) {
         if (mDataset.get(index).isActive) {
             mDataset.get(index).isActive = false;
         } else {
