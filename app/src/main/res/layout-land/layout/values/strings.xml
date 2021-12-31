@@ -26,10 +26,14 @@
     <string name="callibration_niveau_maj">CALLIBRATION NIVEAU</string>
     <string name="callibration_tamis_maj">CALLIBRATION TAMIS</string>
 
+    <string name="types_boutons">Types de boutons</string>
+    <string name="types_boutons_maj">TYPES DE BOUTONS</string>
     <string name="actionneurs_bandeaux">Valeurs des bandeaux</string>
     <string name="actionneurs_bandeaux_maj">VALEURS DES BANDEAUX</string>
 
     <string name="figer_le_0">Figer le 0</string>
     <string name="figer_le_100">Figer le 100</string>
     <string name="save">Sauvegarder</string>
+    <string name="automaintien">auto-maintien</string>
+    <string name="impulsion">impulsion</string>
 </resources>

@@ -18,6 +18,7 @@ public class ActionneursActivity extends Activity {
 
         setContentView(R.layout.actionneurs);
         btnActionBandeauxInit();
+        btnTypesBoutonsInit();
     }
 
     private void btnActionBandeauxInit() {
@@ -26,6 +27,17 @@ public class ActionneursActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), ActionBandeauxActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void btnTypesBoutonsInit() {
+        final FancyButton fancyButton = findViewById(R.id.btnTypesBoutons);
+        fancyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), TypesBoutonsActivity.class);
                 startActivity(intent);
             }
         });

@@ -62,5 +62,9 @@
             android:screenOrientation="landscape">
         </activity>
 
+        <activity android:name=".configuration.activities.TypesBoutonsActivity"
+            android:screenOrientation="landscape">
+        </activity>
+
     </application>
 </manifest>

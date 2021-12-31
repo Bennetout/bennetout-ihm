@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.monier.bennetout.ihmclient.MainActivity;
 import com.monier.bennetout.ihmclient.R;
 
 import mehdi.sakout.fancybuttons.FancyButton;
@@ -19,6 +20,14 @@ public class ConfigActivity extends Activity {
         setContentView(R.layout.configurations);
         btnCallibrationsInit();
         btnActionneursInit();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+
+        super.onDestroy();
     }
 
     private void btnCallibrationsInit() {

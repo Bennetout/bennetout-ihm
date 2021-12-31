@@ -4,22 +4,14 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.media.session.MediaSession;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.media.MediaBrowserCompat;
-import android.support.v4.media.session.MediaControllerCompat;
-import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,9 +19,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.MediaController;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.monier.bennetout.ihmclient.communication.Lvl2ClientSocket;
 import com.monier.bennetout.ihmclient.communication.ProtocolConstants;
@@ -39,7 +29,6 @@ import com.monier.bennetout.ihmclient.configuration.activities.ConfigActivity;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Objects;
 
 import mehdi.sakout.fancybuttons.FancyButton;
 
@@ -67,7 +56,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     private static final int FLECHE  = 1;
     private static final int LEVAGE  = 2;
 
-    private String[] permissionsNeeded = {
+    private final String[] permissionsNeeded = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     private double angleFleche = 0, angleLevage = 0, anglePorte = 0;
@@ -91,10 +80,14 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     private Handler myHandler;
     private final GestionActionneur[] gestionActionneur = new GestionActionneur[3];
 
-    private FancyButton tapisMarchebutton;
-    private FancyButton tapisArretbutton;
-    private FancyButton buttonFlecheArret;
-    private FancyButton buttonFlecheMarche;
+    private FancyButton tapisMarcheButton;
+    private FancyButton tapisArretButton;
+    private FancyButton porteMarcheButton;
+    private FancyButton porteArretButton;
+    private FancyButton flecheMarcheButton;
+    private FancyButton flecheArretButton;
+    private FancyButton levageMarcheButton;
+    private FancyButton levageArretButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -139,18 +132,6 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         btnReglageInit();
         btnRefreshInit();
 
-        btnFlecheMarcheInit();
-        btnFlecheArretInit();
-
-        btnLevageMarcheInit();
-        btnLevageArretInit();
-
-        btnPorteMarcheInit();
-        btnPorteArretInit();
-
-        btnTapisMarcheInit();
-        btnTapisArretInit();
-
         myHandler = new Handler();
     }
 
@@ -176,11 +157,11 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 
         switch (keyCode) {
             case KeyEvent.KEYCODE_MEDIA_NEXT:
-                buttonFlecheArret.dispatchTouchEvent(motionEvent);
+                flecheArretButton.dispatchTouchEvent(motionEvent);
                 break;
 
             case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                buttonFlecheMarche.dispatchTouchEvent(motionEvent);
+                flecheMarcheButton.dispatchTouchEvent(motionEvent);
                 break;
         }
 
@@ -221,13 +202,13 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
             case KeyEvent.KEYCODE_MEDIA_NEXT:
                 // Flèche droite
                 Log.i(TAG, "Appui touche next");
-                buttonFlecheArret.dispatchTouchEvent(motionEvent);
+                flecheArretButton.dispatchTouchEvent(motionEvent);
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
                 // Flèche gauche
                 Log.i(TAG, "Appui touche previous");
-                buttonFlecheMarche.dispatchTouchEvent(motionEvent);
+                flecheMarcheButton.dispatchTouchEvent(motionEvent);
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
@@ -243,10 +224,20 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     @Override
     protected void onResume() {
         super.onResume();
+
+        btnsActuatorsInit();
+
         listViewPorteInit();
         listViewFlecheInit();
         listViewLevageInit();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+    }
+
 
     private boolean isPermissionsGranted(String... permissions) {
 
@@ -292,201 +283,39 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         }
     }
 
-    boolean tapisArretStatus = false;
-    private void btnTapisArretInit() {
+    private void btnsActuatorsInit() {
+        double typeBoutonsTapis = ConfigManager.model.TYPE_BOUTON_TAPIS;
+        double typeBoutonsPorte = ConfigManager.model.TYPE_BOUTON_PORTE;
+        double typeBoutonsFleche = ConfigManager.model.TYPE_BOUTON_FLECHE;
+        double typeBoutonsLevage = ConfigManager.model.TYPE_BOUTON_LEVAGE;
 
-        tapisArretbutton = findViewById(R.id.buttonTapisArret);
-        Drawable drawable = tapisArretbutton.getBackground();
+        //Tapis
+        tapisMarcheButton = findViewById(R.id.buttonTapisMarche);
+        tapisArretButton = findViewById(R.id.buttonTapisArret);
 
-        // On travaille avec des clones
-        final Drawable drawableInit = Objects.requireNonNull(drawable.getConstantState()).newDrawable();
+        new ActuatorStateManager(typeBoutonsTapis, myLvl2ClientSocket, ARG_ACTION_TAPIS_ON, ARG_ACTION_TAPIS_OFF,
+                tapisMarcheButton, tapisArretButton, getResources().getColor(R.color.myOrange));
 
-        tapisArretbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        // Porte
+        porteMarcheButton = findViewById(R.id.buttonPorteMarche);
+        porteArretButton = findViewById(R.id.buttonPorteArret);
 
-                if (tapisMarcheStatus)
-                    return;
+        new ActuatorStateManager(typeBoutonsPorte, myLvl2ClientSocket, ARG_ACTION_PORTE_ON, ARG_ACTION_PORTE_OFF,
+                porteMarcheButton, porteArretButton, getResources().getColor(R.color.myOrange));
 
-                tapisArretStatus = !tapisArretStatus;
+        // Flèche
+        flecheMarcheButton = findViewById(R.id.buttonFlecheMarche);
+        flecheArretButton = findViewById(R.id.buttonFlecheArret);
 
-                if (tapisArretStatus) {
-                    Drawable drawable = tapisArretbutton.getBackground();
-                    drawable.setColorFilter(getResources().getColor(R.color.myOrange), PorterDuff.Mode.MULTIPLY);
-                    tapisArretbutton.setBackground(drawable);
-                    myLvl2ClientSocket.setActuatorState(ARG_ACTION_TAPIS_OFF, ARG_STATE_HIGH);
-                } else {
-                    tapisArretbutton.setBackground(Objects.requireNonNull(drawableInit.getConstantState()).newDrawable());
-                    myLvl2ClientSocket.setActuatorState(ARG_ACTION_TAPIS_OFF, ARG_STATE_LOW);
-                }
-            }
-        });
-    }
+        new ActuatorStateManager(typeBoutonsFleche, myLvl2ClientSocket, ARG_ACTION_FLECHE_ON, ARG_ACTION_FLECHE_OFF,
+                flecheMarcheButton, flecheArretButton, getResources().getColor(R.color.myOrange));
 
-    boolean tapisMarcheStatus = false;
-    private void btnTapisMarcheInit() {
+        // Levage
+        levageMarcheButton = findViewById(R.id.buttonLevageMarche);
+        levageArretButton = findViewById(R.id.buttonLevageArret);
 
-        tapisMarchebutton = findViewById(R.id.buttonTapisMarche);
-        Drawable drawable = tapisMarchebutton.getBackground();
-
-        // On travaille avec des clones
-        final Drawable drawableInit = Objects.requireNonNull(drawable.getConstantState()).newDrawable();
-
-        tapisMarchebutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (tapisArretStatus)
-                    return;
-
-                tapisMarcheStatus = !tapisMarcheStatus;
-
-                if (tapisMarcheStatus) {
-                    Drawable drawable = tapisMarchebutton.getBackground();
-                    drawable.setColorFilter(getResources().getColor(R.color.myOrange), PorterDuff.Mode.MULTIPLY);
-                    tapisMarchebutton.setBackground(drawable);
-                    myLvl2ClientSocket.setActuatorState(ARG_ACTION_TAPIS_ON, ARG_STATE_HIGH);
-                } else {
-                    tapisMarchebutton.setBackground(Objects.requireNonNull(drawableInit.getConstantState()).newDrawable());
-                    myLvl2ClientSocket.setActuatorState(ARG_ACTION_TAPIS_ON, ARG_STATE_LOW);
-                }
-            }
-        });
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private void btnPorteArretInit() {
-
-        FancyButton button = findViewById(R.id.buttonPorteArret);
-        button.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_PORTE_OFF, ARG_STATE_HIGH);
-                        break;
-
-                    case MotionEvent.ACTION_UP:
-                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_PORTE_OFF, ARG_STATE_LOW);
-                        break;
-                }
-
-                return false;
-            }
-        });
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private void btnPorteMarcheInit() {
-
-        FancyButton button = findViewById(R.id.buttonPorteMarche);
-        button.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_PORTE_ON, ARG_STATE_HIGH);
-                        break;
-
-                    case MotionEvent.ACTION_UP:
-                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_PORTE_ON, ARG_STATE_LOW);
-                        break;
-                }
-
-                return false;
-            }
-
-        });
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private void btnLevageArretInit() {
-
-        FancyButton button = findViewById(R.id.buttonLevageArret);
-        button.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_OFF, ARG_STATE_HIGH);
-                        break;
-
-                    case MotionEvent.ACTION_UP:
-                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_OFF, ARG_STATE_LOW);
-                        break;
-                }
-
-                return false;
-            }
-
-        });
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private void btnLevageMarcheInit() {
-
-        FancyButton button = findViewById(R.id.buttonLevageMarche);
-        button.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_ON, ARG_STATE_HIGH);
-                        break;
-
-                    case MotionEvent.ACTION_UP:
-                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_ON, ARG_STATE_LOW);
-                        break;
-                }
-
-                return false;
-            }
-
-        });
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private void btnFlecheArretInit() {
-
-        buttonFlecheArret = findViewById(R.id.buttonFlecheArret);
-        buttonFlecheArret.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_FLECHE_OFF, ARG_STATE_HIGH);
-                        break;
-
-                    case MotionEvent.ACTION_UP:
-                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_FLECHE_OFF, ARG_STATE_LOW);
-                        break;
-                }
-
-                return false;
-            }
-        });
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private void btnFlecheMarcheInit() {
-
-        buttonFlecheMarche = findViewById(R.id.buttonFlecheMarche);
-        buttonFlecheMarche.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_FLECHE_ON, ARG_STATE_HIGH);
-                        break;
-
-                    case MotionEvent.ACTION_UP:
-                        myLvl2ClientSocket.setActuatorState(ARG_ACTION_FLECHE_ON, ARG_STATE_LOW);
-                        break;
-                }
-
-                return false;
-            }
-        });
+        new ActuatorStateManager(typeBoutonsLevage, myLvl2ClientSocket, ARG_ACTION_LEVAGE_ON, ARG_ACTION_LEVAGE_OFF,
+                levageMarcheButton, levageArretButton, getResources().getColor(R.color.myOrange));
     }
 
     private void listViewLevageInit() {
