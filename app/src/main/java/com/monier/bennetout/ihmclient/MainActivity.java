@@ -3,6 +3,8 @@ package com.monier.bennetout.ihmclient;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -14,12 +16,16 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.monier.bennetout.ihmclient.communication.Lvl2ClientSocket;
 import com.monier.bennetout.ihmclient.communication.ProtocolConstants;
@@ -132,7 +138,87 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         btnReglageInit();
         btnRefreshInit();
 
+        textViewsInit();
+
         myHandler = new Handler();
+    }
+
+    private class myTextViewOnLongClickListener implements View.OnLongClickListener {
+
+        TextView textView;
+        Thread specificFunc;
+
+        public myTextViewOnLongClickListener(TextView textView, Thread specificFunc) {
+            this.textView = textView;
+            this.specificFunc = specificFunc;
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+            alertDialog.setTitle("Titre à afficher");
+            final EditText input = new EditText(MainActivity.this);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT);
+            input.setLayoutParams(lp);
+            input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+            alertDialog.setView(input); // uncomment this line
+            alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @SuppressLint("SetTextI18n")
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    String newTitle = input.getText().toString();
+                    if (newTitle.isEmpty()) {
+                        Toast.makeText(getApplicationContext(), "Erreur, titre invalide", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    textView.setText(newTitle + " :");
+                    specificFunc.start();
+                }
+            });
+            alertDialog.show();
+            return false;
+        }
+    }
+
+
+
+    private void textViewsInit() {
+        TextView textViewTapis = findViewById(R.id.textViewTapis);
+        textViewTapis.setText(ConfigManager.model.TEXT_TAPIS);
+        textViewTapis.setOnLongClickListener(new myTextViewOnLongClickListener(textViewTapis, new Thread(() -> {
+            ConfigManager.model.TEXT_TAPIS = textViewTapis.getText().toString();
+            ConfigManager.model2ConfigFile(getApplicationContext());
+        })));
+
+        TextView textViewPorte = findViewById(R.id.textViewPorte);
+        textViewPorte.setText(ConfigManager.model.TEXT_PORTE);
+        textViewPorte.setOnLongClickListener(new myTextViewOnLongClickListener(textViewPorte, new Thread(() -> {
+            ConfigManager.model.TEXT_PORTE = textViewPorte.getText().toString();
+            ConfigManager.model2ConfigFile(getApplicationContext());
+        })));
+
+        TextView textViewFleche = findViewById(R.id.textViewFleche);
+        textViewFleche.setText(ConfigManager.model.TEXT_FLECHE);
+        textViewFleche.setOnLongClickListener(new myTextViewOnLongClickListener(textViewFleche, new Thread(() -> {
+            ConfigManager.model.TEXT_FLECHE = textViewFleche.getText().toString();
+            ConfigManager.model2ConfigFile(getApplicationContext());
+        })));
+
+        TextView textViewLevage = findViewById(R.id.textViewLevage);
+        textViewLevage.setText(ConfigManager.model.TEXT_LEVAGE);
+        textViewLevage.setOnLongClickListener(new myTextViewOnLongClickListener(textViewLevage, new Thread(() -> {
+            ConfigManager.model.TEXT_LEVAGE = textViewLevage.getText().toString();
+            ConfigManager.model2ConfigFile(getApplicationContext());
+        })));
+
+        TextView textViewTamis = findViewById(R.id.textViewTamis);
+        textViewTamis.setText(ConfigManager.model.TEXT_TAMIS);
+        textViewTamis.setOnLongClickListener(new myTextViewOnLongClickListener(textViewTamis, new Thread(() -> {
+            ConfigManager.model.TEXT_TAMIS = textViewTamis.getText().toString();
+            ConfigManager.model2ConfigFile(getApplicationContext());
+        })));
     }
 
     @Override

@@ -36,4 +36,10 @@ class ConfigDefaults {
     static final double TYPE_BOUTON_PORTE_D = ConfigManager.TYPE_BOUTON_IMPULSION;
     static final double TYPE_BOUTON_FLECHE_D = ConfigManager.TYPE_BOUTON_IMPULSION;
     static final double TYPE_BOUTON_LEVAGE_D = ConfigManager.TYPE_BOUTON_IMPULSION;
+
+    static final String TEXT_TAPIS_D = "Tapis :";
+    static final String TEXT_PORTE_D = "Porte :";
+    static final String TEXT_FLECHE_D = "Flèche :";
+    static final String TEXT_LEVAGE_D = "Levage :";
+    static final String TEXT_TAMIS_D = "Pré-grille :";
 }
