@@ -109,6 +109,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     private double angleTamisRounded = 0;
 
     private boolean withDrawing;
+    private String serverVersion = "??";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -147,8 +148,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         View root = randomView.getRootView();
         root.setBackgroundColor(Color.WHITE);
 
-        TextView textViewVersion = findViewById(R.id.textViewVersion);
-        textViewVersion.setText(VERSION);
+        majVersions();
 
         textViewFleche = findViewById(R.id.textViewFlecheValue);
         textViewLevage = findViewById(R.id.textViewLevageValue);
@@ -603,6 +603,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 //                            clientSocket.connect("10.42.0.1");
                             myLvl2ClientSocket.connect();
                             myHandler.postDelayed(majIhm, 0);
+                            myLvl2ClientSocket.getServerVersion();
                             myLvl2ClientSocket.getSensorsValues();
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -865,6 +866,17 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     }
 
     @Override
+    public void onServerVersionReceived(byte[] versionName) {
+        serverVersion = new String(versionName);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                majVersions();
+            }
+        });
+    }
+
+    @Override
     public void onSocketStatusUpdate(final int status) {
         runOnUiThread(new Runnable() {
             @Override
@@ -885,6 +897,11 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
                 }
             }
         });
+    }
+
+    private void majVersions() {
+        TextView textViewVersion = findViewById(R.id.textViewVersion);
+        textViewVersion.setText("Serveur: " + serverVersion + "/IHM: " + VERSION + " ");
     }
 
     private class GestionActionneur extends Thread {

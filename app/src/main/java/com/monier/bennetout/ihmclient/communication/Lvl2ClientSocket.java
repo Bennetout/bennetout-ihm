@@ -58,6 +58,17 @@ public class Lvl2ClientSocket extends Lvl1SocketCommunications {
         write(headers);
     }
 
+    public void getServerVersion() {
+        byte[] headers = new byte[]{ID_GET_VERSION};
+        write(headers);
+    }
+
+    @Override
+    protected void onServerVersionReceived(byte[] version) {
+        if (myListener != null)
+            myListener.onServerVersionReceived(version);
+    }
+
     @Override
     protected void onSensorsValuesReceived(byte[] data) {
 
@@ -121,5 +132,6 @@ public class Lvl2ClientSocket extends Lvl1SocketCommunications {
         void onSocketStatusUpdate(int status);
         void onPositionsReceivedFromServer(double flechePos, double levagePos, double portePos, double niveauX, double niveauY, double tamisPos);
         void onSetSensorValueFinish(byte sensorArg);
+        void onServerVersionReceived(byte[] versionName);
     }
 }

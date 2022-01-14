@@ -21,6 +21,9 @@ public class ProtocolConstants {
 
     static final byte ID_USELESS                    = (byte) 0xD0;
 
+    static final byte ID_GET_VERSION                = (byte) 0xB0;
+    static final byte ID_SEND_VERSION               = (byte) 0xB1;
+
     static final byte RELAY_1                  = (byte) 0x00;
     static final byte RELAY_2                  = (byte) 0x01;
     static final byte RELAY_3                  = (byte) 0x02;

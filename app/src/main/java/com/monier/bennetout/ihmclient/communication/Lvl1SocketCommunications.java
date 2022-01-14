@@ -24,6 +24,9 @@ public class Lvl1SocketCommunications implements Lvl0ProtocolThread.Lvl0Protocol
         Log.i(TAG, new String(log));
     }
 
+    protected void onServerVersionReceived(byte[] version) {
+
+    }
 
     void setSocketCommunication(Socket socketCommunication) {
 
@@ -77,6 +80,10 @@ public class Lvl1SocketCommunications implements Lvl0ProtocolThread.Lvl0Protocol
         switch (id) {
             case ID_USELESS:
                 onLogReceived(Arrays.copyOfRange(data, 6, data.length));
+                break;
+
+            case ID_SEND_VERSION:
+                onServerVersionReceived(Arrays.copyOfRange(data, 1, data.length));
                 break;
 
             case ID_ACK:

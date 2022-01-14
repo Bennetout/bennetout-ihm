@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.monier.bennetout.ihmclient.CaptorValuesSingleton;
 import com.monier.bennetout.ihmclient.R;
-import com.monier.bennetout.ihmclient.communication.Lvl2ClientSocket;
 import com.monier.bennetout.ihmclient.configuration.ConfigManager;
 
 import mehdi.sakout.fancybuttons.FancyButton;
