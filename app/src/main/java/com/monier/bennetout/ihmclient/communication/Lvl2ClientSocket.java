@@ -58,63 +58,6 @@ public class Lvl2ClientSocket extends Lvl1SocketCommunications {
         write(headers);
     }
 
-    public void stopSetSensorValue(int sensorType) {
-
-        byte[] headers;
-
-        switch (sensorType) {
-            case SENSOR_PORTE:
-                headers = new byte[]{ID_STOP_SET_SENSOR_VALUE, ARG_PORTE};
-                break;
-
-            case SENSOR_LEVAGE:
-                headers = new byte[]{ID_STOP_SET_SENSOR_VALUE, ARG_LEVAGE};
-                break;
-
-            case SENSOR_FLECHE:
-                headers = new byte[]{ID_STOP_SET_SENSOR_VALUE, ARG_FLECHE};
-                break;
-
-            default:
-                Log.e(TAG, "stopSetSensorValue: unknown sensorType");
-                return;
-        }
-
-        write(headers);
-    }
-
-    public void setSensorValue(int sensorType, double value) {
-
-        byte[] headers;
-
-        if (value < -127 || value > 127) {
-            Log.e(TAG, "setSensorValue: value must be in range [0-255]");
-            return;
-        }
-
-        byte charValue = (byte) value;
-
-        switch (sensorType) {
-            case SENSOR_PORTE:
-                headers = new byte[]{ID_SET_SENSOR_VALUE, ARG_PORTE, charValue};
-                break;
-
-            case SENSOR_LEVAGE:
-                headers = new byte[]{ID_SET_SENSOR_VALUE, ARG_LEVAGE, charValue};
-                break;
-
-            case SENSOR_FLECHE:
-                headers = new byte[]{ID_SET_SENSOR_VALUE, ARG_FLECHE, charValue};
-                break;
-
-            default:
-                Log.e(TAG, "setSensorValue: unknown sensorType");
-                return;
-        }
-
-        write(headers);
-    }
-
     @Override
     protected void onSensorsValuesReceived(byte[] data) {
 

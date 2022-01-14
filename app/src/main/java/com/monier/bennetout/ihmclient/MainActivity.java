@@ -44,6 +44,8 @@ import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_ACTION_LEVAGE_ON;
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_ACTION_PORTE_OFF;
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_ACTION_PORTE_ON;
+import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_ACTION_TAMIS_OFF;
+import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_ACTION_TAMIS_ON;
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_ACTION_TAPIS_OFF;
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_ACTION_TAPIS_ON;
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_FLECHE;
@@ -51,6 +53,7 @@ import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_PORTE;
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_STATE_HIGH;
 import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_STATE_LOW;
+import static com.monier.bennetout.ihmclient.communication.ProtocolConstants.ARG_TAMIS;
 import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 
 public class MainActivity extends Activity implements Lvl2ClientSocket.SocketClientListener {
@@ -58,9 +61,10 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     private static final String VERSION = "V3";
 
     private static final String TAG = MainActivity.class.getCanonicalName();
-    private static final int PORTE  = 0;
-    private static final int FLECHE  = 1;
-    private static final int LEVAGE  = 2;
+    private static final int PORTE      = 0;
+    private static final int FLECHE     = 1;
+    private static final int LEVAGE     = 2;
+    private static final int TAMIS      = 3;
 
     private final String[] permissionsNeeded = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -78,13 +82,14 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     private MyListViewAdapter myListViewAdapterPorte;
     private MyListViewAdapter myListViewAdapterLevage;
     private MyListViewAdapter myListViewAdapterFleche;
+    private MyListViewAdapter myListViewAdapterTamis;
 
     private RemorquePainter myRemorquePainter;
     private FlechePainter myFlechePainter;
     private NiveauPainter myNiveauPainter;
 
     private Handler myHandler;
-    private final GestionActionneur[] gestionActionneur = new GestionActionneur[3];
+    private final GestionActionneur[] gestionActionneur = new GestionActionneur[4];
 
     private FancyButton tapisMarcheButton;
     private FancyButton tapisArretButton;
@@ -94,6 +99,14 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     private FancyButton flecheArretButton;
     private FancyButton levageMarcheButton;
     private FancyButton levageArretButton;
+    private FancyButton tamisMarcheButton;
+    private FancyButton tamisArretButton;
+
+    private double angleFlecheRounded = 0;
+    private double angleLevageRounded = 0;
+    private double anglePorteRounded = 0;
+    private double niveauRounded = 0;
+    private double angleTamisRounded = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -182,8 +195,6 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         }
     }
 
-
-
     private void textViewsInit() {
         TextView textViewTapis = findViewById(R.id.textViewTapis);
         textViewTapis.setText(ConfigManager.model.TEXT_TAPIS);
@@ -249,6 +260,14 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
             case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
                 flecheMarcheButton.dispatchTouchEvent(motionEvent);
                 break;
+
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                tamisMarcheButton.dispatchTouchEvent(motionEvent);
+                return true;
+
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                tamisArretButton.dispatchTouchEvent(motionEvent);
+                return true;
         }
 
         return super.onKeyUp(keyCode, event);
@@ -276,30 +295,25 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 
         switch (keyCode) {
             case KeyEvent.KEYCODE_VOLUME_UP:
-                // Rien pour l'instant
-                Log.i(TAG, "Appui touche volume +");
+                tamisMarcheButton.dispatchTouchEvent(motionEvent);
                 return true;
 
             case KeyEvent.KEYCODE_VOLUME_DOWN:
-                // Rien pour l'instant
-                Log.i(TAG, "Appui touche volume -");
+                tamisArretButton.dispatchTouchEvent(motionEvent);
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_NEXT:
                 // Flèche droite
-                Log.i(TAG, "Appui touche next");
                 flecheArretButton.dispatchTouchEvent(motionEvent);
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
                 // Flèche gauche
-                Log.i(TAG, "Appui touche previous");
                 flecheMarcheButton.dispatchTouchEvent(motionEvent);
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
                 // Première valeur bandeau flèche
-                Log.i(TAG, "Appui touche play/pause");
                 myListViewAdapterFleche.switchActiveItem(0);
                 return true;
         }
@@ -311,11 +325,12 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     protected void onResume() {
         super.onResume();
 
-        btnsActuatorsInit();
-
         listViewPorteInit();
         listViewFlecheInit();
         listViewLevageInit();
+        listViewTamisInit();
+
+        btnsActuatorsInit();
     }
 
     @Override
@@ -323,7 +338,6 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         super.onPause();
         finish();
     }
-
 
     private boolean isPermissionsGranted(String... permissions) {
 
@@ -374,34 +388,42 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         double typeBoutonsPorte = ConfigManager.model.TYPE_BOUTON_PORTE;
         double typeBoutonsFleche = ConfigManager.model.TYPE_BOUTON_FLECHE;
         double typeBoutonsLevage = ConfigManager.model.TYPE_BOUTON_LEVAGE;
+        double typeBoutonsTamis = ConfigManager.model.TYPE_BOUTON_TAMIS;
 
         //Tapis
         tapisMarcheButton = findViewById(R.id.buttonTapisMarche);
         tapisArretButton = findViewById(R.id.buttonTapisArret);
 
         new ActuatorStateManager(typeBoutonsTapis, myLvl2ClientSocket, ARG_ACTION_TAPIS_ON, ARG_ACTION_TAPIS_OFF,
-                tapisMarcheButton, tapisArretButton, getResources().getColor(R.color.myOrange));
+                tapisMarcheButton, tapisArretButton, getResources().getColor(R.color.myOrange), null);
 
         // Porte
         porteMarcheButton = findViewById(R.id.buttonPorteMarche);
         porteArretButton = findViewById(R.id.buttonPorteArret);
 
         new ActuatorStateManager(typeBoutonsPorte, myLvl2ClientSocket, ARG_ACTION_PORTE_ON, ARG_ACTION_PORTE_OFF,
-                porteMarcheButton, porteArretButton, getResources().getColor(R.color.myOrange));
+                porteMarcheButton, porteArretButton, getResources().getColor(R.color.myOrange), null);
 
         // Flèche
         flecheMarcheButton = findViewById(R.id.buttonFlecheMarche);
         flecheArretButton = findViewById(R.id.buttonFlecheArret);
 
         new ActuatorStateManager(typeBoutonsFleche, myLvl2ClientSocket, ARG_ACTION_FLECHE_ON, ARG_ACTION_FLECHE_OFF,
-                flecheMarcheButton, flecheArretButton, getResources().getColor(R.color.myOrange));
+                flecheMarcheButton, flecheArretButton, getResources().getColor(R.color.myOrange), null);
 
         // Levage
         levageMarcheButton = findViewById(R.id.buttonLevageMarche);
         levageArretButton = findViewById(R.id.buttonLevageArret);
 
         new ActuatorStateManager(typeBoutonsLevage, myLvl2ClientSocket, ARG_ACTION_LEVAGE_ON, ARG_ACTION_LEVAGE_OFF,
-                levageMarcheButton, levageArretButton, getResources().getColor(R.color.myOrange));
+                levageMarcheButton, levageArretButton, getResources().getColor(R.color.myOrange), null);
+
+        // Tamis
+        tamisMarcheButton = findViewById(R.id.buttonTamisMarche);
+        tamisArretButton = findViewById(R.id.buttonTamisArret);
+
+        new ActuatorStateManager(typeBoutonsTamis, myLvl2ClientSocket, ARG_ACTION_TAMIS_ON, ARG_ACTION_TAMIS_OFF,
+                tamisMarcheButton, tamisArretButton, getResources().getColor(R.color.myOrange), myListViewAdapterTamis);
     }
 
     private void listViewLevageInit() {
@@ -520,6 +542,45 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
                     }
                 });
         mRecyclerView.setAdapter(myListViewAdapterPorte);
+    }
+
+    private void listViewTamisInit() {
+        RecyclerView mRecyclerView = findViewById(R.id.listViewTamis);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        ArrayList<MyCustomHolder> configs = new ArrayList<>();
+        double[] userConfig = ConfigManager.model.TAMIS_CONFIGS;
+        NumberFormat numberFormat = NumberFormat.getInstance();
+        numberFormat.setMaximumFractionDigits(0);
+
+        int colorId = getResources().getColor(R.color.myGreen);
+        for (double anUserConfig : userConfig) {
+            configs.add(new MyCustomHolder(anUserConfig, false, colorId));
+        }
+
+        myListViewAdapterTamis = new MyListViewAdapter(configs,
+                new MyListViewAdapter.MyListViewListener() {
+                    @Override
+                    public void onNewPositionClicked(boolean state, double value) {
+                        if (gestionActionneur[TAMIS] != null)
+                            gestionActionneur[TAMIS].stopAll();
+
+                        if (!state) {
+                            return;
+                        }
+
+                        gestionActionneur[TAMIS] = new GestionActionneur(ARG_TAMIS, value);
+                        gestionActionneur[TAMIS].start();
+                    }
+                });
+        mRecyclerView.setAdapter(myListViewAdapterTamis);
     }
 
     private void btnRefreshInit() {
@@ -708,26 +769,24 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
             if (indexRound == nbRound) {
 
                 // Affichage du devers
-                myNiveauPainter.setNiveau(calculPosNiveau(niveauRound/ nbRound));
+                niveauRounded = niveauRound/ nbRound;
+                myNiveauPainter.setNiveau(calculPosNiveau(niveauRounded));
 
                 // Affichage de la position du tamis
-                if (formatDouble(angleTamisRound/ nbRound) != textViewTamis.getText()) {
-                    textViewTamis.setText(formatDouble(calculPosTamis(angleTamisRound/ nbRound)));
-                }
+                angleTamisRounded = calculPosTamis(angleTamisRound/ nbRound);
+                textViewTamis.setText(formatDouble(angleTamisRounded));
 
                 // Affichage de l'angle de la flèche
-                if (formatDouble(angleFlecheRound/ nbRound) != textViewFleche.getText()) {
-                    textViewFleche.setText(formatDouble(calculPosFleche(angleFlecheRound/ nbRound)));
-                    myFlechePainter.setAngle(calculPosFleche(angleFlecheRound/ nbRound));
-                }
+                angleFlecheRounded = calculPosFleche(angleFlecheRound/ nbRound);
+                textViewFleche.setText(formatDouble(angleFlecheRounded));
+                myFlechePainter.setAngle(angleFlecheRounded);
 
                 // Affichage des angles levage + porte
-                if (formatDouble(angleLevageRound/ nbRound) != textViewLevage.getText() ||
-                        formatDouble(anglePorteRound/ nbRound) != textViewPorte.getText()) {
-                    myRemorquePainter.setAngle(calculPosLevage(angleLevageRound/ nbRound), calculPosPorte(anglePorteRound/ nbRound));
-                    textViewLevage.setText(formatDouble(calculPosLevage(angleLevageRound/ nbRound)));
-                    textViewPorte.setText(formatDouble(calculPosPorte(anglePorteRound/ nbRound)));
-                }
+                angleLevageRounded = calculPosLevage(angleLevageRound/ nbRound);
+                anglePorteRounded = calculPosPorte(anglePorteRound/ nbRound);
+                myRemorquePainter.setAngle(angleLevageRounded, anglePorteRounded);
+                textViewLevage.setText(formatDouble(angleLevageRounded));
+                textViewPorte.setText(formatDouble(anglePorteRounded));
 
                 angleFlecheRound = 0;
                 angleLevageRound = 0;
@@ -840,6 +899,10 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
                 case ARG_PORTE:
                     this.initialValue = myRemorquePainter.getAngleBenne();
                     break;
+
+                case ARG_TAMIS:
+                    this.initialValue = angleTamisRounded;
+                    break;
             }
         }
 
@@ -934,6 +997,34 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
                                 @Override
                                 public void run() {
                                     myListViewAdapterPorte.removeSelectedValue();
+                                }
+                            });
+                            isOk = true;
+                        }
+                        break;
+
+                    case ARG_TAMIS:
+                        actualValue = angleTamisRounded;
+                        if (actualValue > value) {
+                            myLvl2ClientSocket.setActuatorState(ARG_ACTION_TAMIS_OFF, ARG_STATE_LOW);
+                            myLvl2ClientSocket.setActuatorState(ARG_ACTION_TAMIS_ON, ARG_STATE_HIGH);
+                        }
+
+                        if (actualValue < value) {
+                            myLvl2ClientSocket.setActuatorState(ARG_ACTION_TAMIS_ON, ARG_STATE_LOW);
+                            myLvl2ClientSocket.setActuatorState(ARG_ACTION_TAMIS_OFF, ARG_STATE_HIGH);
+                        }
+
+                        if ((actualValue < (value+0.2) && actualValue > (value-0.2)) ||
+                                (actualValue > (initialValue+0.2) && actualValue > value) ||
+                                (actualValue < (initialValue-0.2) && actualValue < value)) {
+                            myLvl2ClientSocket.setActuatorState(ARG_ACTION_TAMIS_OFF, ARG_STATE_LOW);
+                            myLvl2ClientSocket.setActuatorState(ARG_ACTION_TAMIS_ON, ARG_STATE_LOW);
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    myListViewAdapterTamis.removeSelectedValue();
                                 }
                             });
                             isOk = true;

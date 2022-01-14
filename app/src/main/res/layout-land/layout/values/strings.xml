@@ -4,7 +4,7 @@
     <string name="textviewporte">Porte : </string>
     <string name="textviewfleche">Fleche : </string>
     <string name="textviewlevage">Levage : </string>
-    <string name="textviewtamis">Tamis : </string>
+    <string name="textviewtamis">Pré-grille : </string>
     <string name="m">M</string>
     <string name="a">A</string>
     <string name="callibrations">Callibrations</string>
@@ -18,13 +18,13 @@
     <string name="callibration_levage">Callibration levage</string>
     <string name="callibration_porte">Callibration porte</string>
     <string name="callibration_niveau">Callibration niveau</string>
-    <string name="callibration_tamis">Callibration tamis</string>
+    <string name="callibration_tamis">Callibration pré-grille</string>
 
     <string name="callibration_fleche_maj">CALLIBRATION FLECHE</string>
     <string name="callibration_levage_maj">CALLIBRATION LEVAGE</string>
     <string name="callibration_porte_maj">CALLIBRATION PORTE</string>
     <string name="callibration_niveau_maj">CALLIBRATION NIVEAU</string>
-    <string name="callibration_tamis_maj">CALLIBRATION TAMIS</string>
+    <string name="callibration_tamis_maj">CALLIBRATION PRE GRILLE</string>
 
     <string name="types_boutons">Types de boutons</string>
     <string name="types_boutons_maj">TYPES DE BOUTONS</string>

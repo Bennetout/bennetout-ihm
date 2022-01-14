@@ -26,6 +26,7 @@ public class ActionBandeauxActivity extends Activity {
     private MyListViewAdapter myListViewAdapterPorte;
     private MyListViewAdapter myListViewAdapterLevage;
     private MyListViewAdapter myListViewAdapterFleche;
+    private MyListViewAdapter myListViewAdapterTamis;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,6 +43,9 @@ public class ActionBandeauxActivity extends Activity {
         listViewLevageInit();
         buttonActionLevagePlusInit();
 
+        listViewTamisInit();
+        buttonActionTamisPlusInit();
+
         btnActionBandeauxSaveInit();
     }
 
@@ -52,6 +56,7 @@ public class ActionBandeauxActivity extends Activity {
                 ConfigManager.model.PORTE_CONFIGS = myListViewAdapterPorte.getAllValues();
                 ConfigManager.model.LEVAGE_CONFIGS = myListViewAdapterLevage.getAllValues();
                 ConfigManager.model.FLECHE_CONFIGS = myListViewAdapterFleche.getAllValues();
+                ConfigManager.model.TAMIS_CONFIGS = myListViewAdapterTamis.getAllValues();
                 ConfigManager.model2ConfigFile(getApplicationContext());
 
                 Toast.makeText(getApplicationContext(), "Bandeaux enregistrés avec succès", Toast.LENGTH_SHORT).show();
@@ -144,6 +149,34 @@ public class ActionBandeauxActivity extends Activity {
         });
     }
 
+    private void buttonActionTamisPlusInit() {
+        findViewById(R.id.buttonActionTamisPlus).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(ActionBandeauxActivity.this);
+                alertDialog.setTitle("Ajouter une valeur");
+                alertDialog.setMessage("Indiquez la valeur à ajouter :");
+
+                final EditText input = new EditText(ActionBandeauxActivity.this);
+                input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT);
+                input.setLayoutParams(lp);
+                alertDialog.setView(input); // uncomment this line
+                alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        int colorId = getResources().getColor(R.color.myGreen);
+                        myListViewAdapterTamis.addItem(new MyCustomHolder(Double.parseDouble(input.getText().toString()), false, colorId));
+                    }
+                });
+                alertDialog.setNegativeButton("Annuler", null);
+                alertDialog.show();
+            }
+        });
+    }
+
     private void listViewLevageInit() {
         RecyclerView mRecyclerView = findViewById(R.id.listViewActionLevage);
 
@@ -225,4 +258,30 @@ public class ActionBandeauxActivity extends Activity {
         mRecyclerView.setAdapter(myListViewAdapterPorte);
     }
 
+    private void listViewTamisInit() {
+        RecyclerView mRecyclerView = findViewById(R.id.listViewActionTamis);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        ArrayList<MyCustomHolder> configs = new ArrayList<>();
+        double[] userConfig = ConfigManager.model.TAMIS_CONFIGS;
+        NumberFormat numberFormat = NumberFormat.getInstance();
+        numberFormat.setMaximumFractionDigits(0);
+
+        int colorId = getResources().getColor(R.color.myGreen);
+        for (double anUserConfig : userConfig) {
+            configs.add(new MyCustomHolder(anUserConfig, false, colorId));
+        }
+
+        myListViewAdapterTamis = new MyListViewAdapter(configs, null);
+        myListViewAdapterTamis.setCustomClickEnabled(false);
+        myListViewAdapterTamis.setCustomLongClickEnabled(true);
+        mRecyclerView.setAdapter(myListViewAdapterTamis);
+    }
 }

@@ -28,8 +28,9 @@ public class ConfigManager {
     private static final int CREATE_NEW_CONFIG  = 1;
     private static final int LOAD_CONFIG_FROM_JSON  = 2;
 
-    public static final double TYPE_BOUTON_AUTOMAINTIEN    = 0;
-    public static final double TYPE_BOUTON_IMPULSION       = 1;
+    public static final double TYPE_BOUTON_AUTOMAINTIEN     = 0;
+    public static final double TYPE_BOUTON_IMPULSION        = 1;
+    public static final double TYPE_BOUTON_BANDEAU          = 2;
 
     public static ConfigModel model;
 

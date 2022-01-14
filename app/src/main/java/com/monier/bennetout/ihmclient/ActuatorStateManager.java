@@ -9,7 +9,12 @@ import android.view.View;
 import com.monier.bennetout.ihmclient.communication.Lvl2ClientSocket;
 import com.monier.bennetout.ihmclient.configuration.ConfigManager;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import mehdi.sakout.fancybuttons.FancyButton;
 
@@ -21,7 +26,9 @@ public class ActuatorStateManager {
     private boolean statusButtonON, statusButtonOFF;
 
     @SuppressLint("ClickableViewAccessibility")
-    public ActuatorStateManager(double buttonType, Lvl2ClientSocket myLvl2ClientSocket, byte actionON, byte actionOFF, FancyButton buttonON, FancyButton buttonOFF, int colorStatusON) {
+    public ActuatorStateManager(double buttonType, Lvl2ClientSocket myLvl2ClientSocket, byte actionON, byte actionOFF,
+                                FancyButton buttonON, FancyButton buttonOFF, int colorStatusON,
+                                MyListViewAdapter listView) {
         Drawable drawable = buttonON.getBackground();
         // On travaille avec des clones
         final Drawable drawableInit = Objects.requireNonNull(drawable.getConstantState()).newDrawable();
@@ -58,7 +65,9 @@ public class ActuatorStateManager {
                     return false;
                 }
             });
-        } else {
+        }
+
+        if (buttonType == ConfigManager.TYPE_BOUTON_AUTOMAINTIEN) {
             buttonON.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -99,5 +108,89 @@ public class ActuatorStateManager {
                 }
             });
         }
+
+        if (buttonType == ConfigManager.TYPE_BOUTON_BANDEAU) {
+            buttonON.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    double actualTamisValue = MainActivity.calculPosTamis(CaptorValuesSingleton.getAngleTamis());
+                    try {
+                        actualTamisValue = listView.getValueSelected();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    double[] possibleTamisValues = listView.getAllValues();
+                    try {
+                        int nextValueIndex = getNextValue(actualTamisValue +0.5, possibleTamisValues);
+                        listView.switchActiveItem(nextValueIndex);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            buttonOFF.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    double actualTamisValue = MainActivity.calculPosTamis(CaptorValuesSingleton.getAngleTamis());
+                    try {
+                        actualTamisValue = listView.getValueSelected();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    double[] possibleTamisValues = listView.getAllValues();
+                    try {
+                        int previousValueIndex = getPreviousValue(actualTamisValue -0.5, possibleTamisValues);
+                        listView.switchActiveItem(previousValueIndex);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    }
+
+    private int getNextValue(double actualValue, double[] allValues) throws Exception {
+        int result = -1;
+        double ecart = Double.MAX_VALUE;
+        boolean findOneValue = false;
+
+        for (int i = 0; i < allValues.length; i++) {
+            if (allValues[i] <= actualValue)
+                continue;
+
+            if (allValues[i] - actualValue < ecart) {
+                result = i;
+                ecart = allValues[i] - actualValue;
+                findOneValue = true;
+            }
+        }
+
+        if (!findOneValue)
+            throw new Exception("No value found");
+
+        return result;
+    }
+
+    private int getPreviousValue(double actualValue, double[] allValues) throws Exception {
+        int result = -1;
+        double ecart = Double.MAX_VALUE;
+        boolean findOneValue = false;
+
+        for (int i = 0; i < allValues.length; i++) {
+            if (allValues[i] >= actualValue)
+                continue;
+
+            if (actualValue - allValues[i] < ecart) {
+                result = i;
+                ecart = actualValue - allValues[i];
+                findOneValue = true;
+            }
+        }
+
+        if (!findOneValue)
+            throw new Exception("No value found");
+
+        return result;
     }
 }

@@ -30,11 +30,13 @@ public class ConfigModel {
     public double[] PORTE_CONFIGS = ConfigDefaults.PORTE_CONFIGS_D;
     public double[] FLECHE_CONFIGS = ConfigDefaults.FLECHE_CONFIGS_D;
     public double[] LEVAGE_CONFIGS = ConfigDefaults.LEVAGE_CONFIGS_D;
+    public double[] TAMIS_CONFIGS = ConfigDefaults.TAMIS_CONFIGS_D;
 
     public double TYPE_BOUTON_TAPIS = ConfigDefaults.TYPE_BOUTON_TAPIS_D;
     public double TYPE_BOUTON_PORTE = ConfigDefaults.TYPE_BOUTON_PORTE_D;
     public double TYPE_BOUTON_FLECHE = ConfigDefaults.TYPE_BOUTON_FLECHE_D;
     public double TYPE_BOUTON_LEVAGE = ConfigDefaults.TYPE_BOUTON_LEVAGE_D;
+    public double TYPE_BOUTON_TAMIS = ConfigDefaults.TYPE_BOUTON_TAMIS_D;
 
     public String TEXT_TAPIS = ConfigDefaults.TEXT_TAPIS_D;
     public String TEXT_PORTE = ConfigDefaults.TEXT_PORTE_D;

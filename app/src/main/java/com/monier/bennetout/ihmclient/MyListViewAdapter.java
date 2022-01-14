@@ -27,6 +27,16 @@ public class MyListViewAdapter extends RecyclerView.Adapter<MyListViewAdapter.Vi
         void onNewPositionClicked(boolean state, double value);
     }
 
+    public double getValueSelected() throws Exception {
+        for (int i = 0; i < mDataset.size(); i++) {
+            if (mDataset.get(i).isActive) {
+                return mDataset.get(i).value;
+            }
+        }
+
+        throw new Exception("No value selected");
+    }
+
     public void setCustomLongClickEnabled(boolean deleteOnLongClickEnable) {
         this.deleteOnLongClickEnable = deleteOnLongClickEnable;
     }

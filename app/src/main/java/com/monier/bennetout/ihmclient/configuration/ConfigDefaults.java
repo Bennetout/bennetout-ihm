@@ -31,11 +31,13 @@ class ConfigDefaults {
     static final double[] PORTE_CONFIGS_D = {0, 50, 75, 100};
     static final double[] FLECHE_CONFIGS_D = {-5, -10, -15, -20, 20, 15, 10, 5};
     static final double[] LEVAGE_CONFIGS_D = {0, 25, 50, 75, 100};
+    static final double[] TAMIS_CONFIGS_D = {5, 6, 7, 8, 9};
 
     static final double TYPE_BOUTON_TAPIS_D = ConfigManager.TYPE_BOUTON_AUTOMAINTIEN;
     static final double TYPE_BOUTON_PORTE_D = ConfigManager.TYPE_BOUTON_IMPULSION;
     static final double TYPE_BOUTON_FLECHE_D = ConfigManager.TYPE_BOUTON_IMPULSION;
     static final double TYPE_BOUTON_LEVAGE_D = ConfigManager.TYPE_BOUTON_IMPULSION;
+    static final double TYPE_BOUTON_TAMIS_D = ConfigManager.TYPE_BOUTON_BANDEAU;
 
     static final String TEXT_TAPIS_D = "Tapis :";
     static final String TEXT_PORTE_D = "Porte :";
