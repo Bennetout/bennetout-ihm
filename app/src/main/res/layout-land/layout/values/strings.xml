@@ -30,10 +30,14 @@
     <string name="types_boutons_maj">TYPES DE BOUTONS</string>
     <string name="actionneurs_bandeaux">Valeurs des bandeaux</string>
     <string name="actionneurs_bandeaux_maj">VALEURS DES BANDEAUX</string>
+    <string name="affichages_maj">AFFICHAGES</string>
 
     <string name="figer_le_0">Figer le 0</string>
     <string name="figer_le_100">Figer le 100</string>
     <string name="save">Sauvegarder</string>
     <string name="automaintien">auto-maintien</string>
     <string name="impulsion">impulsion</string>
+    <string name="afficher_les_dessins">Afficher les dessins : </string>
+    <string name="oui">Oui</string>
+    <string name="non">Non</string>
 </resources>

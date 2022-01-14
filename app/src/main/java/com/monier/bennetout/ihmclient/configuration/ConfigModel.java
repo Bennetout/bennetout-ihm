@@ -43,4 +43,6 @@ public class ConfigModel {
     public String TEXT_FLECHE = ConfigDefaults.TEXT_FLECHE_D;
     public String TEXT_LEVAGE = ConfigDefaults.TEXT_LEVAGE_D;
     public String TEXT_TAMIS = ConfigDefaults.TEXT_TAMIS_D;
+
+    public double SHOW_DRAWING = ConfigDefaults.SHOW_DRAWING_D;
 }

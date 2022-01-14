@@ -58,7 +58,7 @@ import static com.monier.bennetout.ihmclient.utils.Utils.formatDouble;
 
 public class MainActivity extends Activity implements Lvl2ClientSocket.SocketClientListener {
 
-    private static final String VERSION = "V3";
+    private static final String VERSION = "V4";
 
     private static final String TAG = MainActivity.class.getCanonicalName();
     private static final int PORTE      = 0;
@@ -108,6 +108,8 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
     private double niveauRounded = 0;
     private double angleTamisRounded = 0;
 
+    private boolean withDrawing;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,7 +130,16 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 
         myLvl2ClientSocket.setListener(this);
 
-        setContentView(R.layout.main);
+        if (ConfigManager.model.SHOW_DRAWING > 0) {
+            setContentView(R.layout.main);
+            withDrawing = true;
+            myRemorquePainter = findViewById(R.id.remorqueView);
+            myFlechePainter = findViewById(R.id.flecheView);
+            myNiveauPainter = findViewById(R.id.niveauView);
+        } else {
+            setContentView(R.layout.main_without_drawing);
+            withDrawing = false;
+        }
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         // Get a random id into the main View
@@ -143,10 +154,6 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
         textViewLevage = findViewById(R.id.textViewLevageValue);
         textViewPorte = findViewById(R.id.textViewPorteValue);
         textViewTamis = findViewById(R.id.textViewTamisValue);
-
-        myRemorquePainter = findViewById(R.id.remorqueView);
-        myFlechePainter = findViewById(R.id.flecheView);
-        myNiveauPainter = findViewById(R.id.niveauView);
 
         btnReglageInit();
         btnRefreshInit();
@@ -770,7 +777,8 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 
                 // Affichage du devers
                 niveauRounded = niveauRound/ nbRound;
-                myNiveauPainter.setNiveau(calculPosNiveau(niveauRounded));
+                if (withDrawing)
+                    myNiveauPainter.setNiveau(calculPosNiveau(niveauRounded));
 
                 // Affichage de la position du tamis
                 angleTamisRounded = calculPosTamis(angleTamisRound/ nbRound);
@@ -779,12 +787,14 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
                 // Affichage de l'angle de la flèche
                 angleFlecheRounded = calculPosFleche(angleFlecheRound/ nbRound);
                 textViewFleche.setText(formatDouble(angleFlecheRounded));
-                myFlechePainter.setAngle(angleFlecheRounded);
+                if (withDrawing)
+                    myFlechePainter.setAngle(angleFlecheRounded);
 
                 // Affichage des angles levage + porte
                 angleLevageRounded = calculPosLevage(angleLevageRound/ nbRound);
                 anglePorteRounded = calculPosPorte(anglePorteRound/ nbRound);
-                myRemorquePainter.setAngle(angleLevageRounded, anglePorteRounded);
+                if (withDrawing)
+                    myRemorquePainter.setAngle(angleLevageRounded, anglePorteRounded);
                 textViewLevage.setText(formatDouble(angleLevageRounded));
                 textViewPorte.setText(formatDouble(anglePorteRounded));
 
@@ -889,15 +899,15 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
 
             switch (type) {
                 case ARG_LEVAGE:
-                    this.initialValue = myRemorquePainter.getAngle();
+                    this.initialValue = angleLevageRounded;
                     break;
 
                 case ARG_FLECHE:
-                    this.initialValue = myFlechePainter.getAngle();
+                    this.initialValue = angleFlecheRounded;
                     break;
 
                 case ARG_PORTE:
-                    this.initialValue = myRemorquePainter.getAngleBenne();
+                    this.initialValue = anglePorteRounded;
                     break;
 
                 case ARG_TAMIS:
@@ -919,7 +929,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
             while (!isOk) {
                 switch (type) {
                     case ARG_LEVAGE:
-                        actualValue = myRemorquePainter.getAngle();
+                        actualValue = angleLevageRounded;
                         if (actualValue > value) {
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_OFF, ARG_STATE_LOW);
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_LEVAGE_ON, ARG_STATE_HIGH);
@@ -948,7 +958,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
                         break;
 
                     case ARG_FLECHE:
-                        actualValue = myFlechePainter.getAngle();
+                        actualValue = angleFlecheRounded;
                         if (actualValue > value) {
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_FLECHE_OFF, ARG_STATE_LOW);
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_FLECHE_ON, ARG_STATE_HIGH);
@@ -976,7 +986,7 @@ public class MainActivity extends Activity implements Lvl2ClientSocket.SocketCli
                         break;
 
                     case ARG_PORTE:
-                        actualValue = myRemorquePainter.getAngleBenne();
+                        actualValue = anglePorteRounded;
                         if (actualValue > value) {
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_PORTE_OFF, ARG_STATE_LOW);
                             myLvl2ClientSocket.setActuatorState(ARG_ACTION_PORTE_ON, ARG_STATE_HIGH);

@@ -44,4 +44,6 @@ class ConfigDefaults {
     static final String TEXT_FLECHE_D = "Flèche :";
     static final String TEXT_LEVAGE_D = "Levage :";
     static final String TEXT_TAMIS_D = "Pré-grille :";
+
+    static final double SHOW_DRAWING_D = 1;
 }
