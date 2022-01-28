@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <mehdi.sakout.fancybuttons.FancyButton
+        android:id="@+id/btnConfigurationsView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_36sdp"
+        android:layout_marginBottom="@dimen/_2sdp"
+        android:layout_marginLeft="@dimen/_2sdp"
+        android:layout_marginRight="@dimen/_2sdp"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:text="@string/params_maj"
+        android:textSize="@dimen/_17sdp"
+        android:clickable="false"
+        android:focusable="false"
+        fancy:fb_borderColor="@color/myRed"
+        fancy:fb_borderWidth="@dimen/_1sdp"
+        fancy:fb_defaultColor="@color/myRed"
+        fancy:fb_focusColor="#FFFFFF"
+        fancy:fb_radius="@dimen/_60sdp" />
+
+</LinearLayout>

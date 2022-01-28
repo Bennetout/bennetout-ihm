@@ -69,5 +69,10 @@
         <activity android:name=".configuration.activities.AffichagesActivity"
             android:screenOrientation="landscape">
         </activity>
+
+        <activity android:name=".configuration.activities.ParamsActivity"
+            android:screenOrientation="landscape">
+        </activity>
+
     </application>
 </manifest>

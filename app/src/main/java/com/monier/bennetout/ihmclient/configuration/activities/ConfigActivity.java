@@ -21,6 +21,7 @@ public class ConfigActivity extends Activity {
         btnCallibrationsInit();
         btnActionneursInit();
         btnAffichageInit();
+        btnParamsInit();
     }
 
     @Override
@@ -59,6 +60,18 @@ public class ConfigActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), AffichagesActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void btnParamsInit() {
+        final FancyButton fancyButton = findViewById(R.id.btnParams);
+        fancyButton.setVisibility(View.INVISIBLE);
+        fancyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), ParamsActivity.class);
                 startActivity(intent);
             }
         });

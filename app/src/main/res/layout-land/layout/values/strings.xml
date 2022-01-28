@@ -40,4 +40,6 @@
     <string name="afficher_les_dessins">Afficher les dessins : </string>
     <string name="oui">Oui</string>
     <string name="non">Non</string>
+    <string name="params">Paramètres</string>
+    <string name="params_maj">PARAMETRES</string>
 </resources>
